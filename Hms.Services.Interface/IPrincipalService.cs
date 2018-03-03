@@ -2,7 +2,7 @@
 {
     using System.Security.Principal;
 
-    using Hms.Common;
+    using Hms.Common.Interface.Models;
 
     public interface IPrincipalService
     {

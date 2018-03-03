@@ -119,10 +119,13 @@
     <Compile Include="Attributes\EncryptedAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HelloController.cs" />
+    <Compile Include="Controllers\KeysController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -135,9 +138,9 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hms.Common\Hms.Common.csproj">
-      <Project>{E55B906A-E4C2-4B82-A4D9-AFE72E80894C}</Project>
-      <Name>Hms.Common</Name>
+    <ProjectReference Include="..\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503e23b4-34cd-422d-a192-501948e84838}</Project>
+      <Name>Hms.Common.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\Hms.Resolver\Hms.Resolver.csproj">
       <Project>{6891c85e-6665-4fee-8cff-12bff90bd607}</Project>

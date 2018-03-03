@@ -9,7 +9,7 @@
     using System.Web.Http.Controllers;
     using System.Web.Http.Filters;
 
-    using Hms.Common;
+    using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 

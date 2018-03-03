@@ -43,7 +43,7 @@
                 key = JsonConvert.DeserializeObject<ElGamalKey>(Encoding.UTF8.GetString(bytes));
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 key = default(ElGamalKey);
                 return false;

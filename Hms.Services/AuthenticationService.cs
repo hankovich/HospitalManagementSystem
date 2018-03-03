@@ -5,7 +5,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    using Hms.Common;
+    using Hms.Common.Interface;
+    using Hms.Common.Interface.Models;
     using Hms.Repositories.Interface;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
@@ -66,7 +67,7 @@
                 byte[] encryptedClientSecretBytes = Convert.FromBase64String(tokens[3]);
                 byte[] iv = Convert.FromBase64String(tokens[4]);
 
-                string clientSecret = await this.GadgetKeysInfoRepository.GetClientSecretAsync(gadgetIdentifier);
+                string clientSecret = await this.GadgetKeysInfoRepository.GetGadgetClientSecretAsync(gadgetIdentifier);
                 KeysInfoModel keys = await this.GadgetKeysInfoRepository.GetGadgetKeysInfoAsync(gadgetIdentifier, clientSecret);
                 byte[] roundKey = keys.RoundKey;
 

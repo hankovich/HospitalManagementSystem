@@ -6,12 +6,13 @@
     using System.Threading.Tasks;
 
     using Hms.Common.ElGamal;
+    using Hms.Common.Interface;
 
     public class ElGamalCryptoProvider : IAsymmetricCryptoProvider
     {
         public int KeySize => 384;
 
-        public Task<byte[]> EncryptAsync(byte[] message, byte[] key)
+        public Task<byte[]> EncryptBytesAsync(byte[] message, byte[] key)
         {
             if (message == null)
             {
@@ -23,7 +24,9 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (!ElGamalKey.TryParseBytes(key, out ElGamalKey elGamalKey))
+            ElGamalKey elGamalKey;
+
+            if (!ElGamalKey.TryParseBytes(key, out elGamalKey))
             {
                 throw new ArgumentException($"{nameof(key)} has invalid format");       
             }
@@ -34,7 +37,7 @@
             }
         }
 
-        public Task<byte[]> DecryptAsync(byte[] message, byte[] key)
+        public Task<byte[]> DecryptBytesAsync(byte[] message, byte[] key)
         {
             if (message == null)
             {
@@ -46,7 +49,9 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (!ElGamalKey.TryParseBytes(key, out ElGamalKey elGamalKey))
+            ElGamalKey elGamalKey;
+
+            if (!ElGamalKey.TryParseBytes(key, out elGamalKey))
             {
                 throw new ArgumentException($"{nameof(key)} has invalid format");
             }

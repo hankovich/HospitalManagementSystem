@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using System.Web.Http.Filters;
 
+    using Hms.Common.Interface;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 
@@ -18,7 +19,7 @@
         public IAuthenticationService AuthenticationService { get; set; }
 
         [Inject]
-        public IHttpContentDecryptor HttpContentDecryptor { get; set; }
+        public IHttpContentService HttpContentDecryptor { get; set; }
 
         [Inject]
         public IPrincipalService PrincipalService { get; set; }

@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Hms.Common
+namespace Hms.Common.Interface.Models
 {
     /// <summary>
     /// The login model.

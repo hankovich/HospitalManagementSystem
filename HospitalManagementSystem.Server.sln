@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.API", "Hms.API\Hms.API.csproj", "{ED2556E9-0CD8-4456-8A43-F5365A9BD7F9}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Repositories", "Hms.Repositories\Hms.Repositories.csproj", "{7A75B295-CEF4-4B10-83CA-62D6263F0999}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Repositories.Interface", "Hms.Repositories.Interface\Hms.Repositories.Interface.csproj", "{A1D5A6AF-C8F9-4E6F-9B3D-E417F818EA0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Common.Interface", "Hms.Common.Interface\Hms.Common.Interface.csproj", "{503E23B4-34CD-422D-A192-501948E84838}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{A1D5A6AF-C8F9-4E6F-9B3D-E417F818EA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1D5A6AF-C8F9-4E6F-9B3D-E417F818EA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1D5A6AF-C8F9-4E6F-9B3D-E417F818EA0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{503E23B4-34CD-422D-A192-501948E84838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{503E23B4-34CD-422D-A192-501948E84838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{503E23B4-34CD-422D-A192-501948E84838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{503E23B4-34CD-422D-A192-501948E84838}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿namespace Hms.Common
+﻿namespace Hms.Common.Interface
 {
     using System.Threading.Tasks;
 

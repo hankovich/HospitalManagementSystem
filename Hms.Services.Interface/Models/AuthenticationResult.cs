@@ -1,6 +1,6 @@
 ﻿namespace Hms.Services.Interface.Models
 {
-    using Hms.Common;
+    using Hms.Common.Interface.Models;
 
     public class AuthenticationResult
     {

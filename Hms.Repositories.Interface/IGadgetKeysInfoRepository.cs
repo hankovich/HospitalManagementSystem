@@ -8,7 +8,7 @@
 
         Task<byte[]> GetGadgetPublicKeyAsync(string gadgetIdentifier, string clientSecret);
 
-        Task<string> GetClientSecretAsync(string gadgetIdentifier);
+        Task<string> GetGadgetClientSecretAsync(string gadgetIdentifier);
 
         Task<KeysInfoModel> GetGadgetKeysInfoAsync(string gadgetIdentifier, string clientSecret);
 

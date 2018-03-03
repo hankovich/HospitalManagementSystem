@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Hms.Common
+namespace Hms.Common.Interface.Models
 {
     /// <summary>
     /// The set key model.
@@ -30,5 +30,10 @@ namespace Hms.Common
         /// Gets or sets the round key.
         /// </summary>
         public byte[] RoundKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the initialization vector.
+        /// </summary>
+        public byte[] Iv { get; set; }
     }
 }

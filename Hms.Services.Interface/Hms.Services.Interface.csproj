@@ -40,21 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IGadgetKeysService.cs" />
     <Compile Include="IUserService.cs" />
     <Compile Include="Models\AuthorizationResult.cs" />
     <Compile Include="Models\AuthenticationResult.cs" />
     <Compile Include="IAuthenticationService.cs" />
     <Compile Include="IAuthorizationService.cs" />
-    <Compile Include="IHttpContentDecryptor.cs" />
     <Compile Include="IPrincipalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hms.Common\Hms.Common.csproj">
-      <Project>{E55B906A-E4C2-4B82-A4D9-AFE72E80894C}</Project>
-      <Name>Hms.Common</Name>
+    <ProjectReference Include="..\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503e23b4-34cd-422d-a192-501948e84838}</Project>
+      <Name>Hms.Common.Interface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,12 +5,11 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    using Hms.Common;
-    using Hms.Services.Interface;
-
-    public class HttpContentDecryptor : IHttpContentDecryptor
+    using Hms.Common.Interface;
+    
+    public class HttpContentService : IHttpContentService
     {
-        public HttpContentDecryptor(ISymmetricCryptoProvider cryptoProvider)
+        public HttpContentService(ISymmetricCryptoProvider cryptoProvider)
         {
             if (cryptoProvider == null)
             {
@@ -26,7 +25,16 @@
         {
             Encoding encoding = Encoding.UTF8;
             byte[] bytes = await originalContent.ReadAsByteArrayAsync();
-            byte[] decryptedBytes = await this.CryptoProvider.DecryptBytesAsync(bytes, key, bytes);
+            byte[] decryptedBytes = await this.CryptoProvider.DecryptBytesAsync(bytes, key, key);
+
+            return new StringContent(encoding.GetString(decryptedBytes), encoding, "application/json");
+        }
+
+        public async Task<HttpContent> EncryptAsync(HttpContent originalContent, byte[] key)
+        {
+            Encoding encoding = Encoding.UTF8;
+            byte[] bytes = await originalContent.ReadAsByteArrayAsync();
+            byte[] decryptedBytes = await this.CryptoProvider.EncryptBytesAsync(bytes, key, key);
 
             return new StringContent(encoding.GetString(decryptedBytes), encoding, "application/json");
         }

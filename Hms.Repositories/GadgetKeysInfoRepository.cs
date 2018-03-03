@@ -89,7 +89,7 @@
             }
         }
 
-        public async Task<string> GetClientSecretAsync(string gadgetIdentifier)
+        public async Task<string> GetGadgetClientSecretAsync(string gadgetIdentifier)
         {
             try
             {

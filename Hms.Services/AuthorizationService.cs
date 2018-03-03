@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Hms.Common;
+    using Hms.Common.Interface.Extensions;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 

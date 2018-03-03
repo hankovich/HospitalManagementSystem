@@ -6,7 +6,7 @@
     using System.Security.Cryptography;
     using System.Threading.Tasks;
 
-    using Hms.Common;
+    using Hms.Common.Interface;
 
     public class AesCryptoProvider : ISymmetricCryptoProvider
     {

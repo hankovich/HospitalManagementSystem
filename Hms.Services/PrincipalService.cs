@@ -6,7 +6,7 @@
     using System.Security.Claims;
     using System.Security.Principal;
 
-    using Hms.Common;
+    using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
 
     public class PrincipalService : IPrincipalService

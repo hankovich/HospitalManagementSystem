@@ -5,7 +5,7 @@
     using System.Web.Http;
 
     using Hms.API.Attributes;
-    using Hms.Common;
+    using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
 
     [Route("api/account")]

@@ -47,11 +47,16 @@
     <Compile Include="CryptoModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryModule.cs" />
+    <Compile Include="ServiceModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
+      <Name>Hms.Common.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hms.Common\Hms.Common.csproj">
       <Project>{E55B906A-E4C2-4B82-A4D9-AFE72E80894C}</Project>
       <Name>Hms.Common</Name>

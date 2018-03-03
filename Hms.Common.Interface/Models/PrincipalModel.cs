@@ -1,4 +1,4 @@
-﻿namespace Hms.Common
+﻿namespace Hms.Common.Interface.Models
 {
     public class PrincipalModel
     {
