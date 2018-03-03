@@ -14,7 +14,9 @@
             this.Bind<IAuthenticationService>().To<AuthenticationService>();
             this.Bind<IAuthorizationService>().To<AuthorizationService>();
             this.Bind<IPrincipalService>().To<PrincipalService>();
+
             this.Bind<ISymmetricCryptoProvider>().To<AesCryptoProvider>();
+            this.Bind<IAsymmetricCryptoProvider>().To<ElGamalCryptoProvider>();
         }
     }
 }

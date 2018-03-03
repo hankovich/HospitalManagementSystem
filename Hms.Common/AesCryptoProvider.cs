@@ -10,6 +10,8 @@
 
     public class AesCryptoProvider : ISymmetricCryptoProvider
     {
+        public int KeySize => 256;
+
         public async Task<byte[]> EncryptBytesAsync(byte[] message, byte[] key, byte[] iv)
         {
             if (message == null || message.Length <= 0)
@@ -91,6 +93,23 @@
             }
 
             return decrypted;
+        }
+
+        public byte[] GenerateKey()
+        {
+            byte[] key = new byte[this.KeySize / 8];
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(key);
+
+                return key;
+            }
+        }
+
+        public byte[] GenerateIv()
+        {
+            return this.GenerateKey();
         }
     }
 }

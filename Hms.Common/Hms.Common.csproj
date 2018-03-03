@@ -32,8 +32,12 @@
     <IntermediateOutputPath>C:\Users\SVIATA~1\AppData\Local\Temp\vsC922.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,12 +47,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AesCryptoProvider.cs" />
+    <Compile Include="ElGamalCryptoProvider.cs" />
+    <Compile Include="ElGamal\BigIntegerExt.cs" />
+    <Compile Include="ElGamal\ElGamalDataProcessor.cs" />
+    <Compile Include="ElGamal\ElGamalDecryptor.cs" />
+    <Compile Include="ElGamal\ElGamalEncryptor.cs" />
+    <Compile Include="ElGamal\ElGamalKey.cs" />
     <Compile Include="EnumExtensions.cs" />
+    <Compile Include="IAsymmetricCryptoProvider.cs" />
     <Compile Include="ISymmetricCryptoProvider.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="PrincipalModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetKeyModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
