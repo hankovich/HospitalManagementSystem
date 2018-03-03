@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[UserRole]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[UserId] INT NOT NULL REFERENCES [dbo].[User]([Id]) ON DELETE CASCADE,
+	[RoleId] INT NOT NULL REFERENCES [dbo].[Role]([Id]) ON DELETE CASCADE,
+)
