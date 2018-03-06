@@ -1,20 +1,18 @@
 ﻿namespace Hms.Services
 {
-    using Hms.Repositories.Interface;
     using Hms.Services.Interface;
 
     public class Service : IService
     {
-        public IRepository Repository { get; }
+        public IClient Client { get; }
 
-        public Service(IRepository repository)
+        public Service(IClient client)
         {
-            this.Repository = repository;
+            this.Client = client;
         }
 
         public void Do()
         {
-            this.Repository.Do();
         }
     }
 }

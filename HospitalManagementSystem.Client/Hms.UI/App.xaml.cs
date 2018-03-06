@@ -20,7 +20,7 @@
 
             this.Kernel = new StandardKernel();
 
-            this.Kernel.Load(new NinjectModule[] { new MainModule(), new ServiceModule(), new RepositoryModule() });
+            this.Kernel.Load(new NinjectModule[] { new MainModule(), new ServiceModule() });
 
             Current.MainWindow = this.Kernel.Get<MainWindow>();
             Current.MainWindow.Show();

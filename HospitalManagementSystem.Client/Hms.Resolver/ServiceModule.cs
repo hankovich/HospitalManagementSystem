@@ -9,6 +9,7 @@
     {
         public override void Load()
         {
+            this.Bind<IClient>().To<Client>().InSingletonScope();
             this.Bind<IService>().To<Service>();
         }
     }

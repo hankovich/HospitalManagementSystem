@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="MainModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepositoryModule.cs" />
     <Compile Include="ServiceModule.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +55,6 @@
     <ProjectReference Include="..\..\HospitalManagementSystem.Server\Hms.Common\Hms.Common.csproj">
       <Project>{e55b906a-e4c2-4b82-a4d9-afe72e80894c}</Project>
       <Name>Hms.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Hms.Repositories.Interface\Hms.Repositories.Interface.csproj">
-      <Project>{EBC818ED-0E5F-4248-8741-27617EA2D0B3}</Project>
-      <Name>Hms.Repositories.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Hms.Repositories\Hms.Repositories.csproj">
-      <Project>{51FFD833-7507-42D7-ABC4-E40DB7AE1546}</Project>
-      <Name>Hms.Repositories</Name>
     </ProjectReference>
     <ProjectReference Include="..\Hms.Services.Interface\Hms.Services.Interface.csproj">
       <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>

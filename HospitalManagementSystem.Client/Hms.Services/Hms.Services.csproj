@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\HospitalManagementSystem.Server\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,18 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hms.Repositories.Interface\Hms.Repositories.Interface.csproj">
-      <Project>{EBC818ED-0E5F-4248-8741-27617EA2D0B3}</Project>
-      <Name>Hms.Repositories.Interface</Name>
+    <ProjectReference Include="..\..\HospitalManagementSystem.Server\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503e23b4-34cd-422d-a192-501948e84838}</Project>
+      <Name>Hms.Common.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\Hms.Services.Interface\Hms.Services.Interface.csproj">
       <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>
       <Name>Hms.Services.Interface</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
