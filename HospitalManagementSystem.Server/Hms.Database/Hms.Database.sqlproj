@@ -65,4 +65,7 @@
     <Build Include="Role.sql" />
     <Build Include="UserRole.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Hms.Database.publish.xml" />
+  </ItemGroup>
 </Project>

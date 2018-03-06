@@ -19,8 +19,6 @@
 
         public IUserRepository UserRepository { get; set; }
 
-        public Encoding Encoding => Encoding.UTF8;
-
         public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysInfoRepository keysInfoRepository, IUserRepository userRepository)
         {
             if (cryptoService == null)
@@ -71,8 +69,6 @@
                 KeysInfoModel keys = await this.GadgetKeysInfoRepository.GetGadgetKeysInfoAsync(gadgetIdentifier, clientSecret);
                 byte[] roundKey = keys.RoundKey;
 
-                byte[] usernameBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedUsernameBytes, roundKey, iv);
-                byte[] passwordBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedPasswordBytes, roundKey, iv);
                 byte[] clientSecretBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedClientSecretBytes, roundKey, iv);
 
                 string decryptedClientSecret = Convert.ToBase64String(clientSecretBytes);
@@ -81,20 +77,37 @@
                 {
                     throw new ArgumentException("Invalid client secret");
                 }
+                
+                string username;
 
-                string username = this.Encoding.GetString(usernameBytes);
-                string password = this.Encoding.GetString(passwordBytes);
+                try
+                {
+                    byte[] usernameBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedUsernameBytes, roundKey, iv);
+                    byte[] passwordBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedPasswordBytes, roundKey, iv);
 
-                await this.UserRepository.GetUserAsync(username, password);
+                    username = Encoding.UTF8.GetString(usernameBytes);
+                    string password = Encoding.UTF8.GetString(passwordBytes);
+
+                    await this.UserRepository.GetUserAsync(username, password);
+                }
+                catch
+                {
+                    return new AuthenticationResult
+                    {
+                        IsAuthenticated = true,
+                        IsRoundKeyExpired = false,
+                        RoundKey = roundKey,
+                    };
+                }
 
                 return new AuthenticationResult
                 {
                     IsAuthenticated = true,
                     IsRoundKeyExpired = false,
+                    RoundKey = roundKey,
                     Principal = new PrincipalModel
                     {
                         Login = username,
-                        RoundKey = roundKey
                     }
                 };
             }

@@ -97,7 +97,17 @@
 
         public byte[] GenerateKey()
         {
-            byte[] key = new byte[this.KeySize / 8];
+            return this.GenerateBytes(this.KeySize / 8);
+        }
+
+        public byte[] GenerateIv()
+        {
+            return this.GenerateBytes(this.KeySize / 16);
+        }
+
+        private byte[] GenerateBytes(int length)
+        {
+            byte[] key = new byte[length];
 
             using (var rng = new RNGCryptoServiceProvider())
             {
@@ -105,11 +115,6 @@
 
                 return key;
             }
-        }
-
-        public byte[] GenerateIv()
-        {
-            return this.GenerateKey();
         }
     }
 }

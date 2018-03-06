@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\HmsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\SymmetricCryptoProviderExtensions.cs" />
     <Compile Include="IAsymmetricCryptoProvider.cs" />
     <Compile Include="IHttpContentService.cs" />
     <Compile Include="ISymmetricCryptoProvider.cs" />

@@ -11,7 +11,7 @@
     {
         public override void Load()
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["Database"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["Hms.Database"].ConnectionString;
 
             this.Bind<IGadgetKeysInfoRepository>().ToConstructor(_ => new GadgetKeysInfoRepository(connectionString));
             this.Bind<IUserRepository>().ToConstructor(_ => new UserRepository(connectionString));

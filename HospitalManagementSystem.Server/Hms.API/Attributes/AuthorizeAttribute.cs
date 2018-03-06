@@ -25,39 +25,21 @@
         [Inject]
         public IAuthorizationService AuthorizationService { get; set; }
 
-        [Inject]
-        public IPrincipalService PrincipalService { get; set; }
-
         public override async Task OnAuthorizationAsync(HttpActionContext actionContext, CancellationToken token)
         {
             try
             {
-                IPrincipal principal = actionContext.RequestContext.Principal;
-                PrincipalModel model;
+                AuthenticationResult authenticationResult =
+                    await
+                    this.AuthenticationService.AuthenticateAsync(actionContext.Request.Headers.Authorization.Parameter);
 
-                if (principal != null)
+                if (!authenticationResult.IsAuthenticated)
                 {
-                    model = this.PrincipalService.PrincipalToModel(principal);
-                }
-                else
-                {
-                    AuthenticationResult authenticationResult =
-                        await
-                        this.AuthenticationService.AuthenticateAsync(
-                            actionContext.Request.Headers.Authorization.Parameter);
-
-                    if (authenticationResult.IsAuthenticated)
-                    {
-                        model = authenticationResult.Principal;
-                    }
-                    else
-                    {
-                        throw new UnauthorizedAccessException();
-                    }
+                    throw new UnauthorizedAccessException();
                 }
 
                 AuthorizationResult authorizationResult =
-                    await this.AuthorizationService.AuthorizeAsync(model.Login, this.Roles);
+                    await this.AuthorizationService.AuthorizeAsync(authenticationResult.Principal?.Login, this.Roles);
 
                 if (!authorizationResult.IsAuthorized)
                 {

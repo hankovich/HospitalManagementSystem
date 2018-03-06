@@ -8,6 +8,7 @@
 
     using Hms.Common.Interface;
     using Hms.Common.Interface.Exceptions;
+    using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
 
@@ -29,11 +30,9 @@
             this.SymmetricCryptoProvider = symmetricCryptoProvider;
             this.AsymmetricCryptoProvider = asymmetricCryptoProvider;
             this.HttpContentService = httpContentService;
-
-            Task.Run(async () => await this.InitializeAsync());
         }
 
-        private async Task InitializeAsync()
+        private async Task InitializeKeysAsync()
         {
             this.AuthInfo = new LoginModel { Identifier = Guid.NewGuid().ToString() };
 
@@ -42,7 +41,7 @@
 
             SetKeyModel content = new SetKeyModel { Identifier = this.AuthInfo.Identifier, Key = publicKey };
 
-            ServerResponse result = await this.SendAsync(HttpMethod.Put, "api/key/public", content);
+            ServerResponse result = await this.SendNotEncryptedAsync(HttpMethod.Put, "api/key/public", content);
 
             if (!result.IsSuccessStatusCode)
             {
@@ -52,14 +51,19 @@
             SetKeyModel setKeyModel = JsonConvert.DeserializeObject<SetKeyModel>(result.Content);
             byte[] enryptedClientSecretBytes = Convert.FromBase64String(setKeyModel.ClientSecret);
             string clientSecret =
-                Convert.ToBase64String(await this.AsymmetricCryptoProvider.DecryptBytesAsync(enryptedClientSecretBytes, this.PrivateKey));
+                Convert.ToBase64String(
+                    await this.AsymmetricCryptoProvider.DecryptBytesAsync(enryptedClientSecretBytes, this.PrivateKey));
 
             this.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(setKeyModel.RoundKey, this.PrivateKey);
 
             this.AuthInfo.ClientSecret = clientSecret;
+
+            this.IsInitialized = true;
         }
 
         public string Host => "http://localhost:52017/";
+
+        private bool IsInitialized { get; set; }
 
         private LoginModel AuthInfo { get; set; }
 
@@ -71,9 +75,17 @@
 
         public async Task<ServerResponse> SendAsync(HttpMethod method, string url, object content)
         {
+            if (!this.IsInitialized)
+            {
+                await this.InitializeKeysAsync();
+            }
+
             using (var request = new HttpRequestMessage(method, this.Host + url))
             {
-                request.Content = content == null ? null : await this.HttpContentService.EncryptAsync(GetHttpContent(content), this.RoundKey);
+                request.Content = content == null
+                                      ? null
+                                      : await
+                                        this.HttpContentService.EncryptAsync(GetHttpContent(content), this.RoundKey);
                 request.Headers.Authorization = await this.CreateCredentialsAsync();
 
                 HttpResponseMessage response = await this.HttpClient.SendAsync(request);
@@ -93,14 +105,64 @@
             }
         }
 
+        public async Task<ServerResponse> SendNotEncryptedAsync(HttpMethod method, string url, object content)
+        {
+            using (var request = new HttpRequestMessage(method, this.Host + url))
+            {
+                request.Content = content == null ? null : GetHttpContent(content);
+                request.Headers.Authorization = await this.CreateCredentialsAsync();
+
+                HttpResponseMessage response = await this.HttpClient.SendAsync(request);
+
+                string responseContent = await response.Content.ReadAsStringAsync();
+                var result = new ServerResponse
+                {
+                    Content = responseContent,
+                    IsSuccessStatusCode = response.IsSuccessStatusCode,
+                    ReasonPhrase = response.ReasonPhrase,
+                    StatusCode = (int)response.StatusCode
+                };
+
+                return result;
+            }
+        }
+
         public async Task LoginAsync(string username, string password)
         {
-            
+            if (!this.IsInitialized)
+            {
+                await this.InitializeKeysAsync();
+            }
         }
 
         public async Task RegisterAsync(string username, string password)
         {
-            
+            if (!this.IsInitialized)
+            {
+                await this.InitializeKeysAsync();
+            }
+
+            byte[] iv = this.SymmetricCryptoProvider.GenerateIv();
+
+            LoginModel model = new LoginModel
+            {
+                Identifier = this.AuthInfo.Identifier,
+                ClientSecret =
+                    await
+                    this.SymmetricCryptoProvider.EncryptBase64StringAsync(this.AuthInfo.ClientSecret, this.RoundKey, iv),
+                Username = await this.SymmetricCryptoProvider.EncryptUtf8StringAsync(username, this.RoundKey, iv),
+                Password = await this.SymmetricCryptoProvider.EncryptUtf8StringAsync(password, this.RoundKey, iv)
+            };
+
+            ServerResponse response = await this.SendAsync(HttpMethod.Post, "api/account", model);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HmsException(response.ReasonPhrase);
+            }
+
+            this.AuthInfo.Username = username;
+            this.AuthInfo.Password = password;
         }
 
         public Task LogoutAsync()
@@ -111,31 +173,17 @@
 
         private async Task<AuthenticationHeaderValue> CreateCredentialsAsync()
         {
-            if (this.AuthInfo == null)
-            {
-                return null;
-            }
-
             byte[] ivBytes = this.SymmetricCryptoProvider.GenerateIv();
 
-            byte[] encryptedUsernameBytes = await this.SymmetricCryptoProvider.EncryptBytesAsync(
-                                                Encoding.UTF8.GetBytes(this.AuthInfo.Username),
-                                                this.RoundKey,
-                                                ivBytes);
-
-            byte[] encryptedPasswordBytes = await this.SymmetricCryptoProvider.EncryptBytesAsync(
-                                                Encoding.UTF8.GetBytes(this.AuthInfo.Password),
-                                                this.RoundKey,
-                                                ivBytes);
-
-            byte[] encryptedClientSecretBytes = await this.SymmetricCryptoProvider.EncryptBytesAsync(
-                                                    Convert.FromBase64String(this.AuthInfo.ClientSecret),
-                                                    this.RoundKey,
-                                                    ivBytes);
-
-            string username = Convert.ToBase64String(encryptedUsernameBytes);
-            string password = Convert.ToBase64String(encryptedPasswordBytes);
-            string clientSecret = Convert.ToBase64String(encryptedClientSecretBytes);
+            string username =
+                await
+                this.SymmetricCryptoProvider.EncryptUtf8StringAsync(this.AuthInfo.Username, this.RoundKey, ivBytes);
+            string password =
+                await
+                this.SymmetricCryptoProvider.EncryptUtf8StringAsync(this.AuthInfo.Password, this.RoundKey, ivBytes);
+            string clientSecret =
+                await
+                this.SymmetricCryptoProvider.EncryptBase64StringAsync(this.AuthInfo.ClientSecret, this.RoundKey, ivBytes);
             string iv = Convert.ToBase64String(ivBytes);
 
             string s = $"{this.AuthInfo.Identifier}:{username}:{password}:{clientSecret}:{iv}";

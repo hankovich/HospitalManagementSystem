@@ -1,6 +1,7 @@
 ﻿namespace Hms.Services
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
@@ -25,7 +26,7 @@
         {
             Encoding encoding = Encoding.UTF8;
             byte[] bytes = await originalContent.ReadAsByteArrayAsync();
-            byte[] decryptedBytes = await this.CryptoProvider.DecryptBytesAsync(bytes, key, key);
+            byte[] decryptedBytes = await this.CryptoProvider.DecryptBytesAsync(bytes, key, Enumerable.Repeat((byte)0, key.Length / 2).ToArray());
 
             return new StringContent(encoding.GetString(decryptedBytes), encoding, "application/json");
         }
@@ -34,7 +35,7 @@
         {
             Encoding encoding = Encoding.UTF8;
             byte[] bytes = await originalContent.ReadAsByteArrayAsync();
-            byte[] decryptedBytes = await this.CryptoProvider.EncryptBytesAsync(bytes, key, key);
+            byte[] decryptedBytes = await this.CryptoProvider.EncryptBytesAsync(bytes, key, Enumerable.Repeat((byte)0, key.Length / 2).ToArray());
 
             return new StringContent(encoding.GetString(decryptedBytes), encoding, "application/json");
         }

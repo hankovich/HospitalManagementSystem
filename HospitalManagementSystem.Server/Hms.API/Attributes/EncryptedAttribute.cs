@@ -5,6 +5,7 @@
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Web.Http;
     using System.Web.Http.Filters;
 
     using Hms.Common.Interface;
@@ -19,23 +20,13 @@
         public IAuthenticationService AuthenticationService { get; set; }
 
         [Inject]
-        public IHttpContentService HttpContentDecryptor { get; set; }
-
-        [Inject]
-        public IPrincipalService PrincipalService { get; set; }
+        public IHttpContentService HttpContentService { get; set; }
 
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
-            if (this.AuthenticationService == null || this.HttpContentDecryptor == null)
-            {
-                context.ActionContext.Response =
-                    context.ActionContext.Request.CreateResponse(HttpStatusCode.InternalServerError);
-                return;
-            }
-
             var content = context.ActionContext.Request?.Content;
 
-            if (content == null)
+            if (content == null || content.Headers?.ContentLength == 0)
             {
                 return;
             }
@@ -46,32 +37,45 @@
 
             if (!authenticationResult.IsAuthenticated)
             {
-                context.ActionContext.Response =
-                    context.ActionContext.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, authenticationResult.FailureReason);
+                context.ErrorResult = new UnauthorizedHttpActionResult(
+                    context.ActionContext.Request,
+                    authenticationResult.FailureReason);
                 return;
             }
 
             if (authenticationResult.IsRoundKeyExpired)
             {
-                context.ActionContext.Response =
-                    context.ActionContext.Request.CreateErrorResponse(
-                        HttpStatusCode.Unauthorized,
-                        authenticationResult.FailureReason);
+                context.ErrorResult = new UnauthorizedHttpActionResult(
+                    context.ActionContext.Request,
+                    authenticationResult.FailureReason);
                 return;
             }
 
-            context.ActionContext.RequestContext.Principal =
-                this.PrincipalService.ModelToPrincipal(authenticationResult.Principal);
-
             context.ActionContext.Request.Content =
-                await this.HttpContentDecryptor.DecryptAsync(content, authenticationResult.Principal.RoundKey);
+                await this.HttpContentService.DecryptAsync(content, authenticationResult.RoundKey);
         }
 
-        public Task ChallengeAsync(
-            HttpAuthenticationChallengeContext context,
-            CancellationToken cancellationToken)
+        public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+
+        private class UnauthorizedHttpActionResult : IHttpActionResult
+        {
+            private HttpRequestMessage Request { get; set; }
+
+            private string Reason { get; set; }
+
+            public UnauthorizedHttpActionResult(HttpRequestMessage request, string reason)
+            {
+                this.Request = request;
+                this.Reason = reason;
+            }
+
+            public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
+            {
+                return Task.FromResult(this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, this.Reason));
+            }
         }
     }
 }

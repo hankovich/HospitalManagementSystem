@@ -6,6 +6,8 @@
     {
         public PrincipalModel Principal { get; set; }
 
+        public byte[] RoundKey { get; set; }
+
         public bool IsAuthenticated { get; set; }
 
         public string FailureReason { get; set; }
