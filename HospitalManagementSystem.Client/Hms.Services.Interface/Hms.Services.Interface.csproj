@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E55B906A-E4C2-4B82-A4D9-AFE72E80894C}</ProjectGuid>
+    <ProjectGuid>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hms.Common</RootNamespace>
-    <AssemblyName>Hms.Common</AssemblyName>
+    <RootNamespace>Hms.Services.Interface</RootNamespace>
+    <AssemblyName>Hms.Services.Interface</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <IntermediateOutputPath>C:\Users\SVIATA~1\AppData\Local\Temp\vsB468.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,15 +28,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <IntermediateOutputPath>C:\Users\SVIATA~1\AppData\Local\Temp\vsB468.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,24 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AesCryptoProvider.cs" />
-    <Compile Include="ElGamalCryptoProvider.cs" />
-    <Compile Include="ElGamal\BigIntegerExt.cs" />
-    <Compile Include="ElGamal\ElGamalDataProcessor.cs" />
-    <Compile Include="ElGamal\ElGamalDecryptor.cs" />
-    <Compile Include="ElGamal\ElGamalEncryptor.cs" />
-    <Compile Include="ElGamal\ElGamalKey.cs" />
-    <Compile Include="HttpContentService.cs" />
+    <Compile Include="IService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Hms.Common.Interface\Hms.Common.Interface.csproj">
-      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
-      <Name>Hms.Common.Interface</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\HmsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="IAsymmetricCryptoProvider.cs" />
     <Compile Include="IHttpContentService.cs" />

@@ -61,7 +61,7 @@
             return Task.FromResult(decryptor.ProcessData(message));
         }
 
-        public byte[] GenerateKey()
+        public byte[] GeneratePrivateKey()
         {
             using (var generator = RandomNumberGenerator.Create())
             {
@@ -80,6 +80,24 @@
 
                 return key.ToBytes();
             }
+        }
+
+        public byte[] GetPublicKey(byte[] privateKey)
+        {
+            if (privateKey == null)
+            {
+                throw new ArgumentNullException(nameof(privateKey));
+            }
+
+            ElGamalKey key;
+            if (ElGamalKey.TryParseBytes(privateKey, out key))
+            {
+                key.X = BigInteger.Zero;
+
+                return key.ToBytes();
+            }
+
+            throw new ArgumentException("Invalid key");
         }
     }
 }

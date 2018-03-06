@@ -4,10 +4,12 @@
 
     public interface IAsymmetricCryptoProvider
     {
-        Task<byte[]> EncryptBytesAsync(byte[] message, byte[] key);
+        Task<byte[]> EncryptBytesAsync(byte[] message, byte[] publicKey);
 
-        Task<byte[]> DecryptBytesAsync(byte[] message, byte[] key);
+        Task<byte[]> DecryptBytesAsync(byte[] message, byte[] privateKey);
 
-        byte[] GenerateKey();
+        byte[] GeneratePrivateKey();
+
+        byte[] GetPublicKey(byte[] privateKey);
     }
 }
