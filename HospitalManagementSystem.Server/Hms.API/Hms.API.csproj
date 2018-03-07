@@ -117,6 +117,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\EncryptedAttribute.cs" />
+    <Compile Include="Attributes\ExpirationPolicy.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HelloController.cs" />
     <Compile Include="Controllers\KeysController.cs" />

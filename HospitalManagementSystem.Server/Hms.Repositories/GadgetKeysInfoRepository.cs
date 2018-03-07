@@ -262,7 +262,8 @@
                                         BEGIN
 				                            UPDATE [GadgetRoundKey] WITH (SERIALIZABLE) SET 
 						                               [RoundKey] = @roundKey,
-											           [SentTimes] = 0
+											           [SentTimes] = 0,
+                                                       [GeneratedAtUTC] = GETUTCDATE()
 						                               WHERE [GadgetIdentifierId] = @gadgetIdentifierId
                                         END
 			                    END

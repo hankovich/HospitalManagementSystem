@@ -14,7 +14,7 @@
 
     using Ninject;
 
-    public class EncryptedAttribute : FilterAttribute, IAuthenticationFilter
+    public class EncryptedAttribute : ActionFilterAttribute, IAuthenticationFilter
     {
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
@@ -22,15 +22,12 @@
         [Inject]
         public IHttpContentService HttpContentService { get; set; }
 
+        private byte[] RoundKey { get; set; }
+
+        public ExpirationPolicy Policy { get; set; } = ExpirationPolicy.Strong;
+
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
-            var content = context.ActionContext.Request?.Content;
-
-            if (content == null || content.Headers?.ContentLength == 0)
-            {
-                return;
-            }
-
             AuthenticationHeaderValue authenticationHeader = context.ActionContext.Request.Headers.Authorization;
             AuthenticationResult authenticationResult =
                 await this.AuthenticationService.AuthenticateAsync(authenticationHeader?.Parameter);
@@ -43,7 +40,7 @@
                 return;
             }
 
-            if (authenticationResult.IsRoundKeyExpired)
+            if (authenticationResult.IsRoundKeyExpired && this.Policy == ExpirationPolicy.Strong)
             {
                 context.ErrorResult = new UnauthorizedHttpActionResult(
                     context.ActionContext.Request,
@@ -51,8 +48,31 @@
                 return;
             }
 
+            this.RoundKey = authenticationResult.RoundKey;
+
+            var content = context.ActionContext.Request?.Content;
+
+            if (content == null || (content.Headers?.ContentLength ?? 0) == 0)
+            {
+                return;
+            }
+
             context.ActionContext.Request.Content =
                 await this.HttpContentService.DecryptAsync(content, authenticationResult.RoundKey);
+                // TODO: Add IncrementRoundKey
+        }
+
+        public override async Task OnActionExecutedAsync(
+            HttpActionExecutedContext actionExecutedContext,
+            CancellationToken cancellationToken)
+        {
+            if (actionExecutedContext.Response.Content == null || this.RoundKey == null)
+            {
+                return;
+            }
+
+            actionExecutedContext.Response.Content =
+                await this.HttpContentService.EncryptAsync(actionExecutedContext.Response.Content, this.RoundKey);
         }
 
         public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)

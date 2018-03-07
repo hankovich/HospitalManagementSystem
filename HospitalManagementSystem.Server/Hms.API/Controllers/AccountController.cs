@@ -26,14 +26,14 @@
         [HttpPost, Encrypted]
         public async Task<IHttpActionResult> Post([FromBody] LoginModel model)
         {
-            if (model?.Username == null || model.Password == null)
+            if (model?.Login == null || model.Password == null)
             {
                 return this.BadRequest("Invalid arguments");
             }
 
             try
             {
-                await this.UserService.AddUserAsync(model.Username, model.Password);
+                await this.UserService.AddUserAsync(model.Login, model.Password);
                 return this.Ok();
             }
             catch (Exception e)
@@ -45,14 +45,14 @@
         [HttpPut, Encrypted]
         public async Task<IHttpActionResult> CheckUser([FromBody] LoginModel model)
         {
-            if (model?.Username == null || model.Password == null)
+            if (model?.Login == null || model.Password == null)
             {
                 return this.BadRequest("Invalid arguments");
             }
 
             try
             {
-                await this.UserService.GetUserAsync(model.Username, model.Password);
+                await this.UserService.GetUserAsync(model.Login, model.Password);
                 return this.Ok();
             }
             catch (Exception e)

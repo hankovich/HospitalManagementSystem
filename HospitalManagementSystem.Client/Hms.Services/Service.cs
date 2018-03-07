@@ -15,10 +15,11 @@
 
         public async void Do()
         {
-            await this.Client.RegisterAsync("koala", "zakon");
-            await this.Client.LoginAsync("koala", "zakon");
+            // await this.Client.RegisterAsync("1koala", "zakon");
+            await this.Client.LoginAsync("1koala", "zakon");
 
-            await this.Client.SendAsync(HttpMethod.Get, "api/hello/get", null);
+            var a = await this.Client.SendAsync(HttpMethod.Get, "api/hello/get", null);
+            await this.Client.ChangeRoundKey();
         }
     }
 }

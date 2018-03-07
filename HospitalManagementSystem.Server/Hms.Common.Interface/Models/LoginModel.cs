@@ -12,23 +12,13 @@ namespace Hms.Common.Interface.Models
     public class LoginModel
     {
         /// <summary>
-        /// Gets or sets the username.
+        /// Gets or sets the login.
         /// </summary>
-        public string Username { get; set; }
+        public string Login { get; set; }
 
         /// <summary>
         /// Gets or sets the password.
         /// </summary>
         public string Password { get; set; }
-
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
-        public string Identifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the client secret.
-        /// </summary>
-        public string ClientSecret { get; set; }
     }
 }

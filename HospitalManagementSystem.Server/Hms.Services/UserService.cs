@@ -5,10 +5,11 @@
 
     using Hms.Repositories.Interface;
     using Hms.Services.Interface;
+    using Hms.Services.Interface.Models;
 
     public class UserService : IUserService
     {
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository)
         {
             if (userRepository == null)
             {
@@ -16,13 +17,17 @@
             }
 
             this.UserRepository = userRepository;
+            this.UserRoleRepository = userRoleRepository;
         }
 
         public IUserRepository UserRepository { get; }
 
+        public IUserRoleRepository UserRoleRepository { get; }
+
         public async Task AddUserAsync(string username, string password)
         {
             await this.UserRepository.AddUserAsync(username, password);
+            await this.UserRoleRepository.AddRoleToUserAsync(username, nameof(Role.Patient));
         }
 
         public async Task<Interface.User> GetUserAsync(string username, string password)

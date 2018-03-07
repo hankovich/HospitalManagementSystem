@@ -13,7 +13,7 @@
         [Encrypted, Authorize(Roles = Role.Doctor | Role.Patient)]
         [HttpGet]
         [Route("get")]
-        public int Get([FromBody]int a)
+        public int Get()
         {
             return 4;
         }

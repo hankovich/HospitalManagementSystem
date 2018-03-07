@@ -7,12 +7,14 @@
     {
         string Host { get; }
 
-        Task<ServerResponse> SendAsync(HttpMethod method, string url, object content);
+        Task<ServerResponse> SendAsync(HttpMethod method, string url, object content, bool a = true);
 
         Task LoginAsync(string username, string password);
 
         Task RegisterAsync(string username, string password);
 
         Task LogoutAsync();
+
+        Task ChangeRoundKey();
     }
 }

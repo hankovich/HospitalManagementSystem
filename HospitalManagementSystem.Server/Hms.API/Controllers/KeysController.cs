@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System.Web.Http;
 
+    using Hms.API.Attributes;
     using Hms.Common.Interface;
     using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
@@ -94,43 +95,29 @@
             }
         }
 
-        [Route("api/key/round/{identifier}/"), HttpPut]
+        [Route("api/key/round/{identifier}/"), HttpPut, Encrypted(Policy = ExpirationPolicy.AllowExpired)]
         public async Task<IHttpActionResult> GetNewRoundKey(
             string identifier,
-            [FromBody] EncryptedModel<string> encryptedClientSecret)
+            [FromBody] string clientSecret)
         {
-            if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(encryptedClientSecret?.Value))
+            if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(clientSecret))
             {
                 return this.BadRequest("Invalid arguments");
             }
 
             try
             {
-                byte[] oldRoundKey = await this.GadgetKeysService.GetGadgetRoundKeyAsync(identifier);
+                string originalClientSecret = await this.GadgetKeysService.GetGadgetClientSecretAsync(identifier);
 
-                var decryptedClientSecret =
-                    await
-                    this.SymmetricCryptoProvider.DecryptBase64StringAsync(
-                        encryptedClientSecret.Value,
-                        oldRoundKey,
-                        encryptedClientSecret.Iv);
-
-                string clientSecret = await this.GadgetKeysService.GetGadgetClientSecretAsync(identifier);
-
-                if (decryptedClientSecret != clientSecret)
+                if (clientSecret != originalClientSecret)
                 {
                     return this.BadRequest("Invalid client secret");
                 }
 
                 var roundKey = this.SymmetricCryptoProvider.GenerateKey();
-                await this.GadgetKeysService.SetGadgetRoundKeyAsync(identifier, clientSecret, roundKey);
+                await this.GadgetKeysService.SetGadgetRoundKeyAsync(identifier, originalClientSecret, roundKey);
 
-                byte[] iv = this.SymmetricCryptoProvider.GenerateIv();
-
-                var encryptedNewRoundKey =
-                    await this.SymmetricCryptoProvider.EncryptBytesAsync(roundKey, oldRoundKey, iv);
-
-                return this.Ok(new EncryptedModel<byte[]> { Iv = iv, Value = encryptedNewRoundKey });
+                return this.Ok(roundKey);
             }
             catch (Exception e)
             {

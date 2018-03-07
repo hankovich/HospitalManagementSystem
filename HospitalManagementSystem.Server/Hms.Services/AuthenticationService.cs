@@ -45,7 +45,7 @@
         {
             try
             {
-                if (authenticationToken == null)
+                if (authenticationToken == null) // TODO: Refactor this
                 {
                     throw new ArgumentException("Auth header is not set");
                 }
