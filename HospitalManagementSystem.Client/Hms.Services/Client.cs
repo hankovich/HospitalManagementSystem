@@ -92,7 +92,7 @@
 
         public async Task<ServerResponse> SendAsync(HttpMethod method, string url, object content, bool needsEncryption = true)
         {
-            if (!this.IsInitialized && needsEncryption)
+            if (!this.IsInitialized && needsEncryption) // TODO: Split this method
             {
                 await this.InitializeKeysAsync();
             }

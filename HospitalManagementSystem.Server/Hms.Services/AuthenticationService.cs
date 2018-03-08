@@ -45,7 +45,7 @@
         {
             try
             {
-                if (authenticationToken == null) // TODO: Refactor this
+                if (authenticationToken == null) // TODO: Refactor this and add expiration info
                 {
                     throw new ArgumentException("Auth header is not set");
                 }

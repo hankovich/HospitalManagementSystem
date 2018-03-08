@@ -7,7 +7,7 @@
     {
         string Host { get; }
 
-        Task<ServerResponse> SendAsync(HttpMethod method, string url, object content, bool a = true);
+        Task<ServerResponse> SendAsync(HttpMethod method, string url, object content, bool needsEncryption = true);
 
         Task LoginAsync(string username, string password);
 

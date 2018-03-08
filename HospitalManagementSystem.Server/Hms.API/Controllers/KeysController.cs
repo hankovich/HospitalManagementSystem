@@ -65,7 +65,7 @@
                 {
                     var roundKey = await this.GadgetKeysService.GetGadgetRoundKeyAsync(model.Identifier);
 
-                    model.ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64StringAsync(model.ClientSecret, roundKey, model.Iv);
+                    model.ClientSecret = await this.SymmetricCryptoProvider.DecryptBase64StringAsync(model.ClientSecret, roundKey, model.Iv);
                 }
 
                 await this.GadgetKeysService.SetGadgetPublicKeyAsync(model.Identifier, model.ClientSecret, model.Key);
