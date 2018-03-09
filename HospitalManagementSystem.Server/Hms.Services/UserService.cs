@@ -36,5 +36,18 @@
 
             return new Interface.User { Login = user.Username };
         }
+
+        public async Task<bool> CheckCredentials(string username, string password)
+        {
+            try
+            {
+                await this.UserRepository.GetUserAsync(username, password);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

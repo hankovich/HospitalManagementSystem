@@ -68,7 +68,4 @@
   <ItemGroup>
     <None Include="Hms.Database.publish.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="Script.AddingRoles.sql" />
-  </ItemGroup>
 </Project>

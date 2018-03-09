@@ -6,24 +6,19 @@
     using System.Threading.Tasks;
 
     using Hms.Common.Interface;
+    using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
     using Hms.Repositories.Interface;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 
+    using Newtonsoft.Json;
+
+    using Ninject;
+
     public class AuthenticationService : IAuthenticationService
     {
-        public ISymmetricCryptoProvider SymmetricCryptoService { get; }
-
-        public IGadgetKeysInfoRepository GadgetKeysInfoRepository { get; }
-
-        public IUserRepository UserRepository { get; set; }
-
-        public int RoundKeyIsValidForRequestCount { get; }
-
-        public TimeSpan RoundKeyIsValidForTime { get; }
-
-        public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysInfoRepository keysInfoRepository, IUserRepository userRepository)
+        public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysInfoRepository keysInfoRepository, IUserService userService)
         {
             if (cryptoService == null)
             {
@@ -35,75 +30,57 @@
                 throw new ArgumentNullException(nameof(keysInfoRepository));
             }
 
-            if (userRepository == null)
+            if (userService == null)
             {
-                throw new ArgumentNullException(nameof(userRepository));
+                throw new ArgumentNullException(nameof(userService));
             }
 
             this.SymmetricCryptoService = cryptoService;
             this.GadgetKeysInfoRepository = keysInfoRepository;
-            this.UserRepository = userRepository;
+            this.UserService = userService;
         }
+
+        public ISymmetricCryptoProvider SymmetricCryptoService { get; }
+
+        public IGadgetKeysInfoRepository GadgetKeysInfoRepository { get; }
+
+        public IUserService UserService { get; }
+
+        [Inject]
+        public RoundKeyExpirationSettings KeyExpirationSettings { get; set; }
 
         public async Task<AuthenticationResult> AuthenticateAsync(string authenticationToken)
         {
             try
             {
-                if (authenticationToken == null) // TODO: Refactor this
+                if (authenticationToken == null)
                 {
                     throw new ArgumentException("Auth header is not set");
                 }
 
-                byte[] bytes = Convert.FromBase64String(authenticationToken);
-                string token = Encoding.UTF8.GetString(bytes);
-                string[] tokens = token.Split(':');
+                string serializedModel = Encoding.UTF8.GetString(Convert.FromBase64String(authenticationToken));
+                AuthHeaderModel model = JsonConvert.DeserializeObject<AuthHeaderModel>(serializedModel);
 
-                if (tokens.Length != 5)
-                {
-                    throw new ArgumentException("Invalid tokens count in auth header");    
-                }
-
-                string gadgetIdentifier = tokens[0];
-                byte[] encryptedUsernameBytes = Convert.FromBase64String(tokens[1]);
-                byte[] encryptedPasswordBytes = Convert.FromBase64String(tokens[2]);
-                byte[] encryptedClientSecretBytes = Convert.FromBase64String(tokens[3]);
-                byte[] iv = Convert.FromBase64String(tokens[4]);
-
-                string clientSecret = await this.GadgetKeysInfoRepository.GetGadgetClientSecretAsync(gadgetIdentifier);
-                KeysInfoModel keys = await this.GadgetKeysInfoRepository.GetGadgetKeysInfoAsync(gadgetIdentifier, clientSecret);
+                string clientSecret = await this.GadgetKeysInfoRepository.GetGadgetClientSecretAsync(model.Indentifier);
+                KeysInfoModel keys = await this.GadgetKeysInfoRepository.GetGadgetKeysInfoAsync(model.Indentifier, clientSecret);
                 byte[] roundKey = keys.RoundKey;
 
-                byte[] clientSecretBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedClientSecretBytes, roundKey, iv);
-
-                string decryptedClientSecret = Convert.ToBase64String(clientSecretBytes);
+                string login = await this.SymmetricCryptoService.DecryptBase64ToUtf8Async(model.Login, roundKey, model.Iv);
+                string password = await this.SymmetricCryptoService.DecryptBase64ToUtf8Async(model.Password, roundKey, model.Iv);
+                string decryptedClientSecret = await this.SymmetricCryptoService.DecryptBase64ToBase64Async(model.ClientSecret, roundKey, model.Iv);
 
                 if (clientSecret != decryptedClientSecret)
                 {
                     throw new ArgumentException("Invalid client secret");
                 }
-                
-                string username;
 
-                bool isRoundKeyExpired = keys.RoundKeySentTimes > this.RoundKeyIsValidForRequestCount || DateTime.UtcNow - keys.GeneratedTimeUtc > this.RoundKeyIsValidForTime;
+                bool isRoundKeyExpired = this.CheckIfRoundKeyExpired(keys);
 
-                try
+                PrincipalModel principal = null;
+
+                if (await this.UserService.CheckCredentials(login, password))
                 {
-                    byte[] usernameBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedUsernameBytes, roundKey, iv);
-                    byte[] passwordBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedPasswordBytes, roundKey, iv);
-
-                    username = Encoding.UTF8.GetString(usernameBytes);
-                    string password = Encoding.UTF8.GetString(passwordBytes);
-
-                    await this.UserRepository.GetUserAsync(username, password);
-                }
-                catch
-                {
-                    return new AuthenticationResult
-                    {
-                        IsAuthenticated = true,
-                        IsRoundKeyExpired = isRoundKeyExpired,
-                        RoundKey = roundKey,
-                    };
+                    principal = new PrincipalModel { Login = login };
                 }
 
                 return new AuthenticationResult
@@ -111,27 +88,29 @@
                     IsAuthenticated = true,
                     IsRoundKeyExpired = isRoundKeyExpired,
                     RoundKey = roundKey,
-                    Principal = new PrincipalModel
-                    {
-                        Login = username,
-                    }
+                    Principal = principal
                 };
             }
-            catch (Exception e) when (e is SqlException == false)
+            catch (Exception e)
             {
+                string failureReason = e is SqlException ? null : e.Message;
+
                 return new AuthenticationResult
                 {
-                    FailureReason = e.Message,
+                    FailureReason = failureReason,
                     IsAuthenticated = false
                 };
             }
-            catch
+        }
+
+        private bool CheckIfRoundKeyExpired(KeysInfoModel keys)
+        {
+            if (this.KeyExpirationSettings == null)
             {
-                return new AuthenticationResult
-                {
-                    IsAuthenticated = false
-                };
+                return false;
             }
+
+            return keys.RoundKeySentTimes > this.KeyExpirationSettings.Requests || DateTime.UtcNow - keys.GeneratedTimeUtc > this.KeyExpirationSettings.Time;
         }
     }
 }

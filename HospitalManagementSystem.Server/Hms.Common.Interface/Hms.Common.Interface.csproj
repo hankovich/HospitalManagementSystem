@@ -46,6 +46,7 @@
     <Compile Include="IAsymmetricCryptoProvider.cs" />
     <Compile Include="IHttpContentService.cs" />
     <Compile Include="ISymmetricCryptoProvider.cs" />
+    <Compile Include="Models\AuthHeaderModel.cs" />
     <Compile Include="Models\EncryptedModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\PrincipalModel.cs" />

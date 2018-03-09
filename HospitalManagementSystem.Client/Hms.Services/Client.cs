@@ -100,7 +100,7 @@
             {
                 Identifier = this.GadgetInfo.Identifier,
                 Key = publicKey,
-                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64StringAsync(this.GadgetInfo.ClientSecret, this.RoundKey, iv),
+                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.GadgetInfo.ClientSecret, this.RoundKey, iv),
                 Iv = iv
             };
 
@@ -132,7 +132,7 @@
 
                 using (HttpResponseMessage response = await this.HttpClient.SendAsync(request))
                 {
-                    string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption);
+                    string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption && response.IsSuccessStatusCode);
 
                     var result = new ServerResponse
                     {
@@ -142,7 +142,7 @@
                         StatusCode = (int)response.StatusCode
                     };
 
-                    if (response.StatusCode == HttpStatusCode.ResetContent)
+                    if (response.StatusCode == (HttpStatusCode)424)
                     {
                         await this.ChangeRoundKey();
                         result = await SendAsync(method, url, content, needsEncryption);
@@ -206,23 +206,20 @@
 
         private async Task<AuthenticationHeaderValue> CreateCredentialsAsync()
         {
-            byte[] ivBytes = this.SymmetricCryptoProvider.GenerateIv();
+            byte[] iv = this.SymmetricCryptoProvider.GenerateIv();
 
-            string username =
-                await
-                this.SymmetricCryptoProvider.EncryptUtf8StringAsync(this.AuthInfo?.Login, this.RoundKey, ivBytes);
-            string password =
-                await
-                this.SymmetricCryptoProvider.EncryptUtf8StringAsync(this.AuthInfo?.Password, this.RoundKey, ivBytes);
-            string clientSecret =
-                await
-                this.SymmetricCryptoProvider.EncryptBase64StringAsync(this.GadgetInfo.ClientSecret, this.RoundKey, ivBytes);
-            string iv = Convert.ToBase64String(ivBytes);
+            AuthHeaderModel model = new AuthHeaderModel
+            {
+                Indentifier = this.GadgetInfo.Identifier,
+                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.GadgetInfo.ClientSecret, this.RoundKey, iv),
+                Login = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.AuthInfo?.Login, this.RoundKey, iv),
+                Password = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.AuthInfo?.Password, this.RoundKey, iv),
+                Iv = iv
+            };
 
-            string s = $"{this.GadgetInfo.Identifier}:{username}:{password}:{clientSecret}:{iv}";
-            byte[] bytes = Encoding.UTF8.GetBytes(s);
-            string parameter = Convert.ToBase64String(bytes);
-            return new AuthenticationHeaderValue("Basic", parameter);
+            byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(model));
+
+            return new AuthenticationHeaderValue("Hospital", Convert.ToBase64String(bytes));
         }
 
         private async Task<HttpContent> SerializeToHttpContentAsync(object content, bool needsEncryption)
@@ -239,19 +236,17 @@
 
         private async Task<string> DeserializeFromHttpContentAsync(HttpContent content, bool needsDecryption)
         {
-            string responseString = null;
-
-            if (content != null && content.Headers.ContentLength != 0)
+            if (content == null || (content.Headers.ContentLength ?? 0) == 0)
             {
-                if (needsDecryption)
-                {
-                    content = await this.HttpContentService.DecryptAsync(content, this.RoundKey);
-                }
-
-                responseString = await content.ReadAsStringAsync();
+                return null;
             }
 
-            return responseString;
+            if (needsDecryption)
+            {
+                content = await this.HttpContentService.DecryptAsync(content, this.RoundKey);
+            }
+
+            return await content.ReadAsStringAsync();
         }
 
         private static HttpContent ConvertToHttpContent(object content)

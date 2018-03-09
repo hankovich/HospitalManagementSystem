@@ -1,10 +1,12 @@
 ﻿namespace Hms.API.Controllers
 {
     using System;
+    using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
 
     using Hms.API.Attributes;
+    using Hms.API.Infrastructure;
     using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
 
@@ -50,15 +52,12 @@
                 return this.BadRequest("Invalid arguments");
             }
 
-            try
+            if (await this.UserService.CheckCredentials(model.Login, model.Password))
             {
-                await this.UserService.GetUserAsync(model.Login, model.Password);
                 return this.Ok();
             }
-            catch (Exception e)
-            {
-                return this.BadRequest(e.Message);
-            }
+
+            return new HttpActionResult(this, HttpStatusCode.Unauthorized, "Invalid credentials");
         }
     }
 }

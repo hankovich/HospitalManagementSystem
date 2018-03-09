@@ -1,13 +1,12 @@
 ﻿namespace Hms.API.Attributes
 {
     using System.Net;
-    using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Web.Http;
     using System.Web.Http.Filters;
 
+    using Hms.API.Infrastructure;
     using Hms.Common.Interface;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
@@ -34,16 +33,18 @@
 
             if (!authenticationResult.IsAuthenticated)
             {
-                context.ErrorResult = new UnauthorizedHttpActionResult(
+                context.ErrorResult = new HttpActionResult(
                     context.ActionContext.Request,
+                    HttpStatusCode.Unauthorized, 
                     authenticationResult.FailureReason);
                 return;
             }
 
             if (authenticationResult.IsRoundKeyExpired && this.Policy == ExpirationPolicy.Strong)
             {
-                context.ErrorResult = new UnauthorizedHttpActionResult(
+                context.ErrorResult = new HttpActionResult(
                     context.ActionContext.Request,
+                    (HttpStatusCode)424, 
                     authenticationResult.FailureReason);
                 return;
             }
@@ -59,7 +60,7 @@
 
             context.ActionContext.Request.Content =
                 await this.HttpContentService.DecryptAsync(content, authenticationResult.RoundKey);
-                // TODO: Add IncrementRoundKey
+            // TODO: Add IncrementRoundKey
         }
 
         public override async Task OnActionExecutedAsync(
@@ -78,24 +79,6 @@
         public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
-        }
-
-        private class UnauthorizedHttpActionResult : IHttpActionResult
-        {
-            private HttpRequestMessage Request { get; set; }
-
-            private string Reason { get; set; }
-
-            public UnauthorizedHttpActionResult(HttpRequestMessage request, string reason)
-            {
-                this.Request = request;
-                this.Reason = reason;
-            }
-
-            public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
-            {
-                return Task.FromResult(this.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, this.Reason));
-            }
         }
     }
 }

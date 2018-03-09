@@ -5,6 +5,7 @@
     using System.Web.Http;
 
     using Hms.API.Attributes;
+    using Hms.API.Infrastructure;
     using Hms.Common.Interface;
     using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
@@ -64,8 +65,7 @@
                 else
                 {
                     var roundKey = await this.GadgetKeysService.GetGadgetRoundKeyAsync(model.Identifier);
-
-                    model.ClientSecret = await this.SymmetricCryptoProvider.DecryptBase64StringAsync(model.ClientSecret, roundKey, model.Iv);
+                    model.ClientSecret = await this.SymmetricCryptoProvider.DecryptBase64ToBase64Async(model.ClientSecret, roundKey, model.Iv);
                 }
 
                 await this.GadgetKeysService.SetGadgetPublicKeyAsync(model.Identifier, model.ClientSecret, model.Key);
@@ -75,11 +75,7 @@
 
                 await this.GadgetKeysService.SetGadgetRoundKeyAsync(model.Identifier, model.ClientSecret, newRoundKey);
 
-                var encryptedSecretBytes =
-                    await
-                    this.AsymmetricCryptoProvider.EncryptBytesAsync(
-                        Convert.FromBase64String(model.ClientSecret),
-                        model.Key);
+                var encryptedSecretBytes = await this.AsymmetricCryptoProvider.EncryptBytesAsync(Convert.FromBase64String(model.ClientSecret), model.Key);
                 var encryptedSecret = Convert.ToBase64String(encryptedSecretBytes);
 
                 var encryptedRoundKey = await this.AsymmetricCryptoProvider.EncryptBytesAsync(model.RoundKey, model.Key);

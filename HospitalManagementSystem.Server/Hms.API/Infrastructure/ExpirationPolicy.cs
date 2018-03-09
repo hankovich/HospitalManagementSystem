@@ -1,4 +1,4 @@
-namespace Hms.API.Attributes
+namespace Hms.API.Infrastructure
 {
     public enum ExpirationPolicy
     {

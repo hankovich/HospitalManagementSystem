@@ -6,6 +6,8 @@
 
     public interface IAuthenticationService
     {
+        RoundKeyExpirationSettings KeyExpirationSettings { get; set; }
+
         Task<AuthenticationResult> AuthenticateAsync(string authenticationToken);
     }
 }

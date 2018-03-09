@@ -110,14 +110,17 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\StartUp.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\EncryptedAttribute.cs" />
-    <Compile Include="Attributes\ExpirationPolicy.cs" />
+    <Compile Include="Infrastructure\ExpirationPolicy.cs" />
+    <Compile Include="Infrastructure\HttpActionResult.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HelloController.cs" />
     <Compile Include="Controllers\KeysController.cs" />
