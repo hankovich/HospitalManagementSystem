@@ -1,4 +1,4 @@
-﻿namespace Hms.Repositories.Interface
+﻿namespace Hms.Common.Interface.Models
 {
     using System;
 

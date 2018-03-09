@@ -60,7 +60,6 @@
 
             context.ActionContext.Request.Content =
                 await this.HttpContentService.DecryptAsync(content, authenticationResult.RoundKey);
-            // TODO: Add IncrementRoundKey
         }
 
         public override async Task OnActionExecutedAsync(

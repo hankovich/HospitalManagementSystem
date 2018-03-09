@@ -54,6 +54,10 @@
     <Compile Include="UserRoleRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
+      <Name>Hms.Common.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hms.Repositories.Interface\Hms.Repositories.Interface.csproj">
       <Project>{A1D5A6AF-C8F9-4E6F-9B3D-E417F818EA0F}</Project>
       <Name>Hms.Repositories.Interface</Name>

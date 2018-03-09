@@ -2,6 +2,8 @@
 {
     using System.Threading.Tasks;
 
+    using Hms.Common.Interface.Models;
+
     public interface IGadgetKeysInfoRepository
     {
         Task<byte[]> GetGadgetRoundKeyAsync(string gadgetIdentifier);

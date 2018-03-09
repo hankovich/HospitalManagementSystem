@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
+    using Hms.Common.Interface.Models;
     using Hms.Repositories.Interface;
     using Hms.Services.Interface;
 
@@ -38,6 +39,21 @@
             }
 
             return await this.GadgetKeysInfoRepository.GetGadgetClientSecretAsync(identifier);
+        }
+
+        public async Task<KeysInfoModel> GetGadgetKeysInfoAsync(string gadgetIdentifier, string clientSecret)
+        {
+            if (string.IsNullOrEmpty(gadgetIdentifier))
+            {
+                throw new ArgumentException("Argument is null or empty", nameof(gadgetIdentifier));
+            }
+
+            if (string.IsNullOrEmpty(clientSecret))
+            {
+                throw new ArgumentException("Argument is null or empty", nameof(clientSecret));
+            }
+
+            return await this.GadgetKeysInfoRepository.GetGadgetKeysInfoAsync(gadgetIdentifier, clientSecret);
         }
 
         public async Task SetGadgetRoundKeyAsync(string identifier, string clientSecret, byte[] roundKey)
@@ -78,6 +94,21 @@
             }
 
             await this.GadgetKeysInfoRepository.SetGadgetPublicKeyAsync(identifier, clientSecret, publicKey);
+        }
+
+        public async Task IncrementGadgetRoundKeySentTimesAsync(string gadgetIdentifier, string clientSecret)
+        {
+            if (string.IsNullOrEmpty(gadgetIdentifier))
+            {
+                throw new ArgumentException("Argument is null or empty", nameof(gadgetIdentifier));
+            }
+
+            if (string.IsNullOrEmpty(clientSecret))
+            {
+                throw new ArgumentException("Argument is null or empty", nameof(clientSecret));
+            }
+
+            await this.GadgetKeysInfoRepository.IncrementGadgetRoundKeySentTimesAsync(gadgetIdentifier, clientSecret);
         }
     }
 }

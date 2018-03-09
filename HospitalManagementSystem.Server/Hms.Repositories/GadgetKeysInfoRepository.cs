@@ -6,6 +6,7 @@
 
     using Dapper;
 
+    using Hms.Common.Interface.Models;
     using Hms.Repositories.Interface;
 
     public class GadgetKeysInfoRepository : IGadgetKeysInfoRepository
@@ -153,7 +154,6 @@
             {
                 throw new ArgumentException(e.Message);
             }
-
         }
 
         public async Task IncrementGadgetRoundKeySentTimesAsync(string gadgetIdentifier, string clientSecret)

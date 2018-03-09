@@ -43,9 +43,14 @@
     <Compile Include="IGadgetKeysInfoRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IUserRoleRepository.cs" />
-    <Compile Include="KeysInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
+      <Name>Hms.Common.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

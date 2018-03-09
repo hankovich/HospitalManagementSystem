@@ -18,16 +18,16 @@
 
     public class AuthenticationService : IAuthenticationService
     {
-        public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysInfoRepository keysInfoRepository, IUserService userService)
+        public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysService gadgetKeysService, IUserService userService)
         {
             if (cryptoService == null)
             {
                 throw new ArgumentNullException(nameof(cryptoService));
             }
 
-            if (keysInfoRepository == null)
+            if (gadgetKeysService == null)
             {
-                throw new ArgumentNullException(nameof(keysInfoRepository));
+                throw new ArgumentNullException(nameof(gadgetKeysService));
             }
 
             if (userService == null)
@@ -36,13 +36,13 @@
             }
 
             this.SymmetricCryptoService = cryptoService;
-            this.GadgetKeysInfoRepository = keysInfoRepository;
+            this.GadgetKeysService = gadgetKeysService;
             this.UserService = userService;
         }
 
         public ISymmetricCryptoProvider SymmetricCryptoService { get; }
 
-        public IGadgetKeysInfoRepository GadgetKeysInfoRepository { get; }
+        public IGadgetKeysService GadgetKeysService { get; }
 
         public IUserService UserService { get; }
 
@@ -61,8 +61,8 @@
                 string serializedModel = Encoding.UTF8.GetString(Convert.FromBase64String(authenticationToken));
                 AuthHeaderModel model = JsonConvert.DeserializeObject<AuthHeaderModel>(serializedModel);
 
-                string clientSecret = await this.GadgetKeysInfoRepository.GetGadgetClientSecretAsync(model.Indentifier);
-                KeysInfoModel keys = await this.GadgetKeysInfoRepository.GetGadgetKeysInfoAsync(model.Indentifier, clientSecret);
+                string clientSecret = await this.GadgetKeysService.GetGadgetClientSecretAsync(model.Indentifier);
+                KeysInfoModel keys = await this.GadgetKeysService.GetGadgetKeysInfoAsync(model.Indentifier, clientSecret);
                 byte[] roundKey = keys.RoundKey;
 
                 string login = await this.SymmetricCryptoService.DecryptBase64ToUtf8Async(model.Login, roundKey, model.Iv);
@@ -75,6 +75,8 @@
                 }
 
                 bool isRoundKeyExpired = this.CheckIfRoundKeyExpired(keys);
+
+                await this.GadgetKeysService.IncrementGadgetRoundKeySentTimesAsync(model.Indentifier, clientSecret);
 
                 PrincipalModel principal = null;
 
