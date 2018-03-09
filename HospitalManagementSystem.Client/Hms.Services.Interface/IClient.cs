@@ -15,6 +15,8 @@
 
         Task LogoutAsync();
 
+        Task ChangeAsymmetricKey();
+
         Task ChangeRoundKey();
     }
 }

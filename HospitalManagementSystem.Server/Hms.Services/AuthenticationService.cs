@@ -19,6 +19,10 @@
 
         public IUserRepository UserRepository { get; set; }
 
+        public int RoundKeyIsValidForRequestCount { get; }
+
+        public TimeSpan RoundKeyIsValidForTime { get; }
+
         public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysInfoRepository keysInfoRepository, IUserRepository userRepository)
         {
             if (cryptoService == null)
@@ -45,7 +49,7 @@
         {
             try
             {
-                if (authenticationToken == null) // TODO: Refactor this and add expiration info
+                if (authenticationToken == null) // TODO: Refactor this
                 {
                     throw new ArgumentException("Auth header is not set");
                 }
@@ -80,6 +84,8 @@
                 
                 string username;
 
+                bool isRoundKeyExpired = keys.RoundKeySentTimes > this.RoundKeyIsValidForRequestCount || DateTime.UtcNow - keys.GeneratedTimeUtc > this.RoundKeyIsValidForTime;
+
                 try
                 {
                     byte[] usernameBytes = await this.SymmetricCryptoService.DecryptBytesAsync(encryptedUsernameBytes, roundKey, iv);
@@ -95,7 +101,7 @@
                     return new AuthenticationResult
                     {
                         IsAuthenticated = true,
-                        IsRoundKeyExpired = false,
+                        IsRoundKeyExpired = isRoundKeyExpired,
                         RoundKey = roundKey,
                     };
                 }
@@ -103,7 +109,7 @@
                 return new AuthenticationResult
                 {
                     IsAuthenticated = true,
-                    IsRoundKeyExpired = false,
+                    IsRoundKeyExpired = isRoundKeyExpired,
                     RoundKey = roundKey,
                     Principal = new PrincipalModel
                     {

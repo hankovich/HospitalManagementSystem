@@ -32,7 +32,7 @@ namespace Hms.Common.Interface.Models
         public byte[] RoundKey { get; set; }
 
         /// <summary>
-        /// Gets or sets the initialization vector.
+        /// Gets or sets the initialization vector used to encrypt <see cref="ClientSecret"/>.
         /// </summary>
         public byte[] Iv { get; set; }
     }
