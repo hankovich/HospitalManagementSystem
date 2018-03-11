@@ -19,9 +19,12 @@
             Loaded += MainWindow_Loaded;
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Service.Do();
+            //for (int i = 0; i < 100; i++)
+            {
+                await this.Service.Do();
+            }
         }
     }
 }

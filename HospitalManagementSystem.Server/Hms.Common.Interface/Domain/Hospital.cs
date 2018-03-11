@@ -10,6 +10,6 @@
 
         public string Phone { get; set; }
 
-        public IEnumerable<HospitalDepartment> Departments { get; set; }
+        public ICollection<HospitalDepartment> Departments { get; set; }
     }
 }

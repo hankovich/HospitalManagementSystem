@@ -10,6 +10,6 @@
 
         public string Phone { get; set; }
 
-        public IEnumerable<PolyclinicRegion> Regions { get; set; }
+        public ICollection<PolyclinicRegion> Regions { get; set; }
     }
 }

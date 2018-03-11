@@ -49,7 +49,7 @@
 
         private async Task InitializeKeysAsync()
         {
-            this.AuthInfo = new LoginModel();
+            this.AuthInfo = new LoginModel(); // TODO: Critical section 
             this.GadgetInfo = new GadgetInfoModel { Identifier = Guid.NewGuid().ToString() };
 
             this.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
@@ -57,14 +57,14 @@
 
             SetKeyModel content = new SetKeyModel { Identifier = this.GadgetInfo.Identifier, Key = publicKey };
 
-            ServerResponse result = await this.SendAsync(HttpMethod.Put, "api/key/public", content, false);
+            ServerResponse<SetKeyModel> result = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content, false);
 
             if (!result.IsSuccessStatusCode)
             {
                 throw new HmsException(result.ReasonPhrase);
             }
 
-            SetKeyModel setKeyModel = JsonConvert.DeserializeObject<SetKeyModel>(result.Content);
+            SetKeyModel setKeyModel = result.Content;
             byte[] enryptedClientSecretBytes = Convert.FromBase64String(setKeyModel.ClientSecret);
             string clientSecret =
                 Convert.ToBase64String(
@@ -79,15 +79,15 @@
 
         public async Task ChangeRoundKey()
         {
-            ServerResponse response =
-                await SendAsync(HttpMethod.Put, $"api/key/round/{this.GadgetInfo.Identifier}/", this.GadgetInfo.ClientSecret);
+            ServerResponse<string> response =
+                await SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.GadgetInfo.Identifier}/", this.GadgetInfo.ClientSecret);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new HmsException(response.ReasonPhrase);
             }
 
-            this.RoundKey = Convert.FromBase64String(JsonConvert.DeserializeObject<string>(response.Content));
+            this.RoundKey = Convert.FromBase64String(response.Content);
         }
 
         public async Task ChangeAsymmetricKey()
@@ -104,20 +104,20 @@
                 Iv = iv
             };
 
-            ServerResponse response = await this.SendAsync(HttpMethod.Put, "api/key/public", content);
+            ServerResponse<SetKeyModel> response = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new HmsException(response.ReasonPhrase);
             }
 
-            SetKeyModel encryptedLoginModel = JsonConvert.DeserializeObject<SetKeyModel>(response.Content);
+            SetKeyModel encryptedLoginModel = response.Content;
             byte[] encryptedRoundKey = encryptedLoginModel.RoundKey;
             byte[] roundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(encryptedRoundKey, this.PrivateKey);
             this.RoundKey = roundKey;
         }
 
-        public async Task<ServerResponse> SendAsync(HttpMethod method, string url, object content, bool needsEncryption = true)
+        public async Task<ServerResponse<TContent>> SendAsync<TContent>(HttpMethod method, string url, object content, bool needsEncryption = true)
         {
             if (!this.IsInitialized && needsEncryption)
             {
@@ -134,9 +134,11 @@
                 {
                     string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption && response.IsSuccessStatusCode);
 
-                    var result = new ServerResponse
+                    TContent receivedContent = string.IsNullOrEmpty(responseString) ? default(TContent) : JsonConvert.DeserializeObject<TContent>(responseString);
+
+                    var result = new ServerResponse<TContent>
                     {
-                        Content = responseString,
+                        Content = receivedContent,
                         IsSuccessStatusCode = response.IsSuccessStatusCode,
                         ReasonPhrase = response.ReasonPhrase,
                         StatusCode = (int)response.StatusCode
@@ -145,7 +147,7 @@
                     if (response.StatusCode == (HttpStatusCode)424)
                     {
                         await this.ChangeRoundKey();
-                        result = await SendAsync(method, url, content, needsEncryption);
+                        result = await SendAsync<TContent>(method, url, content, needsEncryption);
                     }
 
                     return result;
@@ -166,7 +168,7 @@
                 Password = password
             };
 
-            ServerResponse response = await this.SendAsync(HttpMethod.Put, "api/account", model);
+            ServerResponse<string> response = await this.SendAsync<string>(HttpMethod.Put, "api/account", model);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -190,7 +192,7 @@
                 Password = password
             };
 
-            ServerResponse response = await this.SendAsync(HttpMethod.Post, "api/account", model);
+            ServerResponse<string> response = await this.SendAsync<string>(HttpMethod.Post, "api/account", model);
 
             if (!response.IsSuccessStatusCode)
             {

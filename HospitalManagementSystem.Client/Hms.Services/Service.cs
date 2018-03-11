@@ -1,25 +1,46 @@
 ﻿namespace Hms.Services
 {
+    using System;
     using System.Net.Http;
+    using System.Threading.Tasks;
 
+    using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
 
     public class Service : IService
     {
-        public IClient Client { get; }
-
         public Service(IClient client)
         {
             this.Client = client;
         }
 
-        public async void Do()
-        {
-            // await this.Client.RegisterAsync("1koala", "zakon");
-            await this.Client.LoginAsync("1koala", "zakon");
+        public IClient Client { get; }
 
-            var a = await this.Client.SendAsync(HttpMethod.Get, "api/hello/get", null);
+        private bool IsInitialized { get; set; }
+
+        public async Task Do()
+        {
+            if (!this.IsInitialized)
+            {
+                await this.InitializeAsync();
+            }
+
+            try
+            {
+                var response = await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, "api/card/0/10000", null);
+            }
+            catch (Exception e)
+            {
+                
+            }
+
             await this.Client.ChangeRoundKey();
+        }
+
+        private async Task InitializeAsync()
+        {
+            await this.Client.LoginAsync("user", "password");
+            this.IsInitialized = true;
         }
     }
 }

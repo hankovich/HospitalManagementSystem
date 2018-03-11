@@ -11,6 +11,8 @@
 
         public DateTime StartedAtUtc { get; set; }
 
-        public IEnumerable<MedicalCardRecord> Records { get; set; }
+        public int TotalRecords { get; set; }
+
+        public ICollection<MedicalCardRecord> Records { get; set; }
     }
 }

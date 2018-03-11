@@ -16,6 +16,7 @@
             this.Bind<IGadgetKeysInfoRepository>().ToConstructor(_ => new GadgetKeysInfoRepository(connectionString));
             this.Bind<IUserRepository>().ToConstructor(_ => new UserRepository(connectionString));
             this.Bind<IUserRoleRepository>().ToConstructor(_ => new UserRoleRepository(connectionString));
+            this.Bind<IMedicalCardRepository>().ToConstructor(_ => new MedicalCardRepository(connectionString));
         }
     }
 }

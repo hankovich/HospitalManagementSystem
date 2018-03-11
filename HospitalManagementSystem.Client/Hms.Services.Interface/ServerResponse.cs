@@ -1,6 +1,6 @@
 ﻿namespace Hms.Services.Interface
 {
-    public class ServerResponse
+    public class ServerResponse<T>
     {
         public int StatusCode { get; set; }
 
@@ -8,6 +8,6 @@
 
         public string ReasonPhrase { get; set; }
 
-        public string Content { get; set; }
+        public T Content { get; set; }
     }
 }

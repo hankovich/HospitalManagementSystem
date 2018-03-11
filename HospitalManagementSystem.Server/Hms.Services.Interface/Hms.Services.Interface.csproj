@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IGadgetKeysService.cs" />
+    <Compile Include="IMedicalCardService.cs" />
     <Compile Include="IUserService.cs" />
     <Compile Include="Models\AuthorizationResult.cs" />
     <Compile Include="Models\AuthenticationResult.cs" />
