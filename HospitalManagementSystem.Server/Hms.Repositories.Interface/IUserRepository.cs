@@ -2,6 +2,8 @@
 {
     using System.Threading.Tasks;
 
+    using Hms.Common.Interface.Domain;
+
     public interface IUserRepository
     {
         Task AddUserAsync(string username, string password);

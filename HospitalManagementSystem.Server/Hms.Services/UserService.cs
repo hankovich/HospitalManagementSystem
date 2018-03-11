@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
+    using Hms.Common.Interface.Domain;
     using Hms.Repositories.Interface;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
@@ -30,11 +31,9 @@
             await this.UserRoleRepository.AddRoleToUserAsync(username, nameof(Role.Patient));
         }
 
-        public async Task<Interface.User> GetUserAsync(string username, string password)
+        public async Task<User> GetUserAsync(string username, string password)
         {
-            var user = await this.UserRepository.GetUserAsync(username, password);
-
-            return new Interface.User { Login = user.Username };
+            return await this.UserRepository.GetUserAsync(username, password);
         }
 
         public async Task<bool> CheckCredentials(string username, string password)

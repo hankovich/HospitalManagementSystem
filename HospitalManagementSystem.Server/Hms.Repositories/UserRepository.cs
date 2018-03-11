@@ -7,6 +7,7 @@
 
     using Dapper;
 
+    using Hms.Common.Interface.Domain;
     using Hms.Repositories.Interface;
 
     using Microsoft.AspNet.Identity;
