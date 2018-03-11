@@ -36,7 +36,7 @@
                     R.[Name] 
                     FROM [User] U JOIN [UserRole] UR ON U.Id = UR.UserId JOIN [Role] R ON UR.RoleId = R.Id 
                     WHERE
-                    U.UserName = @login   
+                    U.Login = @login   
                     ";
 
                     return await connection.QueryAsync<string>(
@@ -60,7 +60,7 @@
 
                     var command = @"
                     DECLARE @userId AS INT
-                    SELECT TOP(1) @userId = [Id] FROM [User] WHERE [UserName] = @login
+                    SELECT TOP(1) @userId = [Id] FROM [User] WHERE [Login] = @login
 
                     DECLARE @roleId AS INT
                     SELECT TOP(1) @roleId = [Id] FROM [Role] WHERE [Name] = @rolename

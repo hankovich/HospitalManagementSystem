@@ -34,7 +34,7 @@
                     await connection.OpenAsync();
 
                     var command = @"
-                    INSERT INTO [User] ([UserName], [PasswordHash]) VALUES (@username, @passwordHash)";
+                    INSERT INTO [User] ([Login], [PasswordHash]) VALUES (@username, @passwordHash)";
 
                     await connection.ExecuteAsync(
                         command,
@@ -79,9 +79,9 @@
 
                     var command = @"
                     SELECT 
-                    [User].[UserName], [User].[PasswordHash]
+                    [User].[Login], [User].[PasswordHash]
                     FROM [User]
-                    WHERE [User].[UserName] = @username";
+                    WHERE [User].[Login] = @username";
 
                     var usersInfo = (await connection.QueryAsync<User>(command, new { username })).ToList();
 
