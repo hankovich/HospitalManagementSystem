@@ -1,7 +1,9 @@
 ﻿namespace Hms.API.Attributes
 {
+    using System;
     using System.Net;
     using System.Net.Http.Headers;
+    using System.Security.Principal;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Http.Filters;
@@ -47,6 +49,13 @@
                     (HttpStatusCode)424, 
                     authenticationResult.FailureReason);
                 return;
+            }
+
+            if (authenticationResult.Principal != null)
+            {
+                context.Principal = new GenericPrincipal(
+                    new GenericIdentity(authenticationResult.Principal.Login),
+                    Array.Empty<string>());
             }
 
             this.RoundKey = authenticationResult.RoundKey;

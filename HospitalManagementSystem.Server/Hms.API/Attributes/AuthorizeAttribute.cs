@@ -9,7 +9,6 @@
     using System.Web.Http.Controllers;
     using System.Web.Http.Filters;
 
-    using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 
@@ -44,6 +43,12 @@
                 if (!authorizationResult.IsAuthorized)
                 {
                     actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
+                }
+
+                if (authenticationResult.Principal?.Login != null)
+                {
+                    actionContext.RequestContext.Principal =
+                        new GenericPrincipal(new GenericIdentity(authenticationResult.Principal.Login), authorizationResult.AllRoles);
                 }
             }
             catch
