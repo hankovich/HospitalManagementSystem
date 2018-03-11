@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[CalendarItemAssociatedUser]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+	[CalendarItemId] INT NOT NULL REFERENCES [CalendarItem]([Id]) ON DELETE CASCADE,
+	[UserId] INT NOT NULL REFERENCES [User]([Id]) ON DELETE CASCADE
+)

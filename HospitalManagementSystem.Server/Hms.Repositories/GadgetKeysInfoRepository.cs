@@ -33,12 +33,12 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
 			                    DECLARE @gadgetIdentifierId AS INT
-									SELECT TOP(1) @gadgetIdentifierId = [Id] FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier
+									SELECT TOP(1) @gadgetIdentifierId = [Id] FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier
 
-				                    SELECT [RoundKey] FROM [GadgetRoundKey] WHERE [GadgetIdentifierId] = @gadgetIdentifierId
+				                    SELECT [RoundKey] FROM [GadgetRoundKey] WHERE [GadgetId] = @gadgetIdentifierId
 		                    END
 	                    ELSE
 		                    BEGIN
@@ -64,11 +64,11 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
-			                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
+			                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
 			                    BEGIN
-                                    SELECT [PublicKey] FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
+                                    SELECT [PublicKey] FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
 			                    END
 			                    ELSE
 			                    BEGIN
@@ -100,9 +100,9 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
-			                    SELECT TOP(1) [ClientSecret] FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier
+			                    SELECT TOP(1) [ClientSecret] FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier
 		                    END
 	                    ELSE
 		                    BEGIN
@@ -129,12 +129,12 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
-			                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
+			                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
 			                    BEGIN
-                                    SELECT TOP(1) [GadgetIdentifier].[PublicKey], [GadgetRoundKey].[RoundKey], [GadgetRoundKey].[SentTimes] AS RoundKeySentTimes, [GadgetRoundKey].[GeneratedAtUTC] AS GeneratedTimeUtc FROM [GadgetIdentifier] JOIN [GadgetRoundKey] ON [GadgetRoundKey].[GadgetIdentifierId] = [GadgetIdentifier].[Id]
-                                    WHERE [GadgetIdentifier].[Identifier] = @gadgetIdentifier;
+                                    SELECT TOP(1) [Gadget].[PublicKey], [GadgetRoundKey].[RoundKey], [GadgetRoundKey].[SentTimes] AS RoundKeySentTimes, [GadgetRoundKey].[GeneratedAtUTC] AS GeneratedTimeUtc FROM [Gadget] JOIN [GadgetRoundKey] ON [GadgetRoundKey].[GadgetId] = [Gadget].[Id]
+                                    WHERE [Gadget].[Identifier] = @gadgetIdentifier;
 			                    END
 			                    ELSE
 			                    BEGIN
@@ -166,18 +166,18 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
-			                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
+			                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
 			                    BEGIN
 									DECLARE @gadgetIdentifierId AS INT
 									DECLARE @sentTimes AS INT
-									SELECT TOP(1) @gadgetIdentifierId = [Id] FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
-                                    SELECT TOP(1) @sentTimes = [SentTimes] FROM [GadgetRoundKey] WHERE [GadgetIdentifierId] = @gadgetIdentifierId
+									SELECT TOP(1) @gadgetIdentifierId = [Id] FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
+                                    SELECT TOP(1) @sentTimes = [SentTimes] FROM [GadgetRoundKey] WHERE [GadgetId] = @gadgetIdentifierId
 				                    
 										UPDATE [GadgetRoundKey] WITH (SERIALIZABLE) SET 
 											   [SentTimes] = @sentTimes + 1
-						                       WHERE [GadgetIdentifierId] = @gadgetIdentifierId
+						                       WHERE [GadgetId] = @gadgetIdentifierId
 			                    END
 			                    ELSE
 			                    BEGIN
@@ -209,11 +209,11 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
-			                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
+			                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
 			                        BEGIN
-				                        UPDATE [GadgetIdentifier] WITH (SERIALIZABLE) SET 
+				                        UPDATE [Gadget] WITH (SERIALIZABLE) SET 
 						                           [PublicKey] = @publicKey
 						                           WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
 			                        END
@@ -224,7 +224,7 @@
 		                    END
 	                    ELSE
 		                    BEGIN
-			                    INSERT INTO [GadgetIdentifier] ([Identifier], [ClientSecret], [PublicKey]) VALUES (@gadgetIdentifier, @clientSecret, @publicKey)
+			                    INSERT INTO [Gadget] ([Identifier], [ClientSecret], [PublicKey]) VALUES (@gadgetIdentifier, @clientSecret, @publicKey)
 		                    END
                     COMMIT TRAN";
 
@@ -247,16 +247,16 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier) 
+	                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier) 
 		                    BEGIN
-			                    IF EXISTS (SELECT * FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
+			                    IF EXISTS (SELECT * FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret) 
 			                    BEGIN
 									DECLARE @gadgetIdentifierId AS INT
-									SELECT TOP(1) @gadgetIdentifierId = [Id] FROM [GadgetIdentifier] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
+									SELECT TOP(1) @gadgetIdentifierId = [Id] FROM [Gadget] WHERE [Identifier] = @gadgetIdentifier AND [ClientSecret] = @clientSecret
 
-                                    IF NOT EXISTS (SELECT * FROM [GadgetRoundKey] WHERE [GadgetIdentifierId] = @gadgetIdentifierId)
+                                    IF NOT EXISTS (SELECT * FROM [GadgetRoundKey] WHERE [GadgetId] = @gadgetIdentifierId)
                                         BEGIN
-                                            INSERT INTO [GadgetRoundKey] ([GadgetIdentifierId], [RoundKey], [SentTimes]) VALUES (@gadgetIdentifierId, @roundKey, 0) 
+                                            INSERT INTO [GadgetRoundKey] ([GadgetId], [RoundKey], [SentTimes]) VALUES (@gadgetIdentifierId, @roundKey, 0) 
                                         END
                                     ELSE
                                         BEGIN
@@ -264,7 +264,7 @@
 						                               [RoundKey] = @roundKey,
 											           [SentTimes] = 0,
                                                        [GeneratedAtUTC] = GETUTCDATE()
-						                               WHERE [GadgetIdentifierId] = @gadgetIdentifierId
+						                               WHERE [GadgetId] = @gadgetIdentifierId
                                         END
 			                    END
 			                    ELSE

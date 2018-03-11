@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[RecurringCalendarItem]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[UserId] INT NOT NULL REFERENCES [User]([Id]) ON DELETE CASCADE,
+	[ReccurringPolicyId] INT NOT NULL REFERENCES [RecurringPolicy]([Id]) ON DELETE NO ACTION,
+	[IsActive] BIT NOT NULL,
+	[FromDate] DATETIME NOT NULL,
+	[ToDate] DATETIME NULL,
+	[StartTime] TIME NOT NULL,
+	[EndTime] TIME NOT NULL,
+	[Info] NVARCHAR(1024) NOT NULL
+)

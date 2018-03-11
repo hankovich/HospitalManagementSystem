@@ -7,6 +7,7 @@
     {
         Patient = 1,
         Doctor = 2,
-        Admin = 4
+        Nurse = 4,
+        Admin = 8
     }
 }

@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[HospitalDepartment]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+	[HospitalId] INT NOT NULL REFERENCES [Hospital]([Id]) ON DELETE CASCADE,
+	[MedicalSpecializationId] INT NOT NULL REFERENCES [MedicalSpecialization]([Id]) ON DELETE NO ACTION,
+	[DepartmentHead] INT NOT NULL REFERENCES [Doctor]([Id]) ON DELETE NO ACTION,
+	[NurseHead] INT NOT NULL REFERENCES [Nurse]([Id]) ON DELETE NO ACTION
+)

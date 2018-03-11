@@ -57,15 +57,40 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="PostDeployment" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="GadgetIdentifier.sql" />
+    <Build Include="Gadget.sql" />
     <Build Include="GadgetRoundKey.sql" />
     <Build Include="User.sql" />
     <Build Include="Role.sql" />
     <Build Include="UserRole.sql" />
+    <Build Include="UserGadgetSession.sql" />
+    <Build Include="BuildingAddress.sql" />
+    <Build Include="Profile.sql" />
+    <Build Include="MedicalCard.sql" />
+    <Build Include="Attachment.sql" />
+    <Build Include="Polyclinic.sql" />
+    <Build Include="PolyclinicRegion.sql" />
+    <Build Include="MedicalCardRecord.sql" />
+    <Build Include="Doctor.sql" />
+    <Build Include="MedicalSpecialization.sql" />
+    <Build Include="HealthcareInstitution.sql" />
+    <Build Include="Nurse.sql" />
+    <Build Include="Hospital.sql" />
+    <Build Include="HospitalDepartment.sql" />
+    <Build Include="HospitalWard.sql" />
+    <Build Include="HospitalizationInfo.sql" />
+    <Build Include="CalendarItem.sql" />
+    <Build Include="CalendarItemAssociatedUser.sql" />
+    <Build Include="RecurringCalendarItem.sql" />
+    <Build Include="RecurringPolicy.sql" />
+    <Build Include="RecurringCalendarItemAssociatedUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Hms.Database.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="PostDeployment\Seed.sql" />
   </ItemGroup>
 </Project>
