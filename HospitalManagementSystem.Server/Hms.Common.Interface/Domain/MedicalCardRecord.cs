@@ -6,7 +6,7 @@
     {
         public int Id { get; set; }
 
-        public MedicalCardRecord AssociatedRecord { get; set; }
+        public int? AssociatedRecordId { get; set; }
 
         public Doctor Author { get; set; }
 

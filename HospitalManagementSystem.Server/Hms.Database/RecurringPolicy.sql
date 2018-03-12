@@ -1,4 +1,5 @@
 ﻿CREATE TABLE [dbo].[RecurringPolicy]
 (
-	[Id] INT NOT NULL PRIMARY KEY
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	[PolicyName] NVARCHAR(100) NOT NULL
 )

@@ -58,7 +58,7 @@
 								U.[Id], U.[Login], NULL AS [PasswordHash], 
 								MCR.[Id], 
 								MCR.[AddedAtUtc], MCR.[ModifiedAtUtc], MCR.[Content],
-								NULL AS AssociatedRecord, 
+								MCR.[AssociatedRecordId], 
 								UD.[Id], UD.[Login], NULL AS PasswordHash, D.[Info], D.[CabinetNumber], HI.[Id], HI.[Name], MS.[Id], MS.[Name], MS.[Description] 
 								
 								FROM [MedicalCard] MC 

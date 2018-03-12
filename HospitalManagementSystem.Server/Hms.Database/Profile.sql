@@ -6,7 +6,7 @@
 	[MiddleName] NVARCHAR(100) NOT NULL,
 	[LastName] NVARCHAR(100) NOT NULL,
 	[DateOfBirth] DATETIME NOT NULL,
-	[Phone] VARCHAR(20) NULL,
+	[Phone] NVARCHAR(20) NULL,
 	[BuildingId] INT NULL REFERENCES [BuildingAddress]([Id]) ON DELETE SET NULL,
 	[Entrance] INT NULL,
 	[Floor] INT NULL,
