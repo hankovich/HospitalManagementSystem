@@ -1,6 +1,7 @@
 ﻿namespace Hms.Common.Interface.Domain
 {
     using System;
+    using System.Collections.Generic;
 
     public class MedicalCardRecord
     {
@@ -15,5 +16,7 @@
         public DateTime ModifiedAtUtc { get; set; }
 
         public string Content { get; set; }
+
+        public ICollection<int> AttachmentIds { get; set; } 
     }
 }

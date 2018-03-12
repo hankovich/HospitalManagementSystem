@@ -132,6 +132,12 @@
 
                 using (HttpResponseMessage response = await this.HttpClient.SendAsync(request))
                 {
+                    if (response.StatusCode == (HttpStatusCode)424)
+                    {
+                        await this.ChangeRoundKey();
+                        return await SendAsync<TContent>(method, url, content, needsEncryption);
+                    }
+
                     string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption && response.IsSuccessStatusCode);
 
                     TContent receivedContent = string.IsNullOrEmpty(responseString) ? default(TContent) : JsonConvert.DeserializeObject<TContent>(responseString);
@@ -143,12 +149,6 @@
                         ReasonPhrase = response.ReasonPhrase,
                         StatusCode = (int)response.StatusCode
                     };
-
-                    if (response.StatusCode == (HttpStatusCode)424)
-                    {
-                        await this.ChangeRoundKey();
-                        result = await SendAsync<TContent>(method, url, content, needsEncryption);
-                    }
 
                     return result;
                 }

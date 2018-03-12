@@ -41,9 +41,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IClient.cs" />
+    <Compile Include="IMedicalCardService.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerResponse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HospitalManagementSystem.Server\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
+      <Name>Hms.Common.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

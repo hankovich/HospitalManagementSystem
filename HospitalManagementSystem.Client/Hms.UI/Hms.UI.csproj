@@ -34,11 +34,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.0.362, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.6.0\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -57,6 +69,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\Commands\AsyncCommand.cs" />
+    <Compile Include="Infrastructure\Commands\AsyncCommandBase.cs" />
+    <Compile Include="Infrastructure\Commands\IAsyncCommand.cs" />
+    <Compile Include="Infrastructure\Commands\NotifyTaskCompletion.cs" />
+    <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\MedicalCardViewModel.cs" />
+    <Compile Include="Views\MedicalCardView.xaml.cs">
+      <DependentUpon>MedicalCardView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,6 +92,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\MedicalCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -98,6 +125,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HospitalManagementSystem.Server\Hms.Common.Interface\Hms.Common.Interface.csproj">
+      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
+      <Name>Hms.Common.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hms.Resolver\Hms.Resolver.csproj">
       <Project>{0ebaf1bd-10ea-45a2-bb6a-f5beb787c6d0}</Project>
       <Name>Hms.Resolver</Name>
