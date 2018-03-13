@@ -5,10 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:conv="clr-namespace:Hms.UI.Infrastructure.Converters"
              xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <conv:NegateBooleanToVisibilityConverter x:Key="NegateBooleanToVisibilityConverter"/>
+        <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </UserControl.Resources>
     <intr:Interaction.Triggers>
         <intr:EventTrigger EventName="Loaded">
@@ -16,14 +19,8 @@
         </intr:EventTrigger>
     </intr:Interaction.Triggers>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-
-        <TextBox Grid.Row="1" Visibility="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource NegateBooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center">KOALY</TextBox>
-        <ItemsControl Grid.Row="2" ItemsSource="{Binding MedicalCard.Records}">
+        <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
+        <ItemsControl ItemsSource="{Binding MedicalCard.Records}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>

@@ -1,23 +1,40 @@
 ﻿namespace Hms.UI.ViewModels
 {
+    using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
+    using System.Windows;
 
     using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
     using Hms.UI.Annotations;
     using Hms.UI.Infrastructure.Commands;
 
+    using MahApps.Metro.Controls.Dialogs;
+
     public class MedicalCardViewModel : INotifyPropertyChanged
     {
-        public MedicalCardViewModel(IMedicalCardService service)
+        public MedicalCardViewModel(IMedicalCardService service, IDialogCoordinator dialogCoordinator)
         {
             this.MedicalCardService = service;
-            this.LoadedCommand = AsyncCommand.Create(async () => this.MedicalCard = await this.MedicalCardService.GetMedicalCardAsync(0));
+            this.DialogCoordinator = dialogCoordinator;
+
+            this.LoadedCommand = AsyncCommand.Create(async () =>
+            {
+                try
+                {
+                    this.MedicalCard = await this.MedicalCardService.GetMedicalCardAsync(0);
+                }
+                catch (Exception e)
+                {
+                    await this.DialogCoordinator.ShowMessageAsync(this, "Oops", e.Message);
+                }
+            });
         }
 
         public IMedicalCardService MedicalCardService { get; set; }
+
+        public IDialogCoordinator DialogCoordinator { get; }
 
         public MedicalCard MedicalCard
         {

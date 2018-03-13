@@ -9,6 +9,12 @@
         mc:Ignorable="d"
         Title="Hospital Client" Height="450" Width="800">
     <Grid>
-        <views:MedicalCardView></views:MedicalCardView>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <views:MenuView Grid.Column="0"></views:MenuView>
+        <views:MedicalCardView Grid.Column="1"></views:MedicalCardView>
     </Grid>
 </controls:MetroWindow>

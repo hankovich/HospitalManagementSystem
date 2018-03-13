@@ -4,6 +4,8 @@
 
     using Hms.Resolver;
 
+    using MahApps.Metro.Controls.Dialogs;
+
     using Ninject;
     using Ninject.Modules;
 
@@ -21,6 +23,8 @@
             Kernel = new StandardKernel();
 
             Kernel.Load(new NinjectModule[] { new MainModule(), new ServiceModule() });
+
+            Kernel.Bind<IDialogCoordinator>().ToConstant(DialogCoordinator.Instance);
 
             Current.MainWindow = Kernel.Get<MainWindow>();
             Current.MainWindow.Show();
