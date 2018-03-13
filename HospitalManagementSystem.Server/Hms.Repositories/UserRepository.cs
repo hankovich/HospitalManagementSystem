@@ -80,7 +80,7 @@
 
                     var command = @"
                     SELECT 
-                    [User].[Login], [User].[PasswordHash]
+                    [User].[Id], [User].[Login], [User].[PasswordHash]
                     FROM [User]
                     WHERE [User].[Login] = @username";
 
@@ -104,6 +104,36 @@
                     {
                         throw new Exception("Invalid password");
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
+
+        public async Task<int> GetUserIdByLoginAsync(string username)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"
+                    SELECT 
+                    [User].[Id]
+                    FROM [User]
+                    WHERE [User].[Login] = @username";
+
+                    var userId = await connection.QueryFirstOrDefaultAsync<int>(command, new { username });
+
+                    if (userId == default(int))
+                    {
+                        throw new ArgumentException("There is no such user");
+                    }
+
+                    return userId;
                 }
             }
             catch (Exception e)

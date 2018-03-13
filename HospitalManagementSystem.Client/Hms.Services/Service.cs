@@ -39,7 +39,6 @@
 
         private async Task InitializeAsync()
         {
-            await this.Client.LoginAsync("user", "password");
             this.IsInitialized = true;
         }
     }

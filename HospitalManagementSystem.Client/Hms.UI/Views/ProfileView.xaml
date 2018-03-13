@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="Hms.UI.Views.ProfileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Hms.UI.Views"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <BitmapImage x:Key="BlankImage" UriSource="/SignalChat;component/Imgs/blank.png"/>
+        <converters:ByteBitmapSourceConverter x:Key="ByteBmpSrcConverter"/>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid SnapsToDevicePixels="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
+
+        <Button Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Command="{Binding ChangePhotoCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5">
+            <Image Source="{Binding Profile.Photo, Converter={StaticResource ByteBmpSrcConverter},
+                            TargetNullValue={StaticResource BlankImage}}" Stretch="UniformToFill" MaxHeight="100" MaxWidth="100"/>
+        </Button>
+
+        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Profile.FirstName}" TextAlignment="Center" DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Profile.MiddleName}" TextAlignment="Center" DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+    </Grid>
+</UserControl>

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="GadgetKeysInfoRepository.cs" />
     <Compile Include="MedicalCardRepository.cs" />
+    <Compile Include="ProfileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserRepository.cs" />
     <Compile Include="UserRoleRepository.cs" />

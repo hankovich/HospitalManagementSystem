@@ -10,6 +10,8 @@
 
         Task<User> GetUserAsync(string username, string password);
 
-        Task<bool> CheckCredentials(string username, string password);
+        Task<bool> CheckCredentialsAsync(string username, string password);
+
+        Task<int> GetUserIdByLoginAsync(string username);
     }
 }

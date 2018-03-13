@@ -17,6 +17,7 @@
             this.Bind<IUserRepository>().ToConstructor(_ => new UserRepository(connectionString));
             this.Bind<IUserRoleRepository>().ToConstructor(_ => new UserRoleRepository(connectionString));
             this.Bind<IMedicalCardRepository>().ToConstructor(_ => new MedicalCardRepository(connectionString));
+            this.Bind<IProfileRepository>().ToConstructor(_ => new ProfileRepository(connectionString));
         }
     }
 }

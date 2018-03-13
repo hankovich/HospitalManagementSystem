@@ -120,6 +120,7 @@
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\EncryptedAttribute.cs" />
     <Compile Include="Controllers\MedicalCardController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Infrastructure\ExpirationPolicy.cs" />
     <Compile Include="Infrastructure\HttpActionResult.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -166,7 +167,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52017</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

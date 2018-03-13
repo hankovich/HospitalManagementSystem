@@ -1,5 +1,6 @@
 ﻿namespace Hms.UI.ViewModels
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
@@ -10,12 +11,23 @@
     {
         public MenuViewModel()
         {
-            this.MenuItems = new ObservableCollection<string> { "one", "two", "three", "four", "five", "six", "one", "two", "three", "four", "five", "six", "one", "two", "three", "four", "five", "six", "one", "two", "three", "four", "five", "six" };
+            this.MenuItems = new ObservableCollection<MenuItem>();
+
+            var rnd = new Random();
+
+            for (int i = 0; i < 20; i++)
+            {
+                this.MenuItems.Add(new MenuItem
+                {
+                    Name = $"Koala_{rnd.Next() % 19 + 1}",
+                    Badge = rnd.NextDouble() > 0.5 ? 0 : rnd.Next() % 20
+                });    
+            }
         }
 
-        private ObservableCollection<string> menuItems;
+        private ObservableCollection<MenuItem> menuItems;
 
-        public ObservableCollection<string> MenuItems
+        public ObservableCollection<MenuItem> MenuItems
         {
             get
             {
@@ -39,5 +51,12 @@
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class MenuItem
+    {
+        public string Name { get; set; }
+
+        public int Badge { get; set; }
     }
 }

@@ -52,6 +52,7 @@
     <Compile Include="Domain\Nurse.cs" />
     <Compile Include="Domain\Polyclinic.cs" />
     <Compile Include="Domain\PolyclinicRegion.cs" />
+    <Compile Include="Domain\Profile.cs" />
     <Compile Include="Domain\User.cs" />
     <Compile Include="Exceptions\HmsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />

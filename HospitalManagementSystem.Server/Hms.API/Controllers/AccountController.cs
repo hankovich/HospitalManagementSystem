@@ -7,6 +7,7 @@
 
     using Hms.API.Attributes;
     using Hms.API.Infrastructure;
+    using Hms.Common.Interface.Domain;
     using Hms.Common.Interface.Models;
     using Hms.Services.Interface;
 
@@ -52,12 +53,15 @@
                 return this.BadRequest("Invalid arguments");
             }
 
-            if (await this.UserService.CheckCredentials(model.Login, model.Password))
+            try
             {
-                return this.Ok();
+                User user = await this.UserService.GetUserAsync(model.Login, model.Password);
+                return this.Ok(user.Id);
             }
-
-            return new HttpActionResult(this, HttpStatusCode.Unauthorized, "Invalid credentials");
+            catch
+            {
+                return new HttpActionResult(this, HttpStatusCode.Unauthorized, "Invalid credentials");
+            }
         }
     }
 }

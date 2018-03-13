@@ -32,6 +32,7 @@ namespace Hms.Resolver
             this.Bind<IUserService>().To<UserService>();
             this.Bind<IGadgetKeysService>().To<GadgetKeysService>();
             this.Bind<IMedicalCardService>().To<MedicalCardService>();
+            this.Bind<IProfileService>().To<ProfileService>();
             
             this.Bind<RoundKeyExpirationSettings>().ToConstant(new RoundKeyExpirationSettings
             {

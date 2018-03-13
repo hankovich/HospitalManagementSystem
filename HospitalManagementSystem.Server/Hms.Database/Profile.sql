@@ -10,5 +10,6 @@
 	[BuildingId] INT NULL REFERENCES [BuildingAddress]([Id]) ON DELETE SET NULL,
 	[Entrance] INT NULL,
 	[Floor] INT NULL,
-	[Flat] INT NULL
+	[Flat] INT NULL,
+	[Photo] VARBINARY(MAX) NULL
 )

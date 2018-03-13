@@ -17,7 +17,6 @@
 
         public async Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20)
         {
-            await this.Client.LoginAsync("user", "password");
             return (await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}", null)).Content;
         }
     }

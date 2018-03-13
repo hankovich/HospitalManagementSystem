@@ -31,7 +31,12 @@
             this.cancelCommand.NotifyCommandStarting();
             this.Execution = new NotifyTaskCompletion<TResult>(this.command(this.cancelCommand.Token));
             this.RaiseCanExecuteChanged();
-            await this.Execution.TaskCompletion;
+
+            if (this.Execution?.TaskCompletion != null)
+            {
+                await this.Execution.TaskCompletion;
+            }
+
             this.cancelCommand.NotifyCommandFinished();
             this.RaiseCanExecuteChanged();
         }

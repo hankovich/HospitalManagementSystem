@@ -5,6 +5,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Hms.Common.Interface;
@@ -35,6 +36,8 @@
 
         public string Host => "http://localhost:52017/";
 
+        public int? UserId { get; set; }
+
         private bool IsInitialized { get; set; }
 
         private LoginModel AuthInfo { get; set; }
@@ -47,40 +50,61 @@
 
         private HttpClient HttpClient { get; } = new HttpClient();
 
-        private async Task InitializeKeysAsync()
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
+        private async Task EnsureKeysInitializationAsync()
         {
-            this.AuthInfo = new LoginModel(); // TODO: Critical section 
-            this.GadgetInfo = new GadgetInfoModel { Identifier = Guid.NewGuid().ToString() };
-
-            this.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
-            byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.PrivateKey);
-
-            SetKeyModel content = new SetKeyModel { Identifier = this.GadgetInfo.Identifier, Key = publicKey };
-
-            ServerResponse<SetKeyModel> result = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content, false);
-
-            if (!result.IsSuccessStatusCode)
+            if (!this.IsInitialized)
             {
-                throw new HmsException(result.ReasonPhrase);
+                await semaphoreSlim.WaitAsync();
+
+                if (!this.IsInitialized)
+                {
+                    try
+                    {
+                        this.AuthInfo = new LoginModel();
+                        this.GadgetInfo = new GadgetInfoModel { Identifier = Guid.NewGuid().ToString() };
+
+                        this.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
+                        byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.PrivateKey);
+
+                        SetKeyModel content = new SetKeyModel { Identifier = this.GadgetInfo.Identifier, Key = publicKey };
+
+                        ServerResponse<SetKeyModel> result = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content, false);
+
+                        if (!result.IsSuccessStatusCode)
+                        {
+                            throw new HmsException(result.ReasonPhrase);
+                        }
+
+                        SetKeyModel setKeyModel = result.Content;
+                        byte[] enryptedClientSecretBytes = Convert.FromBase64String(setKeyModel.ClientSecret);
+                        string clientSecret = Convert.ToBase64String(
+                            await this.AsymmetricCryptoProvider.DecryptBytesAsync(
+                                enryptedClientSecretBytes,
+                                this.PrivateKey));
+
+                        this.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(
+                                            setKeyModel.RoundKey,
+                                            this.PrivateKey);
+
+                        this.GadgetInfo.ClientSecret = clientSecret;
+
+                        this.IsInitialized = true;
+
+                        await this.LoginAsync("user", "password");
+                    }
+                    finally
+                    {
+                        semaphoreSlim.Release();
+                    }
+                }
             }
-
-            SetKeyModel setKeyModel = result.Content;
-            byte[] enryptedClientSecretBytes = Convert.FromBase64String(setKeyModel.ClientSecret);
-            string clientSecret =
-                Convert.ToBase64String(
-                    await this.AsymmetricCryptoProvider.DecryptBytesAsync(enryptedClientSecretBytes, this.PrivateKey));
-
-            this.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(setKeyModel.RoundKey, this.PrivateKey);
-
-            this.GadgetInfo.ClientSecret = clientSecret;
-
-            this.IsInitialized = true;
         }
 
         public async Task ChangeRoundKey()
         {
-            ServerResponse<string> response =
-                await SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.GadgetInfo.Identifier}/", this.GadgetInfo.ClientSecret);
+            ServerResponse<string> response = await SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.GadgetInfo.Identifier}/", this.GadgetInfo.ClientSecret);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -117,11 +141,15 @@
             this.RoundKey = roundKey;
         }
 
-        public async Task<ServerResponse<TContent>> SendAsync<TContent>(HttpMethod method, string url, object content, bool needsEncryption = true)
+        public async Task<ServerResponse<TContent>> SendAsync<TContent>(
+            HttpMethod method,
+            string url,
+            object content,
+            bool needsEncryption = true)
         {
-            if (!this.IsInitialized && needsEncryption)
+            if (needsEncryption)
             {
-                await this.InitializeKeysAsync();
+                await this.EnsureKeysInitializationAsync();
             }
 
             using (var request = new HttpRequestMessage(method, this.Host + url))
@@ -135,12 +163,14 @@
                     if (response.StatusCode == (HttpStatusCode)424)
                     {
                         await this.ChangeRoundKey();
-                        return await SendAsync<TContent>(method, url, content, needsEncryption);
+                        return await this.SendAsync<TContent>(method, url, content, needsEncryption);
                     }
 
                     string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption && response.IsSuccessStatusCode);
 
-                    TContent receivedContent = string.IsNullOrEmpty(responseString) ? default(TContent) : JsonConvert.DeserializeObject<TContent>(responseString);
+                    TContent receivedContent = string.IsNullOrEmpty(responseString)
+                                                   ? default(TContent)
+                                                   : JsonConvert.DeserializeObject<TContent>(responseString);
 
                     var result = new ServerResponse<TContent>
                     {
@@ -157,18 +187,11 @@
 
         public async Task LoginAsync(string login, string password)
         {
-            if (!this.IsInitialized)
-            {
-                await this.InitializeKeysAsync();
-            }
+            await this.EnsureKeysInitializationAsync();
 
-            LoginModel model = new LoginModel
-            {
-                Login = login,
-                Password = password
-            };
+            LoginModel model = new LoginModel { Login = login, Password = password };
 
-            ServerResponse<string> response = await this.SendAsync<string>(HttpMethod.Put, "api/account", model);
+            ServerResponse<int> response = await this.SendAsync<int>(HttpMethod.Put, "api/account", model);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -177,20 +200,14 @@
 
             this.AuthInfo.Login = login;
             this.AuthInfo.Password = password;
+            this.UserId = response.Content;
         }
 
         public async Task RegisterAsync(string login, string password)
         {
-            if (!this.IsInitialized)
-            {
-                await this.InitializeKeysAsync();
-            }
+            await this.EnsureKeysInitializationAsync();
 
-            LoginModel model = new LoginModel
-            {
-                Login = login,
-                Password = password
-            };
+            LoginModel model = new LoginModel { Login = login, Password = password };
 
             ServerResponse<string> response = await this.SendAsync<string>(HttpMethod.Post, "api/account", model);
 
@@ -203,6 +220,8 @@
         public Task LogoutAsync()
         {
             this.AuthInfo.Login = this.AuthInfo.Password = null;
+            this.UserId = null;
+
             return Task.CompletedTask;
         }
 

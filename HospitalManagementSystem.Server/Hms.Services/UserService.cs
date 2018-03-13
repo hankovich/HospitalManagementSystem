@@ -36,7 +36,7 @@
             return await this.UserRepository.GetUserAsync(username, password);
         }
 
-        public async Task<bool> CheckCredentials(string username, string password)
+        public async Task<bool> CheckCredentialsAsync(string username, string password)
         {
             try
             {
@@ -47,6 +47,11 @@
             {
                 return false;
             }
+        }
+
+        public async Task<int> GetUserIdByLoginAsync(string username)
+        {
+            return await this.UserRepository.GetUserIdByLoginAsync(username);
         }
     }
 }

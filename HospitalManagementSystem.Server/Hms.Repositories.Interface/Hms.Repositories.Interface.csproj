@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="IGadgetKeysInfoRepository.cs" />
     <Compile Include="IMedicalCardRepository.cs" />
+    <Compile Include="IProfileRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IUserRoleRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

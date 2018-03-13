@@ -7,6 +7,8 @@
     {
         string Host { get; }
 
+        int? UserId { get; }
+
         Task<ServerResponse<T>> SendAsync<T>(HttpMethod method, string url, object content, bool needsEncryption = true);
 
         Task LoginAsync(string username, string password);

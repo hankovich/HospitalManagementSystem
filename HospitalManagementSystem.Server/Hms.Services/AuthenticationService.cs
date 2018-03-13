@@ -8,7 +8,6 @@
     using Hms.Common.Interface;
     using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
-    using Hms.Repositories.Interface;
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 
@@ -80,7 +79,7 @@
 
                 PrincipalModel principal = null;
 
-                if (await this.UserService.CheckCredentials(login, password))
+                if (await this.UserService.CheckCredentialsAsync(login, password))
                 {
                     principal = new PrincipalModel { Login = login };
                 }

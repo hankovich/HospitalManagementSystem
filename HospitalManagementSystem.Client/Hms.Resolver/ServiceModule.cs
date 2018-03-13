@@ -12,6 +12,7 @@
             this.Bind<IClient>().To<Client>().InSingletonScope();
             this.Bind<IService>().To<Service>();
             this.Bind<IMedicalCardService>().To<MedicalCardService>();
+            this.Bind<IProfileService>().To<ProfileService>();
         }
     }
 }

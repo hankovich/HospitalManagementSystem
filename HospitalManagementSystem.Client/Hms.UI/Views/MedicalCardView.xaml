@@ -18,13 +18,13 @@
             <intr:InvokeCommandAction Command="{Binding LoadedCommand}"/>
         </intr:EventTrigger>
     </intr:Interaction.Triggers>
-    <Grid>
+    <Grid SnapsToDevicePixels="True">
         <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
         <ItemsControl ItemsSource="{Binding MedicalCard.Records}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <TextBox Text="{Binding Content}"/>
+                        <Button Content="{Binding Content}" Margin="5"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
