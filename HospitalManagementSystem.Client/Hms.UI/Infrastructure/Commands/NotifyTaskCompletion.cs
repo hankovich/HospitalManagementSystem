@@ -21,36 +21,33 @@ namespace Hms.UI.Infrastructure.Commands
             {
                 await task;
             }
-            catch
+            finally
             {
-            }
+                var propertyChanged = this.PropertyChanged;
+                if (propertyChanged != null)
+                {
+                    propertyChanged(this, new PropertyChangedEventArgs("Status"));
+                    propertyChanged(this, new PropertyChangedEventArgs("IsRunning"));
+                    propertyChanged(this, new PropertyChangedEventArgs("IsCompleted"));
+                    propertyChanged(this, new PropertyChangedEventArgs("IsNotCompleted"));
 
-            var propertyChanged = this.PropertyChanged;
-            if (propertyChanged == null)
-            {
-                return;
-            }
-
-            propertyChanged(this, new PropertyChangedEventArgs("Status"));
-            propertyChanged(this, new PropertyChangedEventArgs("IsRunning"));
-            propertyChanged(this, new PropertyChangedEventArgs("IsCompleted"));
-            propertyChanged(this, new PropertyChangedEventArgs("IsNotCompleted"));
-
-            if (task.IsCanceled)
-            {
-                propertyChanged(this, new PropertyChangedEventArgs("IsCanceled"));
-            }
-            else if (task.IsFaulted)
-            {
-                propertyChanged(this, new PropertyChangedEventArgs("IsFaulted"));
-                propertyChanged(this, new PropertyChangedEventArgs("Exception"));
-                propertyChanged(this, new PropertyChangedEventArgs("InnerException"));
-                propertyChanged(this, new PropertyChangedEventArgs("ErrorMessage"));
-            }
-            else
-            {
-                propertyChanged(this, new PropertyChangedEventArgs("IsSuccessfullyCompleted"));
-                propertyChanged(this, new PropertyChangedEventArgs("Result"));
+                    if (task.IsCanceled)
+                    {
+                        propertyChanged(this, new PropertyChangedEventArgs("IsCanceled"));
+                    }
+                    else if (task.IsFaulted)
+                    {
+                        propertyChanged(this, new PropertyChangedEventArgs("IsFaulted"));
+                        propertyChanged(this, new PropertyChangedEventArgs("Exception"));
+                        propertyChanged(this, new PropertyChangedEventArgs("InnerException"));
+                        propertyChanged(this, new PropertyChangedEventArgs("ErrorMessage"));
+                    }
+                    else
+                    {
+                        propertyChanged(this, new PropertyChangedEventArgs("IsSuccessfullyCompleted"));
+                        propertyChanged(this, new PropertyChangedEventArgs("Result"));
+                    }
+                }
             }
         }
 

@@ -19,22 +19,7 @@
 
             var commands = values.OfType<ICommand>();
 
-            var chain = new RelayCommand(
-                o => commands.All(command => command.CanExecute(o)),
-                o =>
-                {
-                    foreach (var command in commands)
-                    {
-                        try
-                        {
-                            command.Execute(o);
-                        }
-                        catch
-                        {
-                            break;
-                        }
-                    }
-                });
+            var chain = new CommandComposite(commands);
 
             return chain;
         }
