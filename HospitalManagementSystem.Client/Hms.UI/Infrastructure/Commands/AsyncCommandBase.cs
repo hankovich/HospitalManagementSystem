@@ -23,6 +23,8 @@
 
         public abstract Task ExecuteAsync(object parameter);
 
+        public abstract bool IsRunning { get; set; }
+
         public async void Execute(object parameter)
         {
             await this.ExecuteAsync(parameter);

@@ -74,15 +74,25 @@
     <Compile Include="Infrastructure\Commands\AsyncCommandBase.cs" />
     <Compile Include="Infrastructure\Commands\IAsyncCommand.cs" />
     <Compile Include="Infrastructure\Commands\NotifyTaskCompletion.cs" />
+    <Compile Include="Infrastructure\Commands\RelayCommand.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\IntToVisibiliryConverter.cs" />
     <Compile Include="Infrastructure\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="Views\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MedicalCardView.xaml.cs">
       <DependentUpon>MedicalCardView.xaml</DependentUpon>
     </Compile>
@@ -104,6 +114,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MedicalCardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

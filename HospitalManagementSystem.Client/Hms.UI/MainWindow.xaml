@@ -4,23 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:Hms.UI"
-        xmlns:views="clr-namespace:Hms.UI.Views"
+        xmlns:vm="clr-namespace:Hms.UI.ViewModels"
+        xmlns:v="clr-namespace:Hms.UI.Views"
         mc:Ignorable="d"
         Title="Hospital Client" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="3*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:MenuViewModel}">
+            <v:MenuView/>
+        </DataTemplate>
 
-        <views:ProfileView Grid.Column="0" Grid.Row="0"></views:ProfileView>
-        <views:MenuView Grid.Column="0" Grid.Row="1"></views:MenuView>
-        <views:MedicalCardView Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"></views:MedicalCardView>
+        <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
+            <v:ProfileView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:MedicalCardViewModel}">
+            <v:MedicalCardView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:MainViewModel}">
+            <v:MainView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+            <v:LoginView/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ContentControl Content="{Binding SelectedViewModel}" />
     </Grid>
 </controls:MetroWindow>

@@ -75,7 +75,7 @@
             HttpActionExecutedContext actionExecutedContext,
             CancellationToken cancellationToken)
         {
-            if (actionExecutedContext.Response.Content == null || this.RoundKey == null)
+            if (actionExecutedContext.Response.Content == null || !actionExecutedContext.Response.IsSuccessStatusCode || this.RoundKey == null)
             {
                 return;
             }

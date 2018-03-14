@@ -91,8 +91,6 @@
                         this.GadgetInfo.ClientSecret = clientSecret;
 
                         this.IsInitialized = true;
-
-                        await this.LoginAsync("user", "password");
                     }
                     finally
                     {
@@ -168,15 +166,34 @@
 
                     string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption && response.IsSuccessStatusCode);
 
-                    TContent receivedContent = string.IsNullOrEmpty(responseString)
+                    TContent receivedContent = string.IsNullOrEmpty(responseString) || !response.IsSuccessStatusCode
                                                    ? default(TContent)
                                                    : JsonConvert.DeserializeObject<TContent>(responseString);
+
+                    string reasonPhrase;
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        try
+                        {
+                            reasonPhrase = JsonConvert.DeserializeObject<dynamic>(responseString).Message;
+                        }
+                        catch
+                        {
+                            reasonPhrase = response.ReasonPhrase;
+                        }
+                    }
+                    else
+                    {
+                        reasonPhrase = response.ReasonPhrase;
+                    }
+
 
                     var result = new ServerResponse<TContent>
                     {
                         Content = receivedContent,
                         IsSuccessStatusCode = response.IsSuccessStatusCode,
-                        ReasonPhrase = response.ReasonPhrase,
+                        ReasonPhrase = reasonPhrase,
                         StatusCode = (int)response.StatusCode
                     };
 

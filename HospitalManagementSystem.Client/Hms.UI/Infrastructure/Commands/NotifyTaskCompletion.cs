@@ -32,6 +32,7 @@ namespace Hms.UI.Infrastructure.Commands
             }
 
             propertyChanged(this, new PropertyChangedEventArgs("Status"));
+            propertyChanged(this, new PropertyChangedEventArgs("IsRunning"));
             propertyChanged(this, new PropertyChangedEventArgs("IsCompleted"));
             propertyChanged(this, new PropertyChangedEventArgs("IsNotCompleted"));
 
@@ -62,6 +63,8 @@ namespace Hms.UI.Infrastructure.Commands
         public TaskStatus Status => this.Task.Status;
 
         public bool IsCompleted => this.Task.IsCompleted;
+
+        public bool IsRunning => this.Task.Status == TaskStatus.Running;
 
         public bool IsNotCompleted => !this.Task.IsCompleted;
 
