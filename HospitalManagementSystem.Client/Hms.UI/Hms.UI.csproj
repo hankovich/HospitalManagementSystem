@@ -76,6 +76,7 @@
     <Compile Include="Infrastructure\Commands\NotifyTaskCompletion.cs" />
     <Compile Include="Infrastructure\Commands\RelayCommand.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
+    <Compile Include="Infrastructure\Converters\CommandChainMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\IntToVisibiliryConverter.cs" />
     <Compile Include="Infrastructure\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />

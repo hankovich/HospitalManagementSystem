@@ -5,11 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:Hms.UI.Views"
+             xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
+             xmlns:ui="clr-namespace:Hms.UI"
              dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:CommandChainMultiConverter x:Key="CommandChainMultiConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -28,7 +32,14 @@
             <TextBox Text="{Binding Login}" Margin="5"/>
             <Label Content="Password" Margin="5"/>
             <PasswordBox Name="PasswordBox" Margin="5" />
-            <Button Content="Login" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=PasswordBox}" Margin="5 25 5 25" IsDefault="True"/>
+            <Button Content="Login" Margin="5 25 5 25" IsDefault="True" CommandParameter="{Binding ElementName=PasswordBox}" >
+                <Button.Command>
+                    <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
+                        <Binding Path="LoginCommand"/>
+                        <Binding Path="DataContext.MainCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
+                    </MultiBinding>
+                </Button.Command>
+            </Button>
             <mah:ProgressRing Visibility="{Binding LoginCommand.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
     </Grid>

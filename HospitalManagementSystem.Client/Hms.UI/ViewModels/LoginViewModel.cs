@@ -18,7 +18,7 @@
         {
             this.AccountService = accountService;
             this.DialogCoordinator = dialogCoordinator;
-
+            
             this.LoginCommand = AsyncCommand.Create<PasswordBox>(async passwordBox =>
             {
                 try
@@ -28,6 +28,7 @@
                 catch (Exception e)
                 {
                     await this.DialogCoordinator.ShowMessageAsync(this, "Oops", e.Message);
+                    throw;
                 }
             });
         }

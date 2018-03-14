@@ -333,7 +333,7 @@
                 });
         }
 
-        public static AsyncCommand<TInput, TResult> Create<TResult, TInput>(Func<TInput, Task<TResult>> command)
+        public static AsyncCommand<TInput, TResult> Create<TInput, TResult>(Func<TInput, Task<TResult>> command)
         {
             return new AsyncCommand<TInput, TResult>(command);
         }
@@ -348,7 +348,7 @@
                 });
         }
 
-        public static AsyncCommand<TInput, TResult> Create<TResult, TInput>(Func<TInput, CancellationToken, Task<TResult>> command)
+        public static AsyncCommand<TInput, TResult> Create<TInput, TResult>(Func<TInput, CancellationToken, Task<TResult>> command)
         {
             return new AsyncCommand<TInput, TResult>(command);
         }
