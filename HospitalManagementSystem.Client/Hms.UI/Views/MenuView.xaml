@@ -9,15 +9,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <converters:IntToVisibiliryConverter x:Key="IntToVisibiliryConverter"/>
-
         <Style TargetType="mah:Badged" BasedOn="{StaticResource {x:Type mah:Badged}}">
             <Setter Property="Margin" Value="0 10 15 0" />
         </Style>
     </UserControl.Resources>
     <Grid>
-        <StackPanel>
-            <ScrollViewer>
+        <ScrollViewer>
+            <StackPanel>
                 <ItemsControl ItemsSource="{Binding MenuItems}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -29,8 +27,9 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </ScrollViewer>
-            <Button Content="To Login" Command="{Binding Path=DataContext.LoginCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}}" Margin="5 0"/>
-        </StackPanel>
+                
+                <Button Content="To Login" Command="{Binding Path=DataContext.LoginCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}}" Margin="5 10 20 5"/>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

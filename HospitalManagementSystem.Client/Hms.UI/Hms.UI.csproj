@@ -76,6 +76,13 @@
     <Compile Include="Infrastructure\Commands\IAsyncCommand.cs" />
     <Compile Include="Infrastructure\Commands\NotifyTaskCompletion.cs" />
     <Compile Include="Infrastructure\Commands\RelayCommand.cs" />
+    <Compile Include="Infrastructure\Controls\BindingEvaluator.cs" />
+    <Compile Include="Infrastructure\Controls\Editors\AutoCompleteTextBox.cs" />
+    <Compile Include="Infrastructure\Controls\Editors\ISuggestionProvider.cs" />
+    <Compile Include="Infrastructure\Controls\Editors\SelectionAdapter.cs" />
+    <Compile Include="Infrastructure\Controls\Editors\SuggestionProvider.cs" />
+    <Compile Include="Infrastructure\Controls\Enumerations.cs" />
+    <Compile Include="Infrastructure\Converters\ArrayToObjectMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\CommandChainMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\IntToVisibiliryConverter.cs" />
@@ -83,12 +90,18 @@
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Temp.cs" />
+    <Compile Include="ViewModels\CreateProfileViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="Views\CreateProfileView.xaml.cs">
+      <DependentUpon>CreateProfileView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -104,6 +117,17 @@
     <Compile Include="Views\ProfileView.xaml.cs">
       <DependentUpon>ProfileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RegisterView.xaml.cs">
+      <DependentUpon>RegisterView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Infrastructure\Controls\Editors\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Infrastructure\Controls\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -116,6 +140,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\CreateProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +161,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RegisterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -181,5 +213,6 @@
   <ItemGroup>
     <Resource Include="Images\blank.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

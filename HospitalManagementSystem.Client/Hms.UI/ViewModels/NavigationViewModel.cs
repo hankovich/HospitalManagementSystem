@@ -19,6 +19,10 @@
 
         public ICommand LoginCommand { get; set; }
 
+        public ICommand RegisterCommand { get; set; }
+
+        public ICommand CreateProfileCommand { get; set; }
+
         private object selectedViewModel;
 
         public object SelectedViewModel
@@ -44,8 +48,10 @@
             this.ProfileCommand = new RelayCommand(this.OpenProfile);
             this.MainCommand = new RelayCommand(this.OpenMain);
             this.LoginCommand = new RelayCommand(this.OpenLogin);
+            this.RegisterCommand = new RelayCommand(this.OpenRegister);
+            this.CreateProfileCommand = new RelayCommand(this.OpenCreateProfile);
 
-            this.LoginCommand.Execute(null);
+            this.OpenLogin();
         }
 
         private void OpenLogin()
@@ -66,6 +72,16 @@
         private void OpenMain()
         {
             this.SelectedViewModel = App.Kernel.Get<MainViewModel>();
+        }
+
+        private void OpenRegister()
+        {
+            this.SelectedViewModel = App.Kernel.Get<RegisterViewModel>();
+        }
+
+        private void OpenCreateProfile()
+        {
+            this.SelectedViewModel = App.Kernel.Get<CreateProfileViewModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

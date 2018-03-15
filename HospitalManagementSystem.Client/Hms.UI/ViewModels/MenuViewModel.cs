@@ -24,12 +24,6 @@
                     Badge = rnd.NextDouble() > 0.5 ? 0 : rnd.Next() % 20
                 });    
             }
-
-            this.MenuItems.Add(new MenuItem
-            {
-                Name = "To Login",
-                Badge = -4,
-            });
         }
 
         private ObservableCollection<MenuItem> menuItems;

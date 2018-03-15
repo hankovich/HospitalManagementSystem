@@ -28,6 +28,14 @@
         <DataTemplate DataType="{x:Type vm:LoginViewModel}">
             <v:LoginView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:CreateProfileViewModel}">
+            <v:CreateProfileView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
+            <v:RegisterView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <ContentControl Content="{Binding SelectedViewModel}" />

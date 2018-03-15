@@ -66,7 +66,7 @@
 
                             await this.ProfileService.InsertOrUpdateProfileAsync(Profile);
 
-                            this.Profile = Profile;
+                            this.Profile = Profile; // TODO: Implement INPC
                         }
                     }
                     catch (Exception e)

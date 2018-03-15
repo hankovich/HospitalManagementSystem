@@ -16,31 +16,35 @@
         <converters:CommandChainMultiConverter x:Key="CommandChainMultiConverter"/>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="3*"></RowDefinition>
-        </Grid.RowDefinitions>
-        
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="1" Grid.Column="1">
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
             <Label Content="Login" Margin="5"/>
             <TextBox Text="{Binding Login}" Margin="5"/>
             <Label Content="Password" Margin="5"/>
             <PasswordBox Name="PasswordBox" Margin="5" />
-            <Button Content="Login" Margin="5 25 5 25" IsDefault="True" CommandParameter="{Binding ElementName=PasswordBox}" >
-                <Button.Command>
-                    <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
-                        <Binding Path="LoginCommand"/>
-                        <Binding Path="DataContext.MainCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
-                    </MultiBinding>
-                </Button.Command>
-            </Button>
-            <mah:ProgressRing Visibility="{Binding LoginCommand.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Login" Margin="5 25 5 25" IsDefault="True" CommandParameter="{Binding ElementName=PasswordBox}" >
+                    <Button.Command>
+                        <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
+                            <Binding Path="LoginCommand"/>
+                            <Binding Path="DataContext.MainCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
+                        </MultiBinding>
+                    </Button.Command>
+                </Button>
+
+                <Button Grid.Column="1" Content="Register" Margin="5 25 5 25" Command="{Binding DataContext.RegisterCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}}"/>
+            </Grid>
         </StackPanel>
+        <mah:ProgressRing Grid.Column="1" VerticalAlignment="Bottom" Margin="50" Visibility="{Binding LoginCommand.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </UserControl>
