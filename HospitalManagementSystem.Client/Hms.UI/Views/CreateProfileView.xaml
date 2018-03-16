@@ -10,12 +10,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ui:StateSuggestionProvider x:Key="StateSuggestionProvider" />
-        
-        <DataTemplate x:Key="StateTemplate">
-            <Grid>
-                <TextBlock Text="{Binding Path=Name}"></TextBlock>
-            </Grid>
-        </DataTemplate>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <Style x:Key="MaterialAutoCompleteTextBox" TargetType="editors:AutoCompleteTextBox" >
             <Setter Property="Focusable" Value="True" />
@@ -43,7 +39,7 @@
                                                Text="{TemplateBinding Watermark}"
                                                Visibility="Collapsed"
                                                VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"
+                                               HorizontalAlignment="Stretch"
                                                Focusable="False"
                                                Foreground="Gray"
                                                Margin="3,0" />
@@ -51,14 +47,13 @@
                                              Focusable="True"
                                              HorizontalAlignment="Stretch"
                                              VerticalAlignment="Center"
-                                             Style="{StaticResource ResourceKey=MaterialDesignTextBox}"
                                              MaxLength="{Binding Path=MaxLength, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                              CharacterCasing="{Binding Path=CharacterCasing, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                              Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" />
                                 </Grid>
                             </DockPanel>
                             <Popup x:Name="PART_Popup"
-                                   IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent},Mode=TwoWay}"
+                                   IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                    Width="{TemplateBinding ActualWidth}"
                                    HorizontalOffset="0"
                                    MinHeight="25"
@@ -69,7 +64,7 @@
                                 <Border Background="White"
                                         BorderThickness="1"
                                         BorderBrush="Gray"
-                                        CornerRadius="5"
+                                        CornerRadius="0 0 5 5"
                                         Padding="2">
                                     <Grid>
                                         <ListBox x:Name="PART_Selector"
@@ -77,12 +72,12 @@
                                                  ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                  Focusable="False"
                                                  BorderThickness="0"
-                                                 MaxHeight="{Binding Path=MaxPopupHeight, RelativeSource={RelativeSource Mode=TemplatedParent},Mode=TwoWay}"
+                                                 MaxHeight="{Binding Path=MaxPopupHeight, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                                 >
                                         </ListBox>
-                                        <Border Visibility="{Binding Path=IsLoading, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource   ResourceKey=BoolToVisConverter}}">
+                                        <Border Visibility="{Binding Path=IsLoading, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}">
                                             <ContentPresenter ContentSource="LoadingContent"/>
                                         </Border>
                                     </Grid>
@@ -127,20 +122,52 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        
-        <StackPanel Grid.Column="1">
-            <editors:AutoCompleteTextBox HorizontalAlignment="Left"
-                                         Text=""
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <Label Target="{Binding ElementName=City}" Content="City" Margin="0 5"/>
+            <editors:AutoCompleteTextBox x:Name="City"
+                                         HorizontalAlignment="Stretch"
+                                         MaxLength="50"                         
+                                         HorizontalContentAlignment="Stretch"
+                                         Style="{StaticResource MaterialAutoCompleteTextBox}"
+                                         Provider="{Binding BuildingsSuggestionProvider.StreetsSuggestionProvider.CitiesSuggestionProvider}"
+                                         Margin="0 5">
+                <editors:AutoCompleteTextBox.SelectedItem>
+                    <Binding Path="City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
+                </editors:AutoCompleteTextBox.SelectedItem>
+                <editors:AutoCompleteTextBox.LoadingContent>
+                    <TextBlock Text="Loading..." Margin="5" />
+                </editors:AutoCompleteTextBox.LoadingContent>
+            </editors:AutoCompleteTextBox>
+
+            <Label Target="{Binding ElementName=Street}" Content="Street" Margin="0 5"/>
+            <editors:AutoCompleteTextBox x:Name="Street"
+                                         HorizontalAlignment="Stretch"
+                                         MaxLength="50"                         
+                                         HorizontalContentAlignment="Stretch"
+                                         Style="{StaticResource MaterialAutoCompleteTextBox}"
+                                         Provider="{Binding BuildingsSuggestionProvider.StreetsSuggestionProvider}"
+                                         Margin="0 5">
+                <editors:AutoCompleteTextBox.SelectedItem>
+                    <Binding Path="Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
+                </editors:AutoCompleteTextBox.SelectedItem>
+                <editors:AutoCompleteTextBox.LoadingContent>
+                    <TextBlock Text="Loading..." Margin="5" FontSize="14" />
+                </editors:AutoCompleteTextBox.LoadingContent>
+            </editors:AutoCompleteTextBox>
+
+            <Label Target="{Binding ElementName=Building}" Content="Street" Margin="0 5"/>
+            <editors:AutoCompleteTextBox x:Name="Building"
+                                         HorizontalAlignment="Stretch"
                                          MaxLength="50"                         
                                          CharacterCasing="Upper"
                                          DisplayMember="Name"
-                                         Height="26"
-                                         Width="450"
+                                         HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
                                          Provider="{StaticResource ResourceKey=StateSuggestionProvider}"
-                                         ItemTemplate="{StaticResource ResourceKey=StateTemplate}">
+                                         Margin="0 5">
                 <editors:AutoCompleteTextBox.SelectedItem>
-                    <Binding Path="SelectedState" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                    <Binding Path="SelectedState" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
                 </editors:AutoCompleteTextBox.SelectedItem>
                 <editors:AutoCompleteTextBox.LoadingContent>
                     <TextBlock Text="Loading..." Margin="5" FontSize="14" />

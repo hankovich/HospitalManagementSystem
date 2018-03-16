@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Hms.UI.Infrastructure.Controls.Editors;
 
@@ -81,14 +82,13 @@
     {
         public IEnumerable<State> ListOfStates { get; set; }
 
-        public IEnumerable GetSuggestions(string filter)
+        public Task<IEnumerable> GetSuggestionsAsync(string filter)
         {
             if (string.IsNullOrWhiteSpace(filter)) return null;
             return
-                ListOfStates
+                Task.FromResult((IEnumerable)ListOfStates
                     .Where(state => state.Name.StartsWith(filter, StringComparison.CurrentCultureIgnoreCase))
-                    .ToList();
-
+                    .ToList());
         }
 
         public StateSuggestionProvider()

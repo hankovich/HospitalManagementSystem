@@ -51,7 +51,7 @@
             this.RegisterCommand = new RelayCommand(this.OpenRegister);
             this.CreateProfileCommand = new RelayCommand(this.OpenCreateProfile);
 
-            this.OpenLogin();
+            this.OpenCreateProfile();
         }
 
         private void OpenLogin()

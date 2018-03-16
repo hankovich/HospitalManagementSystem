@@ -3,6 +3,7 @@ namespace Hms.UI.Infrastructure.Controls.Editors
     using System;
     using System.Collections;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
@@ -763,6 +764,7 @@ namespace Hms.UI.Infrastructure.Controls.Editors
                 {
                     return;
                 }
+
                 if (this._actb.IsDropDownOpen)
                 {
                     this._actb.IsLoading = false;
@@ -772,13 +774,14 @@ namespace Hms.UI.Infrastructure.Controls.Editors
 
             }
 
-            private void GetSuggestionsAsync(object param)
+            private async void GetSuggestionsAsync(object param)
             {
                 object[] args = param as object[];
                 string searchText = Convert.ToString(args[0]);
                 ISuggestionProvider provider = args[1] as ISuggestionProvider;
-                IEnumerable list = provider.GetSuggestions(searchText);
-                this._actb.Dispatcher.BeginInvoke(
+                IEnumerable list = await provider.GetSuggestionsAsync(searchText);
+
+                await this._actb.Dispatcher.BeginInvoke(
                     new Action<IEnumerable, string>(this.DisplaySuggestions),
                     DispatcherPriority.Background,
                     new object[] { list, searchText });
