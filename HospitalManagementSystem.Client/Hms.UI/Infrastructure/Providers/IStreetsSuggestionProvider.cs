@@ -6,6 +6,6 @@ namespace Hms.UI.Infrastructure.Providers
     {
         ICitiesSuggestionProvider CitiesSuggestionProvider { get; }
 
-        string SelectedStreet { get; set; }
+        GeoObject SelectedStreet { get; set; }
     }
 }

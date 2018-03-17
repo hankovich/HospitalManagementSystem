@@ -1,5 +1,6 @@
 namespace Hms.UI.Infrastructure.Providers
 {
+    using System;
     using System.Globalization;
 
     public struct GeoPoint
@@ -41,6 +42,11 @@ namespace Hms.UI.Infrastructure.Providers
         public string ToString(ToStringFunc formatFunc)
         {
             return formatFunc(this.Long, this.Lat);
+        }
+
+        public override int GetHashCode()
+        {
+            return ((int)this.Long) ^ ((int)this.Lat);
         }
     }
 }

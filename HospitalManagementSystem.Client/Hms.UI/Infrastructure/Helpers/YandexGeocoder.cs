@@ -1,9 +1,10 @@
-namespace Hms.UI.Infrastructure.Providers
+namespace Hms.UI.Infrastructure.Helpers
 {
-    using System.Net.Http;
     using System.Threading.Tasks;
 
-    public class YandexGeocoder
+    using Hms.UI.Infrastructure.Providers;
+
+    public class YandexGeocoder: YandexBase
     {
         public const string RequestUrl = "http://geocode-maps.yandex.ru/1.x/?geocode={0}&format=xml&results={1}&lang={2}";
 
@@ -25,7 +26,7 @@ namespace Hms.UI.Infrastructure.Providers
         /// <returns>Collection of found locations</returns>
         public async Task<GeoObjectCollection> GeocodeAsync(string location)
         {
-            return await this.GeocodeAsync(location, 150);
+            return await this.GeocodeAsync(location, 10000);
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Hms.UI.Infrastructure.Providers
         public async Task<GeoObjectCollection> GeocodeAsync(string location, short results, LangType lang)
         {
             string requestUlr =
-                string.Format(RequestUrl, this.StringMakeValid(location), results, LangTypeToStr(lang)) +
+                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang)) +
                 (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
@@ -75,39 +76,36 @@ namespace Hms.UI.Infrastructure.Providers
             bool rspn = false)
         {
             string requestUlr =
-                string.Format(RequestUrl, this.StringMakeValid(location), results, LangTypeToStr(lang))
+                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
                 + $"&ll={searchArea.longLat.ToString("{0},{1}")}&spn={searchArea.spread.ToString("{0},{1}")}&rspn={(rspn ? 1 : 0)}"
                 + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }
 
-        private string StringMakeValid(string location)
+        /// <summary>
+        /// Location determination by name, indicating the quantity of objects to return and preference language.
+        /// Allows limit the search or affect the issuance result.
+        /// </summary>
+        /// <param name="location">Name of a geographic location.</param>
+        /// <param name="results">Maximum number of objects to return.</param>
+        /// <param name="lang">Preference language for describing objects.</param>
+        /// <param name="geoBound">Search geographical area, affects to issuance of results.</param>
+        /// <param name="rspn">Allows limit the search (true) or affect the issuance result (false - default).</param>
+        /// <returns>Collection of found locations</returns>
+        public async Task<GeoObjectCollection> GeocodeAsync(
+            string location,
+            short results,
+            LangType lang,
+            GeoBound geoBound,
+            bool rspn = false)
         {
-            return location.Replace(" ", "+").Replace("&", string.Empty).Replace("?", string.Empty);
-        }
+            string requestUlr =
+                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
+                + $"&bbox={geoBound.lowerCorner.Long},{geoBound.lowerCorner.Lat}~{geoBound.upperCorner.Long},{geoBound.upperCorner.Lat}&rspn={(rspn ? 1 : 0)}"
+                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
-        private static string LangTypeToStr(LangType lang)
-        {
-            switch (lang)
-            {
-                case LangType.RU: return "ru-RU";
-                case LangType.UA: return "uk-UA";
-                case LangType.BY: return "be-BY";
-                case LangType.US: return "en-US";
-                case LangType.BR: return "en-BR";
-                case LangType.TR: return "tr-TR";
-                default: return "ru-RU";
-            }
-        }
-
-        private async Task<string> DownloadStringAsync(string url)
-        {
-            using (var client = new HttpClient())
-            using (var message = await client.GetAsync(url))
-            {
-                return await message.Content.ReadAsStringAsync();
-            }
+            return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }
     }
 }

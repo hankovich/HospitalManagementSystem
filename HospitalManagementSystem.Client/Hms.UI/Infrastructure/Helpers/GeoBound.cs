@@ -14,5 +14,10 @@ namespace Hms.UI.Infrastructure.Providers
         {
             return $"[{this.lowerCorner}] [{this.upperCorner}]";
         }
+
+        public override int GetHashCode()
+        {
+            return this.lowerCorner.GetHashCode() ^ this.upperCorner.GetHashCode();
+        }
     }
 }

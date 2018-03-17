@@ -16,7 +16,6 @@
         <Style x:Key="MaterialAutoCompleteTextBox" TargetType="editors:AutoCompleteTextBox" >
             <Setter Property="Focusable" Value="True" />
             <Setter Property="BorderThickness" Value="0 0 0 1"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignTextBoxBorder}" />
             <Setter Property="Background" Value="Transparent"/>
             <!--<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>-->
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -117,62 +116,61 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-            <Label Target="{Binding ElementName=City}" Content="City" Margin="0 5"/>
-            <editors:AutoCompleteTextBox x:Name="City"
+        <TabControl Margin="15">
+            <TabItem Header="Personal Info">
+                
+            </TabItem>
+            <TabItem Header="Address Info">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Label Target="{Binding ElementName=City}" Content="City" Margin="0 5"/>
+                    <editors:AutoCompleteTextBox x:Name="City"
                                          HorizontalAlignment="Stretch"
                                          MaxLength="50"                         
                                          HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
                                          Provider="{Binding BuildingsSuggestionProvider.StreetsSuggestionProvider.CitiesSuggestionProvider}"
                                          Margin="0 5">
-                <editors:AutoCompleteTextBox.SelectedItem>
-                    <Binding Path="City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
-                </editors:AutoCompleteTextBox.SelectedItem>
-                <editors:AutoCompleteTextBox.LoadingContent>
-                    <TextBlock Text="Loading..." Margin="5" />
-                </editors:AutoCompleteTextBox.LoadingContent>
-            </editors:AutoCompleteTextBox>
+                        <editors:AutoCompleteTextBox.SelectedItem>
+                            <Binding Path="City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
+                        </editors:AutoCompleteTextBox.SelectedItem>
+                        <editors:AutoCompleteTextBox.LoadingContent>
+                            <TextBlock Text="Loading..." Margin="5" />
+                        </editors:AutoCompleteTextBox.LoadingContent>
+                    </editors:AutoCompleteTextBox>
 
-            <Label Target="{Binding ElementName=Street}" Content="Street" Margin="0 5"/>
-            <editors:AutoCompleteTextBox x:Name="Street"
+                    <Label Target="{Binding ElementName=Street}" Content="Street" Margin="0 5"/>
+                    <editors:AutoCompleteTextBox x:Name="Street"
                                          HorizontalAlignment="Stretch"
                                          MaxLength="50"                         
                                          HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
                                          Provider="{Binding BuildingsSuggestionProvider.StreetsSuggestionProvider}"
                                          Margin="0 5">
-                <editors:AutoCompleteTextBox.SelectedItem>
-                    <Binding Path="Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
-                </editors:AutoCompleteTextBox.SelectedItem>
-                <editors:AutoCompleteTextBox.LoadingContent>
-                    <TextBlock Text="Loading..." Margin="5" FontSize="14" />
-                </editors:AutoCompleteTextBox.LoadingContent>
-            </editors:AutoCompleteTextBox>
+                        <editors:AutoCompleteTextBox.SelectedItem>
+                            <Binding Path="Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
+                        </editors:AutoCompleteTextBox.SelectedItem>
+                        <editors:AutoCompleteTextBox.LoadingContent>
+                            <TextBlock Text="Loading..." Margin="5" />
+                        </editors:AutoCompleteTextBox.LoadingContent>
+                    </editors:AutoCompleteTextBox>
 
-            <Label Target="{Binding ElementName=Building}" Content="Street" Margin="0 5"/>
-            <editors:AutoCompleteTextBox x:Name="Building"
+                    <Label Target="{Binding ElementName=Building}" Content="Building" Margin="0 5"/>
+                    <editors:AutoCompleteTextBox x:Name="Building"
                                          HorizontalAlignment="Stretch"
-                                         MaxLength="50"                         
-                                         CharacterCasing="Upper"
-                                         DisplayMember="Name"
+                                         MaxLength="50"                   
                                          HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
-                                         Provider="{StaticResource ResourceKey=StateSuggestionProvider}"
+                                         Provider="{Binding BuildingsSuggestionProvider}"
                                          Margin="0 5">
-                <editors:AutoCompleteTextBox.SelectedItem>
-                    <Binding Path="SelectedState" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
-                </editors:AutoCompleteTextBox.SelectedItem>
-                <editors:AutoCompleteTextBox.LoadingContent>
-                    <TextBlock Text="Loading..." Margin="5" FontSize="14" />
-                </editors:AutoCompleteTextBox.LoadingContent>
-            </editors:AutoCompleteTextBox>
-        </StackPanel>
+                        <editors:AutoCompleteTextBox.SelectedItem>
+                            <Binding Path="Building" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
+                        </editors:AutoCompleteTextBox.SelectedItem>
+                        <editors:AutoCompleteTextBox.LoadingContent>
+                            <TextBlock Text="Loading..." Margin="5" />
+                        </editors:AutoCompleteTextBox.LoadingContent>
+                    </editors:AutoCompleteTextBox>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

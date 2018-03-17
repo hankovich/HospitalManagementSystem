@@ -16,18 +16,18 @@
 
         private readonly Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
-        private string city;
+        private GeoObject city;
 
-        private string street;
+        private GeoObject street;
 
-        private string building;
+        private GeoObject building;
 
         public CreateProfileViewModel(IBuildingsSuggestionProvider buildingsProvider)
         {
             this.BuildingsSuggestionProvider = buildingsProvider;
         }
 
-        public string City
+        public GeoObject City
         {
             get
             {
@@ -69,7 +69,7 @@
             }
         }
 
-        public string Street
+        public GeoObject Street
         {
             get
             {
@@ -91,6 +91,8 @@
                         propertyErrors.Clear();
                     }
 
+                    this.BuildingsSuggestionProvider.StreetsSuggestionProvider.SelectedStreet = value;
+
                     this.OnPropertyChanged();
                     this.OnRaiseErrorsChanged();
                 }
@@ -108,7 +110,7 @@
             }
         }
 
-        public string Building
+        public GeoObject Building
         {
             get
             {
@@ -129,6 +131,8 @@
                     {
                         propertyErrors.Clear();
                     }
+
+                    this.BuildingsSuggestionProvider.SelectedBuilding = value;
 
                     this.OnPropertyChanged();
                     this.OnRaiseErrorsChanged();

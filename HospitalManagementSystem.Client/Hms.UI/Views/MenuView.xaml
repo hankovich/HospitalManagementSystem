@@ -27,7 +27,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                
                 <Button Content="To Login" Command="{Binding Path=DataContext.LoginCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}}" Margin="5 10 20 5"/>
             </StackPanel>
         </ScrollViewer>

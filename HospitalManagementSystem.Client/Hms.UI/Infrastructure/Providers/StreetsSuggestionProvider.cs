@@ -1,48 +1,75 @@
 namespace Hms.UI.Infrastructure.Providers
 {
-    using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
+
+    using Hms.UI.Infrastructure.Helpers;
 
     public class StreetsSuggestionProvider : IStreetsSuggestionProvider
     {
-        private YandexGeocoder geocoder = new YandexGeocoder();
+        private readonly YandexGeocoder geocoder = new YandexGeocoder();
+        private readonly YandexSuggester suggester = new YandexSuggester();
 
         public StreetsSuggestionProvider(ICitiesSuggestionProvider citiesSuggestionProvider)
         {
             this.CitiesSuggestionProvider = citiesSuggestionProvider;
         }
 
-        public async Task<IEnumerable> GetSuggestionsAsync(string filter)
+        public IEnumerable GetSuggestions(string filter)
         {
-            GeoObjectCollection objects = this.geocoder.GeocodeAsync(filter, 10000, LangType.RU, new SearchArea()).GetAwaiter().GetResult();
+            if (this.CitiesSuggestionProvider.SelectedCity == null)
+            {
+                return Enumerable.Empty<object>();
+            }
 
-            return objects.Select(geo => geo.GeocoderMetaData).Where(data => data.Kind == GeoObjectKind.Street)
-                .Select(data => this.BuildSuggestion(data.Address)).Where(o => o != null).Distinct().ToList();
+            GeoObject city = this.CitiesSuggestionProvider.SelectedCity;
+
+            IEnumerable<string> suggestions = this.suggester.SuggestAsync(this.BuildFilter(city, filter), LangType.RU).GetAwaiter().GetResult().Take(100);
+
+            GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.geocoder.GeocodeAsync(elem, 5).GetAwaiter().GetResult()));
+
+            return objects.Where(o => this.IsStreetInCity(o, city)).Distinct().ToList();
         }
 
-        private object BuildSuggestion(Address address)
+        private bool IsStreetInCity(GeoObject data, GeoObject city)
         {
-            if (address.Street == null)
+            if (data.GeocoderMetaData.Kind == GeoObjectKind.Street)
             {
-                return null;
+                if (string.IsNullOrEmpty(data.ToString())
+                    || data.GeocoderMetaData.Address.Locality != city.GeocoderMetaData.Address.Locality
+                    || data.GeocoderMetaData.Address.Province != city.GeocoderMetaData.Address.Province)
+                {
+                    return false;
+                }
+
+                return true;
             }
 
-            var tokens = this.CitiesSuggestionProvider.SelectedCity.Split(
-                new[] { ',', ' ' },
-                StringSplitOptions.RemoveEmptyEntries);
-
-            if (address.Locality == tokens[0] && address.Province == tokens[1] && address.Country == tokens[2])
+            if (data.GeocoderMetaData.Kind == GeoObjectKind.House)
             {
-                return address.Street;
+                if (string.IsNullOrEmpty(data.ToString())
+                    || data.GeocoderMetaData.Address.Locality != city.GeocoderMetaData.Address.Locality
+                    || data.GeocoderMetaData.Address.Province != city.GeocoderMetaData.Address.Province)
+                {
+                    return false;
+                }
+
+                data.GeocoderMetaData.Kind = GeoObjectKind.Street;
+
+                return true;
             }
-            
-            return null;
+
+            return false;
+        }
+
+        private string BuildFilter(GeoObject city, string filter)
+        {
+            return $"{city.GeocoderMetaData.Address.Locality} {filter}";
         }
 
         public ICitiesSuggestionProvider CitiesSuggestionProvider { get; }
 
-        public string SelectedStreet { get; set; }
+        public GeoObject SelectedStreet { get; set; }
     }
 }

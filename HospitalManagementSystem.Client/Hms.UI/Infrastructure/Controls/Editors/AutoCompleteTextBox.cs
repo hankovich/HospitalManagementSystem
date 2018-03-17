@@ -753,7 +753,7 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             {
                 this._filter = searchText;
                 this._actb.IsLoading = true;
-                ParameterizedThreadStart thInfo = new ParameterizedThreadStart(this.GetSuggestionsAsync);
+                ParameterizedThreadStart thInfo = new ParameterizedThreadStart(this.GetSuggestions);
                 Thread th = new Thread(thInfo);
                 th.Start(new object[] { searchText, this._actb.Provider });
             }
@@ -774,14 +774,14 @@ namespace Hms.UI.Infrastructure.Controls.Editors
 
             }
 
-            private async void GetSuggestionsAsync(object param)
+            private void GetSuggestions(object param)
             {
                 object[] args = param as object[];
                 string searchText = Convert.ToString(args[0]);
                 ISuggestionProvider provider = args[1] as ISuggestionProvider;
-                IEnumerable list = await provider.GetSuggestionsAsync(searchText);
+                IEnumerable list = provider.GetSuggestions(searchText);
 
-                await this._actb.Dispatcher.BeginInvoke(
+                this._actb.Dispatcher.BeginInvoke(
                     new Action<IEnumerable, string>(this.DisplaySuggestions),
                     DispatcherPriority.Background,
                     new object[] { list, searchText });

@@ -1,31 +1,25 @@
 namespace Hms.UI.Infrastructure.Providers
 {
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
+
+    using Hms.UI.Infrastructure.Helpers;
 
     public class CitiesSuggestionProvider : ICitiesSuggestionProvider
     {
-        private YandexGeocoder geocoder = new YandexGeocoder();
+        private readonly YandexGeocoder geocoder = new YandexGeocoder();
+        private readonly YandexSuggester suggester = new YandexSuggester();
 
-        public async Task<IEnumerable> GetSuggestionsAsync(string filter)
+        public IEnumerable GetSuggestions(string filter)
         {
-            GeoObjectCollection objects = this.geocoder.GeocodeAsync(filter).GetAwaiter().GetResult();
+            IEnumerable<string> suggestions = this.suggester.SuggestAsync(filter).GetAwaiter().GetResult().Take(5);
 
-            return objects.Select(geo => geo.GeocoderMetaData).Where(data => data.Kind == GeoObjectKind.Locality)
-                .Select(data => this.BuildSuggestion(data.Address)).Where(o => o != null).Distinct().ToList();
+            GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.geocoder.GeocodeAsync(elem, 5).GetAwaiter().GetResult()));
+
+            return objects.Where(geo => geo.GeocoderMetaData.Kind == GeoObjectKind.Locality && !string.IsNullOrEmpty(geo.ToString())).Distinct().ToList().Distinct();
         }
 
-        private object BuildSuggestion(Address address)
-        {
-            if (address.Locality == null || address.Province == null || address.Country == null)
-            {
-                return null;
-            }
-
-            return $"{address.Locality}, {address.Province}, {address.Country}";
-        }
-
-        public string SelectedCity { get; set; }
+        public GeoObject SelectedCity { get; set; }
     }
 }

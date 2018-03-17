@@ -16,6 +16,8 @@ namespace Hms.UI.Infrastructure.Providers
 
         public string Hydro { get; set; }
 
+        public string House { get; set; }
+
         public string Other { get; set; }
     }
 }

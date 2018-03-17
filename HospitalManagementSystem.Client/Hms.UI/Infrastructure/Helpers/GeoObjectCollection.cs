@@ -1,7 +1,9 @@
 namespace Hms.UI.Infrastructure.Providers
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Xml;
@@ -13,6 +15,11 @@ namespace Hms.UI.Infrastructure.Providers
         public GeoObjectCollection()
         {
             this.geoObjects = new List<GeoObject>();
+        }
+
+        public GeoObjectCollection(IEnumerable<GeoObject> geoObjects)
+        {
+            this.geoObjects = new List<GeoObject>(geoObjects);
         }
 
         public GeoObjectCollection(string xml)
@@ -47,16 +54,21 @@ namespace Hms.UI.Infrastructure.Providers
                 var boundsNode = node.SelectSingleNode("opengis:boundedBy/opengis:Envelope", ns);
                 var metaNode = node.SelectSingleNode("opengis:metaDataProperty/geocoder:GeocoderMetaData", ns);
 
-                var components = metaNode?.SelectSingleNode("address:Address", ns)?.ChildNodes.OfType<XmlNode>()
-                    .Where(n => n.Name == "Component");
+                var components =
+                    metaNode?.SelectSingleNode("address:Address", ns)?
+                        .ChildNodes.OfType<XmlNode>()
+                        .Where(n => n.Name == "Component");
 
                 Address address = new Address();
 
-                components?.ToList().ForEach(
-                    c => typeof(Address).GetProperty(
+                components?.ToList()
+                    .ForEach(
+                        c =>
+                        typeof(Address).GetProperty(
                             c["kind"].InnerText,
-                            BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
-                        ?.SetValue(address, c["name"].InnerText));
+                            BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?
+                            .SetValue(address, c["name"].InnerText));
+
 
                 GeoObject obj = new GeoObject
                 {
@@ -65,12 +77,10 @@ namespace Hms.UI.Infrastructure.Providers
                         boundsNode == null
                             ? new GeoBound()
                             : new GeoBound(
-                                GeoPoint.Parse(boundsNode["lowerCorner"]?.InnerText),
-                                GeoPoint.Parse(boundsNode["upperCorner"]?.InnerText)),
-                    GeocoderMetaData = new GeoMetaData(
-                        metaNode?["text"]?.InnerText,
-                        metaNode?["kind"]?.InnerText,
-                        address)
+                                  GeoPoint.Parse(boundsNode["lowerCorner"]?.InnerText),
+                                  GeoPoint.Parse(boundsNode["upperCorner"]?.InnerText)),
+                    GeocoderMetaData =
+                        new GeoMetaData(metaNode?["text"]?.InnerText, metaNode?["kind"]?.InnerText, address)
                 };
 
                 this.geoObjects.Add(obj);

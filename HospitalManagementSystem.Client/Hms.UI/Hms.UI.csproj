@@ -42,6 +42,10 @@
       <HintPath>..\packages\MahApps.Metro.1.6.0\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\HospitalManagementSystem.Server\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
@@ -95,6 +99,8 @@
     <Compile Include="Infrastructure\Helpers\GeoObjectCollection.cs" />
     <Compile Include="Infrastructure\Helpers\GeoObjectKind.cs" />
     <Compile Include="Infrastructure\Helpers\GeoPoint.cs" />
+    <Compile Include="Infrastructure\Helpers\YandexBase.cs" />
+    <Compile Include="Infrastructure\Helpers\YandexSuggester.cs" />
     <Compile Include="Infrastructure\Providers\CitiesSuggestionProvider.cs" />
     <Compile Include="Infrastructure\Providers\BuildingsSuggestionProvider.cs" />
     <Compile Include="Infrastructure\Helpers\LangType.cs" />
@@ -228,6 +234,8 @@
   <ItemGroup>
     <Resource Include="Images\blank.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\hospital.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

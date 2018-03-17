@@ -82,13 +82,16 @@
     {
         public IEnumerable<State> ListOfStates { get; set; }
 
-        public Task<IEnumerable> GetSuggestionsAsync(string filter)
+        public IEnumerable GetSuggestions(string filter)
         {
-            if (string.IsNullOrWhiteSpace(filter)) return null;
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                return null;
+            }
+
             return
-                Task.FromResult((IEnumerable)ListOfStates
-                    .Where(state => state.Name.StartsWith(filter, StringComparison.CurrentCultureIgnoreCase))
-                    .ToList());
+                ListOfStates.Where(state => state.Name.StartsWith(filter, StringComparison.CurrentCultureIgnoreCase))
+                    .ToList();
         }
 
         public StateSuggestionProvider()

@@ -4,6 +4,6 @@ namespace Hms.UI.Infrastructure.Providers
 
     public interface ICitiesSuggestionProvider : ISuggestionProvider
     {
-        string SelectedCity { get; set; }
+        GeoObject SelectedCity { get; set; }
     }
 }
