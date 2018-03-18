@@ -8,6 +8,7 @@
     using Hms.API.Attributes;
     using Hms.API.Infrastructure;
     using Hms.Common.Interface.Domain;
+    using Hms.Services.Interface;
 
     [RoutePrefix("api/region")]
     public class PolyclinicRegionController : ApiController

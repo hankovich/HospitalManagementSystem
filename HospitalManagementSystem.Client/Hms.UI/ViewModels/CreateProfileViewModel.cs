@@ -27,6 +27,8 @@
 
         public IProfileService ProfileService { get; }
 
+        public IBuildingService BuildingService { get; set; }
+
         public IDialogCoordinator DialogCoordinator { get; }
 
         public ICommand AddPhotoCommand { get; set; }
@@ -65,10 +67,11 @@
 
         #endregion
 
-        public CreateProfileViewModel(IBuildingsSuggestionProvider buildingsProvider, IProfileService profileService, IDialogCoordinator dialogCoordinator)
+        public CreateProfileViewModel(IBuildingsSuggestionProvider buildingsProvider, IProfileService profileService, IBuildingService buildingService, IDialogCoordinator dialogCoordinator)
         {
             this.BuildingsSuggestionProvider = buildingsProvider;
             this.ProfileService = profileService;
+            this.BuildingService = buildingService;
             this.DialogCoordinator = dialogCoordinator;
 
             this.AddPhotoCommand = new RelayCommand(this.OpenPhotoAsBytes);
@@ -82,10 +85,12 @@
             {
                 int userId = this.ProfileService.Client.UserId.Value;
 
-                //int buildingId = await this.BuildingService. ;
+                BuildingAddress address = await this.BuildingService.GetBuildingAsync(this.Building.Point);
+
                 Profile profile = new Profile
                 {
                     UserId = userId,
+                    BuildingId = address.Id,
                     DateOfBirth = this.DateOfBirth.Value,
                     FirstName = this.FirstName,
                     MiddleName = this.MiddleName,

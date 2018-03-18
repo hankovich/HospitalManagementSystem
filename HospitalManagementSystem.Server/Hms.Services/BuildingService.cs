@@ -8,12 +8,12 @@
 
     public class BuildingService : IBuildingService
     {
-        public BuildingService(IClient client)
+        public BuildingService(IPolyclinicRegionService polyclinicRegionService)
         {
-            this.Client = client;
+            this.PolyclinicRegionService = polyclinicRegionService;
         }
 
-        public IClient Client { get; set; }
+        public IPolyclinicRegionService PolyclinicRegionService { get; set; }
 
         public Task<BuildingAddress> GetBuildingAsync(int buildingId)
         {
