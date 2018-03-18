@@ -26,7 +26,7 @@
             <Label Content="Login" Margin="5"/>
             <TextBox Text="{Binding Login}" Margin="5"/>
             <Label Content="Password" Margin="5"/>
-            <PasswordBox Name="PasswordBox" Margin="5" />
+            <PasswordBox Name="PasswordBox" Margin="5"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>

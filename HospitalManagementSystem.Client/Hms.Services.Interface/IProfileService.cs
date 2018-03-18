@@ -6,6 +6,8 @@
 
     public interface IProfileService
     {
+        IClient Client { get; }
+
         Task<Profile> GetProfileAsync(int userId);
 
         Task<Profile> GetCurrentProfileAsync();

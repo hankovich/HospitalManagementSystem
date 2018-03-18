@@ -3,16 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hms.UI.Views"
              xmlns:editors="clr-namespace:Hms.UI.Infrastructure.Controls.Editors"
              xmlns:ui="clr-namespace:Hms.UI"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
              mc:Ignorable="d" 
+             mah:DialogParticipation.Register="{Binding}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <ui:StateSuggestionProvider x:Key="StateSuggestionProvider" />
+        <converters:CommandChainMultiConverter x:Key="CommandChainMultiConverter"/>
 
+        <BitmapImage x:Key="BlankImage" UriSource="/SignalChat;component/Imgs/blank.png"/>
+        <converters:ByteBitmapSourceConverter x:Key="ByteBmpSrcConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        
         <Style x:Key="MaterialAutoCompleteTextBox" TargetType="editors:AutoCompleteTextBox" >
             <Setter Property="Focusable" Value="True" />
             <Setter Property="BorderThickness" Value="0 0 0 1"/>
@@ -48,7 +53,7 @@
                                              VerticalAlignment="Center"
                                              MaxLength="{Binding Path=MaxLength, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                              CharacterCasing="{Binding Path=CharacterCasing, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
-                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" />
+                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" Style="{DynamicResource CrearableTextBox}"/>
                                 </Grid>
                             </DockPanel>
                             <Popup x:Name="PART_Popup"
@@ -114,14 +119,38 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="CrearableTextBox" BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
+            <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
+            <Style.Triggers>
+                <Trigger Property="mah:TextBoxHelper.HasText" Value="False">
+                    <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="False" />
+                </Trigger>
+                <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
+                    <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <TabControl Margin="15">
-            <TabItem Header="Personal Info">
-                
+        <TabControl Margin="15" TabStripPlacement="Left" mah:TabControlHelper.Underlined="TabItems">
+            <TabItem Header="Personal Info" Height="39" VerticalAlignment="Top">
+                <StackPanel Margin="50" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <Label Content="First Name" Target="{Binding ElementName=FirstName}" Margin="0 5"/>
+                    <TextBox Name="FirstName" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding FirstName, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+
+                    <Label Content="Middle Name" Target="{Binding ElementName=MiddleName}" Margin="0 5"/>
+                    <TextBox Name="MiddleName" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding MiddleName, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+
+                    <Label Content="Last Name" Target="{Binding ElementName=LastName}" Margin="0 5"/>
+                    <TextBox Name="LastName" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding LastName, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+
+                    <Label Content="Date Of Birth" Target="{Binding ElementName=DateOfBirth}" Margin="0 5"/>
+                    <DatePicker Name="DateOfBirth" SelectedDate="{Binding DateOfBirth, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+                </StackPanel>
             </TabItem>
-            <TabItem Header="Address Info">
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TabItem Header="Address Info" Height="39" VerticalAlignment="Bottom">
+                <StackPanel Margin="50" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                     <Label Target="{Binding ElementName=City}" Content="City" Margin="0 5"/>
                     <editors:AutoCompleteTextBox x:Name="City"
                                          HorizontalAlignment="Stretch"
@@ -169,7 +198,61 @@
                             <TextBlock Text="Loading..." Margin="5" />
                         </editors:AutoCompleteTextBox.LoadingContent>
                     </editors:AutoCompleteTextBox>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Entrance" Target="{Binding ElementName=Entrance}" Margin="0 5"/>
+                        <mah:NumericUpDown Grid.Row="1" Minimum="1" Grid.Column="0" Name="Entrance" Margin="0 5 10 5" />
+
+                        <Label Grid.Row="0" Grid.Column="1" Content="Floor" Target="{Binding ElementName=Floor}" Margin="0 5"/>
+                        <mah:NumericUpDown Grid.Row="1" Minimum="0" Grid.Column="1" Name="Floor" Margin="0 5 10 5" />
+                        
+                        <Label Grid.Row="0" Grid.Column="2" Content="Flat" Target="{Binding ElementName=Entrance}" Margin="0 5"/>
+                        <mah:NumericUpDown Grid.Row="1" Minimum="1" Grid.Column="2" Name="Flat" Margin="0 5 0 5" />
+                    </Grid>
                 </StackPanel>
+            </TabItem>
+            <TabItem Header="Profile Info">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.RowSpan="2" Margin="50" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <Label Content="Photo" Target="{Binding ElementName=Photo}" Margin="0 5"/>
+                        <Button Name="Photo" Command="{Binding AddPhotoCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 5" MinHeight="100" MinWidth="100">
+                            <Image Source="{Binding Photo, Converter={StaticResource ByteBmpSrcConverter}, TargetNullValue={StaticResource BlankImage}}" Stretch="UniformToFill" MaxHeight="100" MaxWidth="100"/>
+                        </Button>
+
+                        <Label Content="Phone Number" Target="{Binding ElementName=PhoneNumber}" Margin="0 5"/>
+                        <TextBox Name="PhoneNumber" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding Phone, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+                    </StackPanel>
+
+                    <mah:ProgressRing Grid.Row="1" Grid.Column="0" Height="40" Width="40" Margin="0 0 0 15" HorizontalAlignment="Stretch" Visibility="{Binding ElementName=Register, Path=Command.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Name="Register"  Grid.Row="1" Grid.Column="1" Content="Register" Margin="0 0 50 30" VerticalAlignment="Stretch">
+                        <Button.Command>
+                            <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
+                                <Binding Path="ValidateCommand"/>
+                                <Binding Path="CreateProfileCommand"/>
+                                <Binding Path="DataContext.MainViewCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
+                            </MultiBinding>
+                        </Button.Command>
+                    </Button>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

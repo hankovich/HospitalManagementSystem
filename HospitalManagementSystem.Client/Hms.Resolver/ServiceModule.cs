@@ -13,6 +13,8 @@
             this.Bind<IMedicalCardService>().To<MedicalCardService>();
             this.Bind<IProfileService>().To<ProfileService>();
             this.Bind<IAccountService>().To<AccountService>();
+            this.Bind<IBuildingService>().To<BuildingService>();
+            this.Bind<IPolyclinicRegionService>().To<PolyclinicRegionService>();
         }
     }
 }

@@ -10,6 +10,10 @@
 
         public string Building { get; set; }
 
+        public double Latitude { get; set; }
+
+        public double Longitude { get; set; }
+
         public PolyclinicRegion PolyclinicRegion { get; set; }
     }
 }

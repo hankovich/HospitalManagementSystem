@@ -34,29 +34,10 @@ namespace Hms.UI.Infrastructure.Providers
 
         private bool IsStreetInCity(GeoObject data, GeoObject city)
         {
-            if (data.GeocoderMetaData.Kind == GeoObjectKind.Street)
+            if (data.GeocoderMetaData.Kind == GeoObjectKind.Street && !string.IsNullOrEmpty(data.ToString())
+                && data.GeocoderMetaData.Address.Locality == city.GeocoderMetaData.Address.Locality
+                && data.GeocoderMetaData.Address.Province == city.GeocoderMetaData.Address.Province)
             {
-                if (string.IsNullOrEmpty(data.ToString())
-                    || data.GeocoderMetaData.Address.Locality != city.GeocoderMetaData.Address.Locality
-                    || data.GeocoderMetaData.Address.Province != city.GeocoderMetaData.Address.Province)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-            if (data.GeocoderMetaData.Kind == GeoObjectKind.House)
-            {
-                if (string.IsNullOrEmpty(data.ToString())
-                    || data.GeocoderMetaData.Address.Locality != city.GeocoderMetaData.Address.Locality
-                    || data.GeocoderMetaData.Address.Province != city.GeocoderMetaData.Address.Province)
-                {
-                    return false;
-                }
-
-                data.GeocoderMetaData.Kind = GeoObjectKind.Street;
-
                 return true;
             }
 

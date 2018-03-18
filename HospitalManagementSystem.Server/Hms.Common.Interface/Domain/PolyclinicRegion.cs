@@ -4,6 +4,8 @@ namespace Hms.Common.Interface.Domain
     {
         public int Id { get; set; }
 
+        public int PolyclinicId { get; set; }
+
         public int RegionNumber { get; set; }
 
         public Doctor RegionHead { get; set; }

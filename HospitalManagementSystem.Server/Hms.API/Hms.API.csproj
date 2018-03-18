@@ -119,7 +119,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\EncryptedAttribute.cs" />
+    <Compile Include="Controllers\BuildingController.cs" />
     <Compile Include="Controllers\MedicalCardController.cs" />
+    <Compile Include="Controllers\PolyclinicRegionController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Infrastructure\ExpirationPolicy.cs" />
     <Compile Include="Infrastructure\HttpActionResult.cs" />

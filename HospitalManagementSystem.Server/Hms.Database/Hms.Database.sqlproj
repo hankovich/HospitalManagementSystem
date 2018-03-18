@@ -58,6 +58,7 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="PostDeployment" />
+    <Folder Include="PreDeployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Gadget.sql" />
@@ -92,5 +93,8 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\Seed.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="PreDeployment\DeleteAllData.sql" />
   </ItemGroup>
 </Project>
