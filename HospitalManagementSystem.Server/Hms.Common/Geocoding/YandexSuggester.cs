@@ -1,15 +1,15 @@
-﻿namespace Hms.UI.Infrastructure.Helpers
+﻿namespace Hms.Common.Geocoding
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Hms.UI.Infrastructure.Providers;
+    using Hms.Common.Interface.Geocoding;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class YandexSuggester : YandexBase
+    public class YandexSuggester : YandexBase, IGeoSuggester
     {
         private const string RequestUrl =
             "http://suggest-maps.yandex.ru/suggest-geo?lang={1}&fullpath=1&search_type=all&part={0}";
@@ -21,7 +21,7 @@
 
         public async Task<IEnumerable<string>> SuggestAsync(string part, LangType langType)
         {
-            string requestUrl = string.Format(RequestUrl, this.StringEncode(part), LangTypeToStr(langType));
+            string requestUrl = string.Format(RequestUrl, this.StringEncode(part), this.LangTypeToStr(langType));
 
             return await this.SuggestinRequestInternal(requestUrl);
         }
@@ -32,8 +32,8 @@
             GeoBound geoBound,
             bool rspn = false)
         {
-            string requestUrl = string.Format(RequestUrl, this.StringEncode(part), LangTypeToStr(langType))
-                                + $"&bbox={geoBound.lowerCorner.Long},{geoBound.lowerCorner.Lat}~{geoBound.upperCorner.Long},{geoBound.upperCorner.Lat}&rspn={(rspn ? 1 : 0)}";
+            string requestUrl = string.Format(RequestUrl, this.StringEncode(part), this.LangTypeToStr(langType))
+                                + base.BuildGeoBound(geoBound, rspn);
 
             return await this.SuggestinRequestInternal(requestUrl);
         }

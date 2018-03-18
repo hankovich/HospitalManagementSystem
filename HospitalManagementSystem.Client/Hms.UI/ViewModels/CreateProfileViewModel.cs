@@ -11,6 +11,7 @@
     using System.Windows.Input;
 
     using Hms.Common.Interface.Domain;
+    using Hms.Common.Interface.Geocoding;
     using Hms.Services.Interface;
     using Hms.UI.Annotations;
     using Hms.UI.Infrastructure.Commands;

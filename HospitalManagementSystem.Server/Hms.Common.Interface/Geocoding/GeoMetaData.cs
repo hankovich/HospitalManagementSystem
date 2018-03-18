@@ -1,4 +1,4 @@
-namespace Hms.UI.Infrastructure.Providers
+namespace Hms.Common.Interface.Geocoding
 {
     public class GeoMetaData
     {
@@ -17,7 +17,7 @@ namespace Hms.UI.Infrastructure.Providers
             this.Text = text;
         }
 
-        public GeoMetaData(string text, string kind)
+        public GeoMetaData(string text, string kind) : this(text)
         {
             this.Kind = ParseKind(kind);
         }

@@ -53,6 +53,9 @@
     <Compile Include="ElGamal\ElGamalDecryptor.cs" />
     <Compile Include="ElGamal\ElGamalEncryptor.cs" />
     <Compile Include="ElGamal\ElGamalKey.cs" />
+    <Compile Include="Geocoding\YandexBase.cs" />
+    <Compile Include="Geocoding\YandexGeocoder.cs" />
+    <Compile Include="Geocoding\YandexSuggester.cs" />
     <Compile Include="HttpContentService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

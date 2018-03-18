@@ -1,7 +1,9 @@
-namespace Hms.UI.Infrastructure.Providers
+namespace Hms.Common.Geocoding
 {
     using System.Net.Http;
     using System.Threading.Tasks;
+
+    using Hms.Common.Interface.Geocoding;
 
     public class YandexBase
     {
@@ -31,6 +33,12 @@ namespace Hms.UI.Infrastructure.Providers
             {
                 return await message.Content.ReadAsStringAsync();
             }
+        }
+
+        protected string BuildGeoBound(GeoBound geoBound, bool rspn = false)
+        {
+            return
+                $"&bbox={geoBound.LowerCorner.Longittude},{geoBound.LowerCorner.Latitude}~{geoBound.UpperCorner.Longittude},{geoBound.UpperCorner.Latitude}&rspn={(rspn ? 1 : 0)}";
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace Hms.UI.Infrastructure.Providers
+namespace Hms.Common.Interface.Geocoding
 {
     public enum LangType : byte
     {

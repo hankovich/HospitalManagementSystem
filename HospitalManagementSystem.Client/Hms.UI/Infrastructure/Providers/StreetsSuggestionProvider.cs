@@ -4,16 +4,20 @@ namespace Hms.UI.Infrastructure.Providers
     using System.Collections.Generic;
     using System.Linq;
 
-    using Hms.UI.Infrastructure.Helpers;
+    using Hms.Common.Interface.Geocoding;
 
     public class StreetsSuggestionProvider : IStreetsSuggestionProvider
     {
-        private readonly YandexGeocoder geocoder = new YandexGeocoder();
-        private readonly YandexSuggester suggester = new YandexSuggester();
+        private readonly IGeoSuggester geoSuggester;
+
+        private readonly IGeocoder geocoder;
 
         public StreetsSuggestionProvider(ICitiesSuggestionProvider citiesSuggestionProvider)
         {
             this.CitiesSuggestionProvider = citiesSuggestionProvider;
+
+            this.geocoder = this.CitiesSuggestionProvider.Geocoder;
+            this.geoSuggester = this.CitiesSuggestionProvider.GeoSuggester;
         }
 
         public IEnumerable GetSuggestions(string filter)
@@ -25,7 +29,7 @@ namespace Hms.UI.Infrastructure.Providers
 
             GeoObject city = this.CitiesSuggestionProvider.SelectedCity;
 
-            IEnumerable<string> suggestions = this.suggester.SuggestAsync(this.BuildFilter(city, filter), LangType.RU).GetAwaiter().GetResult().Take(100);
+            IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(city, filter), LangType.RU).GetAwaiter().GetResult().Take(100);
 
             GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.geocoder.GeocodeAsync(elem, 5).GetAwaiter().GetResult()));
 

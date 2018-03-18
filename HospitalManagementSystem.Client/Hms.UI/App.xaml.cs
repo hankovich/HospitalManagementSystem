@@ -23,7 +23,7 @@
 
             Kernel = new StandardKernel();
 
-            Kernel.Load(new NinjectModule[] { new MainModule(), new ServiceModule() });
+            Kernel.Load(new NinjectModule[] { new CommonModule(), new ServiceModule() });
 
             Kernel.Bind<IDialogCoordinator>().ToConstant(DialogCoordinator.Instance);
 

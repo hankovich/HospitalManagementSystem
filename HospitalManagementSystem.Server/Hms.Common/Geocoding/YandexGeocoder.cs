@@ -1,12 +1,13 @@
-namespace Hms.UI.Infrastructure.Helpers
+namespace Hms.Common.Geocoding
 {
     using System.Threading.Tasks;
 
-    using Hms.UI.Infrastructure.Providers;
+    using Hms.Common.Interface.Geocoding;
 
-    public class YandexGeocoder: YandexBase
+    public class YandexGeocoder : YandexBase, IGeocoder
     {
-        public const string RequestUrl = "http://geocode-maps.yandex.ru/1.x/?geocode={0}&format=xml&results={1}&lang={2}";
+        public const string RequestUrl =
+            "http://geocode-maps.yandex.ru/1.x/?geocode={0}&format=xml&results={1}&lang={2}";
 
         public YandexGeocoder()
         {
@@ -51,9 +52,11 @@ namespace Hms.UI.Infrastructure.Helpers
         /// <returns>Collection of found locations</returns>
         public async Task<GeoObjectCollection> GeocodeAsync(string location, short results, LangType lang)
         {
-            string requestUlr =
-                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang)) +
-                (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+            string requestUlr = string.Format(
+                RequestUrl,
+                this.StringEncode(location),
+                results,
+                this.LangTypeToStr(lang)) + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }
@@ -75,10 +78,13 @@ namespace Hms.UI.Infrastructure.Helpers
             SearchArea searchArea,
             bool rspn = false)
         {
-            string requestUlr =
-                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
-                + $"&ll={searchArea.longLat.ToString("{0},{1}")}&spn={searchArea.spread.ToString("{0},{1}")}&rspn={(rspn ? 1 : 0)}"
-                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+            string requestUlr = string.Format(
+                RequestUrl,
+                this.StringEncode(location),
+                results,
+                this.LangTypeToStr(lang))
+                                + $"&ll={searchArea.Center.ToString("{0},{1}")}&spn={searchArea.Center.ToString("{0},{1}")}&rspn={(rspn ? 1 : 0)}"
+                                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }
@@ -100,10 +106,13 @@ namespace Hms.UI.Infrastructure.Helpers
             GeoBound geoBound,
             bool rspn = false)
         {
-            string requestUlr =
-                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
-                + $"&bbox={geoBound.lowerCorner.Long},{geoBound.lowerCorner.Lat}~{geoBound.upperCorner.Long},{geoBound.upperCorner.Lat}&rspn={(rspn ? 1 : 0)}"
-                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+            string requestUlr = string.Format(
+                RequestUrl,
+                this.StringEncode(location),
+                results,
+                this.LangTypeToStr(lang))
+                                + base.BuildGeoBound(geoBound, rspn)
+                                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }

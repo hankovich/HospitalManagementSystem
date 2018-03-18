@@ -57,6 +57,17 @@
     <Compile Include="Exceptions\HmsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\SymmetricCryptoProviderExtensions.cs" />
+    <Compile Include="Geocoding\Address.cs" />
+    <Compile Include="Geocoding\GeoBound.cs" />
+    <Compile Include="Geocoding\GeoMetaData.cs" />
+    <Compile Include="Geocoding\GeoObject.cs" />
+    <Compile Include="Geocoding\GeoObjectCollection.cs" />
+    <Compile Include="Geocoding\GeoObjectKind.cs" />
+    <Compile Include="Geocoding\GeoPoint.cs" />
+    <Compile Include="Geocoding\IGeocoder.cs" />
+    <Compile Include="Geocoding\IGeoSuggester.cs" />
+    <Compile Include="Geocoding\LangType.cs" />
+    <Compile Include="Geocoding\SearchArea.cs" />
     <Compile Include="IAsymmetricCryptoProvider.cs" />
     <Compile Include="IHttpContentService.cs" />
     <Compile Include="ISymmetricCryptoProvider.cs" />
