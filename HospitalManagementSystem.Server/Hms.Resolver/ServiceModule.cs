@@ -35,6 +35,8 @@ namespace Hms.Resolver
             this.Bind<IProfileService>().To<ProfileService>();
             this.Bind<IBuildingService>().To<BuildingService>();
             this.Bind<IPolyclinicRegionService>().To<PolyclinicRegionService>();
+
+            this.Bind<IPolyclinicRegionProvider>().To<DummyPolyclinicRegionProvider>();
             
             this.Bind<RoundKeyExpirationSettings>().ToConstant(new RoundKeyExpirationSettings
             {

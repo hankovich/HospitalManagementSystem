@@ -142,7 +142,7 @@
         public async Task<ServerResponse<TContent>> SendAsync<TContent>(
             HttpMethod method,
             string url,
-            object content,
+            object content = null,
             bool needsEncryption = true)
         {
             if (needsEncryption)

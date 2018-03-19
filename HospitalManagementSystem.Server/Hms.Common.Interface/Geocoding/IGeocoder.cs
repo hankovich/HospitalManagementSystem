@@ -23,5 +23,13 @@
             LangType lang,
             GeoBound geoBound,
             bool rspn = false);
+
+        Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point);
+
+        Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point, GeoObjectKind kind);
+
+        Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point, GeoObjectKind kind, short results);
+
+        Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point, GeoObjectKind kind, short results, LangType lang);
     }
 }

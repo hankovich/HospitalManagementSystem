@@ -35,5 +35,26 @@
                 return new HttpActionResult(this, HttpStatusCode.BadRequest, e.Message);
             }
         }
+
+        [Encrypted]
+        [HttpPost, Route]
+        public async Task<IHttpActionResult> Post([FromBody] PolyclinicRegion polyclinicRegion)
+        {
+            try
+            {
+                if (polyclinicRegion == null)
+                {
+                    throw new ArgumentNullException($"{nameof(polyclinicRegion)} must be not null");    
+                }
+
+                int id = await this.PolyclinicRegionService.InsertOrUpdateRegionAsync(polyclinicRegion);
+
+                return this.Ok(id);
+            }
+            catch (Exception e)
+            {
+                return new HttpActionResult(this, HttpStatusCode.BadRequest, e.Message);
+            }
+        }
     }
 }

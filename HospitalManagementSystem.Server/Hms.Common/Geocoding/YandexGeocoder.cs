@@ -52,11 +52,9 @@ namespace Hms.Common.Geocoding
         /// <returns>Collection of found locations</returns>
         public async Task<GeoObjectCollection> GeocodeAsync(string location, short results, LangType lang)
         {
-            string requestUlr = string.Format(
-                RequestUrl,
-                this.StringEncode(location),
-                results,
-                this.LangTypeToStr(lang)) + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+            string requestUlr =
+                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
+                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }
@@ -78,13 +76,10 @@ namespace Hms.Common.Geocoding
             SearchArea searchArea,
             bool rspn = false)
         {
-            string requestUlr = string.Format(
-                RequestUrl,
-                this.StringEncode(location),
-                results,
-                this.LangTypeToStr(lang))
-                                + $"&ll={searchArea.Center.ToString("{0},{1}")}&spn={searchArea.Center.ToString("{0},{1}")}&rspn={(rspn ? 1 : 0)}"
-                                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+            string requestUlr =
+                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
+                + $"&ll={searchArea.Center.ToString("{0},{1}")}&spn={searchArea.Center.ToString("{0},{1}")}&rspn={(rspn ? 1 : 0)}"
+                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }
@@ -106,13 +101,39 @@ namespace Hms.Common.Geocoding
             GeoBound geoBound,
             bool rspn = false)
         {
-            string requestUlr = string.Format(
-                RequestUrl,
-                this.StringEncode(location),
-                results,
-                this.LangTypeToStr(lang))
-                                + base.BuildGeoBound(geoBound, rspn)
-                                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+            string requestUlr =
+                string.Format(RequestUrl, this.StringEncode(location), results, this.LangTypeToStr(lang))
+                + this.BuildGeoBound(geoBound, rspn)
+                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
+
+            return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
+        }
+
+        public async Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point)
+        {
+            return await this.ReverseGeocodeAsync(point, GeoObjectKind.House);
+        }
+
+        public async Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point, GeoObjectKind kind)
+        {
+            return await this.ReverseGeocodeAsync(point, GeoObjectKind.House, 10000);
+        }
+
+        public async Task<GeoObjectCollection> ReverseGeocodeAsync(GeoPoint point, GeoObjectKind kind, short results)
+        {
+            return await this.ReverseGeocodeAsync(point, GeoObjectKind.House, 10000, LangType.RU);
+        }
+
+        public async Task<GeoObjectCollection> ReverseGeocodeAsync(
+            GeoPoint point,
+            GeoObjectKind kind,
+            short results,
+            LangType lang)
+        {
+            string requestUlr =
+                string.Format(RequestUrl, $"{point.Longittude},{point.Latitude}", results, this.LangTypeToStr(lang))
+                + $"&kind={kind.ToString().ToLower()}"
+                + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 
             return new GeoObjectCollection(await this.DownloadStringAsync(requestUlr));
         }

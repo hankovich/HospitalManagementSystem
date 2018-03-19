@@ -1,10 +1,10 @@
-﻿namespace Hms.Services.Interface
+﻿namespace Hms.Repositories.Interface
 {
     using System.Threading.Tasks;
 
     using Hms.Common.Interface.Domain;
 
-    public interface IPolyclinicRegionService
+    public interface IPolyclinicRegionRepository
     {
         Task<PolyclinicRegion> GetRegionAsync(int id);
 

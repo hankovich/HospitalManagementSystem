@@ -1,8 +1,10 @@
 ﻿namespace Hms.Services
 {
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     using Hms.Common.Interface.Domain;
+    using Hms.Common.Interface.Exceptions;
     using Hms.Services.Interface;
 
     public class PolyclinicRegionService : IPolyclinicRegionService
@@ -14,14 +16,28 @@
 
         public IClient Client { get; set; }
 
-        public Task<PolyclinicRegion> GetPolyclinicRegionAsync(int polyclinicRegionId)
+        public async Task<PolyclinicRegion> GetPolyclinicRegionAsync(int polyclinicRegionId)
         {
-            throw new System.NotImplementedException();
+            ServerResponse<PolyclinicRegion> response = await this.Client.SendAsync<PolyclinicRegion>(HttpMethod.Get, $"api/region/{polyclinicRegionId}");
+
+            if (response.Content == null)
+            {
+                throw new HmsException(response.ReasonPhrase);
+            }
+
+            return response.Content;
         }
 
-        public Task<int> InsertOrUpdatePolyclinicRegionAsync(PolyclinicRegion polyclinicRegion)
+        public async Task<int> InsertOrUpdatePolyclinicRegionAsync(PolyclinicRegion polyclinicRegion)
         {
-            throw new System.NotImplementedException();
+            ServerResponse<int> response = await this.Client.SendAsync<int>(HttpMethod.Post, "api/region", polyclinicRegion);
+
+            if (response.Content == default(int))
+            {
+                throw new HmsException(response.ReasonPhrase);
+            }
+
+            return response.Content;
         }
     }
 }

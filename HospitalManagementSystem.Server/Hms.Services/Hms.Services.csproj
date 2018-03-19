@@ -51,6 +51,7 @@
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="AuthorizationService.cs" />
     <Compile Include="BuildingService.cs" />
+    <Compile Include="DummyPolyclinicRegionProvider.cs" />
     <Compile Include="GadgetKeysService.cs" />
     <Compile Include="MedicalCardService.cs" />
     <Compile Include="PolyclinicRegionService.cs" />

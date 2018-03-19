@@ -40,8 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBuildingRepository.cs" />
     <Compile Include="IGadgetKeysInfoRepository.cs" />
     <Compile Include="IMedicalCardRepository.cs" />
+    <Compile Include="IPolyclinicRegionRepository.cs" />
     <Compile Include="IProfileRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IUserRoleRepository.cs" />

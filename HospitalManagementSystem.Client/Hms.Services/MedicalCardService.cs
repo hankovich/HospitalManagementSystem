@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
 
     using Hms.Common.Interface.Domain;
+    using Hms.Common.Interface.Exceptions;
     using Hms.Services.Interface;
 
     public class MedicalCardService : IMedicalCardService
@@ -17,7 +18,14 @@
 
         public async Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20)
         {
-            return (await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}", null)).Content;
+            var response = await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}");
+
+            if (response.Content == null)
+            {
+                throw new HmsException(response.ReasonPhrase);
+            }
+
+            return response.Content;
         }
     }
 }
