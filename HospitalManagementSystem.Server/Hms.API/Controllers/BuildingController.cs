@@ -24,7 +24,7 @@
         public IBuildingService BuildingService { get; set; }
 
         [Encrypted]
-        [HttpGet, Route("{latitude}/{longitude}")]
+        [HttpGet, Route("{id}")]
         public async Task<IHttpActionResult> Get(int id)
         {
             try

@@ -59,7 +59,7 @@
 					ON D.[HealthcareInstitutionId] = HI.[Id]
 					LEFT JOIN [MedicalSpecialization] MS 
 					ON D.[MedicalSpecializationId] = MS.[Id]
-					WHERE PR.[Id] = 1";
+					WHERE PR.[Id] = @id";
 
                     var polyclinicRegions =
                         await connection
@@ -138,12 +138,12 @@
 		                    END
 	                    ELSE
 		                    BEGIN
-			                    INSERT INTO [Profile] ([PolyclinicId], [RegionNumber], [RegionHeadId]) OUTPUT INSERTED.ID VALUES 
+			                    INSERT INTO [PolyclinicRegion] ([PolyclinicId], [RegionNumber], [RegionHeadId]) OUTPUT INSERTED.Id VALUES 
                                                         (@PolyclinicId, @RegionNumber, @doctorId)
 		                    END
                     COMMIT TRAN";
 
-                    return await connection.ExecuteAsync(command, new { polyclinicRegion, doctorId });
+                    return await connection.ExecuteAsync(command, new { polyclinicRegion.PolyclinicId, polyclinicRegion.Id, polyclinicRegion.RegionNumber, doctorId });
                 }
             }
             catch (Exception e)

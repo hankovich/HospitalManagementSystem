@@ -103,7 +103,7 @@
 
                     var command = @"
                     BEGIN TRAN
-	                    IF EXISTS (SELECT * FROM [Doctor] WHERE [UserId] = @UserId) 
+	                    IF EXISTS (SELECT * FROM [Doctor] WHERE [UserId] = @Id) 
 		                    BEGIN
                                 UPDATE [Doctor] WITH (SERIALIZABLE) 
 						            SET 
@@ -111,17 +111,17 @@
                                         [HealthcareInstitutionId] = @healthcareInstitutionId,
                                         [CabinetNumber] = @CabinetNumber,
                                         [MedicalSpecializationId] = @medicalSpecializationId
-	                                    WHERE [UserId] = @UserId
-                                        SELECT @UserId
+	                                    WHERE [UserId] = @Id
+                                        SELECT @Id
 		                    END
 	                    ELSE
 		                    BEGIN
-			                    INSERT INTO [Doctor] ([Info], [HealthcareInstitutionId], [CabinetNumber], [MedicalSpecializationId) OUTPUT INSERTED.ID VALUES 
+			                    INSERT INTO [Doctor] ([Info], [HealthcareInstitutionId], [CabinetNumber], [MedicalSpecializationId]) OUTPUT INSERTED.UserId VALUES 
                                                         (@Info, @healthcareInstitutionId, @CabinetNumber, @medicalSpecializationId)
 		                    END
                     COMMIT TRAN";
 
-                    return await connection.ExecuteAsync(command, new { doctor, healthcareInstitutionId, medicalSpecializationId });
+                    return await connection.ExecuteAsync(command, new { doctor.Id, doctor.Info, doctor.CabinetNumber, healthcareInstitutionId, medicalSpecializationId });
                 }
             }
             catch (Exception e)

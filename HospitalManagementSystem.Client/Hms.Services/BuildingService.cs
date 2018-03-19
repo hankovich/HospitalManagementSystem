@@ -31,7 +31,7 @@
 
         public async Task<BuildingAddress> GetBuildingAsync(GeoPoint geoPoint)
         {
-            ServerResponse<BuildingAddress> response = await this.Client.SendAsync<BuildingAddress>(HttpMethod.Get, $"api/building/{geoPoint.Latitude}/{geoPoint.Longitude}");
+            ServerResponse<BuildingAddress> response = await this.Client.SendAsync<BuildingAddress>(HttpMethod.Get, $"api/building/{geoPoint.Latitude}/{geoPoint.Longitude}/");
 
             if (response.Content == null)
             {

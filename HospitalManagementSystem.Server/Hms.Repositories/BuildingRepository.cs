@@ -80,7 +80,7 @@
 
                     SELECT 
                     [Id]
-	                FROM [PolyclinicRegion]
+	                FROM [BuildingAddress]
                     WHERE [Latitude] = @latitude AND [Longitude] = @longitude";
 
                     var id = await connection.QueryFirstOrDefaultAsync<int>(command, new { latitude, longitude });
@@ -108,7 +108,7 @@
                     BEGIN TRAN
 	                    IF EXISTS (SELECT [Id] FROM [BuildingAddress] WHERE [Id] = @Id) 
 		                    BEGIN
-			                    UPDATE [Profile] WITH (SERIALIZABLE) 
+			                    UPDATE [BuildingAddress] WITH (SERIALIZABLE) 
 						                SET 
 	                                        [City] = @City, 
 	                                        [Street] = @Street, 
@@ -126,7 +126,7 @@
 		                    END
                     COMMIT TRAN";
 
-                    var id = await connection.QueryFirstOrDefaultAsync<int>(command, new { address, regionId });
+                    var id = await connection.QueryFirstOrDefaultAsync<int>(command, new { address.Id, address.City, address.Street, address.Building, address.Latitude, address.Longitude, regionId });
 
                     return id;
                 }

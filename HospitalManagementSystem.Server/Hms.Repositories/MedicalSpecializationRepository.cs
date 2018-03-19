@@ -71,7 +71,7 @@
 		                    END
 	                    ELSE
 		                    BEGIN
-			                    INSERT INTO [HealthcareInstitution] ([Name], [Description]) OUTPUT INSERTED.ID VALUES 
+			                    INSERT INTO [MedicalSpecialization] ([Name], [Description]) OUTPUT INSERTED.ID VALUES 
                                                         (@Name, @Description)
 		                    END
                     COMMIT TRAN";

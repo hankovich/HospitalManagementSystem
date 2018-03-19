@@ -63,7 +63,7 @@
 		                    BEGIN
                                 UPDATE [HealthcareInstitution] WITH (SERIALIZABLE) 
 						            SET 
-                                        [Name] = @Name,
+                                        [Name] = @Name
 	                                WHERE [Id] = @Id
                                 SELECT @Id
 		                    END
