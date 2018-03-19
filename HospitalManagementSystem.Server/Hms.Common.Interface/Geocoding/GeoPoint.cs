@@ -4,7 +4,7 @@ namespace Hms.Common.Interface.Geocoding
 
     public struct GeoPoint
     {
-        public double Longittude { get; }
+        public double Longitude { get; }
 
         public double Latitude { get; }
 
@@ -18,27 +18,27 @@ namespace Hms.Common.Interface.Geocoding
 
         public GeoPoint(double longitude, double latitude)
         {
-            this.Longittude = longitude;
+            this.Longitude = longitude;
             this.Latitude = latitude;
         }
 
 
         public override string ToString()
         {
-            return $"{this.Longittude.ToString(CultureInfo.InvariantCulture)} {this.Latitude.ToString(CultureInfo.InvariantCulture)}";
+            return $"{this.Longitude.ToString(CultureInfo.InvariantCulture)} {this.Latitude.ToString(CultureInfo.InvariantCulture)}";
         }
 
         public string ToString(string format)
         {
             return string.Format(
                 format,
-                this.Longittude.ToString(CultureInfo.InvariantCulture),
+                this.Longitude.ToString(CultureInfo.InvariantCulture),
                 this.Latitude.ToString(CultureInfo.InvariantCulture));
         }
 
         public override int GetHashCode()
         {
-            return ((int)this.Longittude) ^ (int)this.Latitude;
+            return ((int)this.Longitude) ^ (int)this.Latitude;
         }
     }
 }

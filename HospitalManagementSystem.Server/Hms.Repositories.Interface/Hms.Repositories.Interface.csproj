@@ -41,8 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBuildingRepository.cs" />
+    <Compile Include="IDoctorRepository.cs" />
     <Compile Include="IGadgetKeysInfoRepository.cs" />
+    <Compile Include="IHealthcareInstitutionRepository.cs" />
     <Compile Include="IMedicalCardRepository.cs" />
+    <Compile Include="IMedicalSpecializationRepository.cs" />
     <Compile Include="IPolyclinicRegionRepository.cs" />
     <Compile Include="IProfileRepository.cs" />
     <Compile Include="IUserRepository.cs" />

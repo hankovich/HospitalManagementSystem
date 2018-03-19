@@ -39,6 +39,14 @@
             GeoObject geoObject = objectCollection.First();
             Address address = geoObject.GeocoderMetaData.Address;
 
+            int buildingId =
+                await this.BuildingRepository.GetBuildingIdOrDefaultAsync(geoPoint.Latitude, geoPoint.Longitude);
+
+            if (buildingId != default(int))
+            {
+                return await this.BuildingRepository.GetBuildingAsync(buildingId);
+            }
+
             int id = await this.PolyclinicRegionProvider.GetPolyclinicRegionIdAsync(address);
 
             PolyclinicRegion region = await this.PolyclinicRegionService.GetRegionAsync(id);
@@ -49,12 +57,12 @@
                 Street = address.Street,
                 Building = address.House,
                 Latitude = geoPoint.Latitude,
-                Longitude = geoPoint.Longittude,
+                Longitude = geoPoint.Longitude,
                 PolyclinicRegion = region
             };
 
-            int buildingId = await this.InsertOrUpdateBuildingAsync(building);
-            building.Id = buildingId;
+            int insertedBuildingId = await this.InsertOrUpdateBuildingAsync(building);
+            building.Id = insertedBuildingId;
 
             return building;
         }

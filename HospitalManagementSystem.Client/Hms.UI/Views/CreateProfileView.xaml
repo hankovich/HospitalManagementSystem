@@ -211,13 +211,13 @@
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Entrance" Target="{Binding ElementName=Entrance}" Margin="0 5"/>
-                        <mah:NumericUpDown Grid.Row="1" Minimum="1" Grid.Column="0" Name="Entrance" Margin="0 5 10 5" />
+                        <mah:NumericUpDown Value="{Binding Entrance}" Grid.Row="1" Minimum="1" Grid.Column="0" Name="Entrance" Margin="0 5 10 5" />
 
                         <Label Grid.Row="0" Grid.Column="1" Content="Floor" Target="{Binding ElementName=Floor}" Margin="0 5"/>
-                        <mah:NumericUpDown Grid.Row="1" Minimum="0" Grid.Column="1" Name="Floor" Margin="0 5 10 5" />
+                        <mah:NumericUpDown Value="{Binding Floor}" Grid.Row="1" Minimum="0" Grid.Column="1" Name="Floor" Margin="0 5 10 5" />
                         
-                        <Label Grid.Row="0" Grid.Column="2" Content="Flat" Target="{Binding ElementName=Entrance}" Margin="0 5"/>
-                        <mah:NumericUpDown Grid.Row="1" Minimum="1" Grid.Column="2" Name="Flat" Margin="0 5 0 5" />
+                        <Label Grid.Row="0" Grid.Column="2" Content="Flat" Target="{Binding ElementName=Flat}" Margin="0 5"/>
+                        <mah:NumericUpDown Value="{Binding Flat}" Grid.Row="1" Minimum="1" Grid.Column="2" Name="Flat" Margin="0 5 0 5" />
                     </Grid>
                 </StackPanel>
             </TabItem>
@@ -248,7 +248,7 @@
                             <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
                                 <Binding Path="ValidateCommand"/>
                                 <Binding Path="CreateProfileCommand"/>
-                                <Binding Path="DataContext.MainViewCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
+                                <Binding Path="DataContext.MainCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
                             </MultiBinding>
                         </Button.Command>
                     </Button>

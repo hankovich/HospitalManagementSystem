@@ -77,6 +77,10 @@
             this.AddPhotoCommand = new RelayCommand(this.OpenPhotoAsBytes);
             this.ValidateCommand = AsyncCommand.Create(this.ValidateAsync);
             this.CreateProfileCommand = AsyncCommand.Create(this.CreateAndSaveProfileAsync);
+
+            this.Entrance = 1;
+            this.Floor = 0;
+            this.Flat = 1;
         }
 
         private async Task CreateAndSaveProfileAsync()

@@ -49,8 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildingRepository.cs" />
+    <Compile Include="DoctorRepository.cs" />
     <Compile Include="GadgetKeysInfoRepository.cs" />
+    <Compile Include="HealthcareInstitutionRepository.cs" />
     <Compile Include="MedicalCardRepository.cs" />
+    <Compile Include="MedicalSpecializationRepository.cs" />
     <Compile Include="PolyclinicRegionRepository.cs" />
     <Compile Include="ProfileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

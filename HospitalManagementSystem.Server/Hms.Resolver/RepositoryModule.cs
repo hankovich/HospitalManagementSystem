@@ -5,6 +5,7 @@
     using Hms.Repositories;
     using Hms.Repositories.Interface;
 
+    using Ninject;
     using Ninject.Modules;
 
     public class RepositoryModule : NinjectModule
@@ -18,8 +19,12 @@
             this.Bind<IUserRoleRepository>().ToConstructor(_ => new UserRoleRepository(connectionString));
             this.Bind<IMedicalCardRepository>().ToConstructor(_ => new MedicalCardRepository(connectionString));
             this.Bind<IProfileRepository>().ToConstructor(_ => new ProfileRepository(connectionString));
-            this.Bind<IPolyclinicRegionRepository>().ToConstructor(_ => new PolyclinicRegionRepository(connectionString));
-            this.Bind<IBuildingRepository>().ToConstructor(_ => new BuildingRepository(connectionString));
+            this.Bind<IHealthcareInstitutionRepository>().ToConstructor(_ => new HealthcareInstitutionRepository(connectionString));
+            this.Bind<IMedicalSpecializationRepository>().ToConstructor(_ => new MedicalSpecializationRepository(connectionString));
+            this.Bind<IDoctorRepository>().ToConstructor(_ => new DoctorRepository(connectionString, KernelInstance.Get<IHealthcareInstitutionRepository>(), KernelInstance.Get<IMedicalSpecializationRepository>()));
+
+            this.Bind<IPolyclinicRegionRepository>().ToConstructor(_ => new PolyclinicRegionRepository(connectionString, KernelInstance.Get<IDoctorRepository>()));
+            this.Bind<IBuildingRepository>().ToConstructor(_ => new BuildingRepository(connectionString, KernelInstance.Get<IPolyclinicRegionRepository>()));
         }
     }
 }

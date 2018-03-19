@@ -38,7 +38,7 @@ namespace Hms.Common.Geocoding
         protected string BuildGeoBound(GeoBound geoBound, bool rspn = false)
         {
             return
-                $"&bbox={geoBound.LowerCorner.Longittude},{geoBound.LowerCorner.Latitude}~{geoBound.UpperCorner.Longittude},{geoBound.UpperCorner.Latitude}&rspn={(rspn ? 1 : 0)}";
+                $"&bbox={geoBound.LowerCorner.Longitude},{geoBound.LowerCorner.Latitude}~{geoBound.UpperCorner.Longitude},{geoBound.UpperCorner.Latitude}&rspn={(rspn ? 1 : 0)}";
         }
     }
 }

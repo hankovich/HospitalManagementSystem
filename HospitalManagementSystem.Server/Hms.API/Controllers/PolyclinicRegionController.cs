@@ -21,7 +21,7 @@
         public IPolyclinicRegionService PolyclinicRegionService { get; set; }
 
         [Encrypted]
-        [HttpGet, Route("{id")]
+        [HttpGet, Route("{id}")]
         public async Task<IHttpActionResult> Get(int id)
         {
             try

@@ -8,6 +8,8 @@
     {
         Task<BuildingAddress> GetBuildingAsync(int id);
 
+        Task<int> GetBuildingIdOrDefaultAsync(double latitude, double longitude);
+
         Task<int> InsertOrUpdateBuildingAsync(BuildingAddress address);
     }
 }

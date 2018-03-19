@@ -74,7 +74,7 @@
 
         [Encrypted, Authorize(Roles = Role.Patient)]
         [HttpPut, Route]
-        public async Task<IHttpActionResult> Put(Profile profile)
+        public async Task<IHttpActionResult> Put([FromBody] Profile profile)
         {
             try
             {

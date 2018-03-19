@@ -131,7 +131,7 @@ namespace Hms.Common.Geocoding
             LangType lang)
         {
             string requestUlr =
-                string.Format(RequestUrl, $"{point.Longittude},{point.Latitude}", results, this.LangTypeToStr(lang))
+                string.Format(RequestUrl, $"{point.Longitude},{point.Latitude}", results, this.LangTypeToStr(lang))
                 + $"&kind={kind.ToString().ToLower()}"
                 + (string.IsNullOrEmpty(this.Key) ? string.Empty : "&key=" + this.Key);
 

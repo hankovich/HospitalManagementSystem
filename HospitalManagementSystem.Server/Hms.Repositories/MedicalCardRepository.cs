@@ -79,7 +79,7 @@
 								ON D.[HealthcareInstitutionId] = HI.[Id]
 								LEFT JOIN [MedicalSpecialization] MS 
 								ON D.[MedicalSpecializationId] = MS.[Id]
-								WHERE U.[Id] = @userID
+								WHERE U.[Id] = @userId
 								
                                 ORDER BY MCR.[AddedAtUtc] ASC
 								OFFSET @offset ROWS
