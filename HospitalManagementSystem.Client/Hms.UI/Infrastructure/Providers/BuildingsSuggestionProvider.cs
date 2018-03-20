@@ -29,7 +29,7 @@
 
             GeoObject street = this.StreetsSuggestionProvider.SelectedStreet;
 
-            IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(street, filter), LangType.RU).GetAwaiter().GetResult().Take(100);
+            IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(street, filter)).GetAwaiter().GetResult().Take(100);
 
             GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.geocoder.GeocodeAsync(elem, 15).GetAwaiter().GetResult()));
 

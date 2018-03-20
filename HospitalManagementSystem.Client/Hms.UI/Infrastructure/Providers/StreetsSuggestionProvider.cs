@@ -29,7 +29,7 @@ namespace Hms.UI.Infrastructure.Providers
 
             GeoObject city = this.CitiesSuggestionProvider.SelectedCity;
 
-            IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(city, filter), LangType.RU).GetAwaiter().GetResult().Take(100);
+            IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(city, filter)).GetAwaiter().GetResult().Take(100);
 
             GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.geocoder.GeocodeAsync(elem, 5).GetAwaiter().GetResult()));
 
