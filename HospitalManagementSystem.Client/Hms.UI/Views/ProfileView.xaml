@@ -19,7 +19,7 @@
             <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid SnapsToDevicePixels="True">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -31,13 +31,23 @@
         </Grid.RowDefinitions>
         <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
 
-        <Button Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Command="{Binding ChangePhotoCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5" MinHeight="100" MinWidth="100">
-            <Image Source="{Binding Profile.Photo, Converter={StaticResource ByteBmpSrcConverter},
-                            TargetNullValue={StaticResource BlankImage}}" Stretch="UniformToFill" MaxHeight="100" MaxWidth="100"/>
+        <Button Grid.Column="0" Grid.Row="0" Command="{Binding ChangePhotoCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5" MinHeight="100" MinWidth="100" Content="{Binding Profile.Photo, Converter={StaticResource ByteBmpSrcConverter},
+                            TargetNullValue={StaticResource BlankImage}}">
+            <Button.Template>
+                <ControlTemplate>
+                    <Grid>
+                        <Ellipse Height="100" Width="100">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding Content, RelativeSource={RelativeSource Mode=TemplatedParent}}"  Stretch="UniformToFill"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
         </Button>
 
-        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Profile.FirstName}" TextAlignment="Center" DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Profile.MiddleName}" TextAlignment="Center" DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Profile.FirstName}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Profile.MiddleName}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
     </Grid>
 </UserControl>

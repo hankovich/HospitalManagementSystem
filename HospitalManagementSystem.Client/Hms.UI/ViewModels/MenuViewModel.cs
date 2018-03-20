@@ -4,7 +4,6 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
-    using System.Windows.Input;
 
     using Hms.UI.Annotations;
 
@@ -21,7 +20,7 @@
                 this.MenuItems.Add(new MenuItem
                 {
                     Name = $"Koala_{rnd.Next() % 19 + 1}",
-                    Badge = rnd.NextDouble() > 0.5 ? 0 : rnd.Next() % 20
+                    Badge = rnd.NextDouble() > 0.5 ? (int?)null : rnd.Next() % 20
                 });    
             }
         }
@@ -58,6 +57,6 @@
     {
         public string Name { get; set; }
 
-        public int Badge { get; set; }
+        public int? Badge { get; set; }
     }
 }

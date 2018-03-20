@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:local="clr-namespace:Hms.UI.Views"
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
              xmlns:ui="clr-namespace:Hms.UI"
              dialog:DialogParticipation.Register="{Binding}"
@@ -24,9 +23,9 @@
 
         <StackPanel Grid.Column="1" VerticalAlignment="Center">
             <Label Content="Login" Margin="5"/>
-            <TextBox Text="{Binding Login}" Margin="5"/>
+            <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
             <Label Content="Password" Margin="5"/>
-            <PasswordBox Name="PasswordBox" Margin="5"/>
+            <PasswordBox Name="PasswordBox" Password="password" Margin="5" mah:PasswordBoxHelper.CapsLockWarningToolTip="Caps Lock is on" Style="{StaticResource Win8MetroPasswordBox}"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
