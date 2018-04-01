@@ -1,22 +1,18 @@
 ﻿namespace Hms.UI.ViewModels
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Controls;
     using System.Windows.Input;
 
     using Hms.Services.Interface;
-    using Hms.UI.Annotations;
     using Hms.UI.Infrastructure.Commands;
 
     using MahApps.Metro.Controls.Dialogs;
 
-    public class RegisterViewModel : INotifyPropertyChanged
+    public class RegisterViewModel : ViewModelBase
     {
         public RegisterViewModel(IAccountService accountService, IDialogCoordinator dialogCoordinator)
         {
@@ -82,14 +78,6 @@
                 await this.DialogCoordinator.ShowMessageAsync(this, "Oops", e.Message);
                 throw;
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -111,6 +111,7 @@
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\CreateProfileView.xaml.cs">
       <DependentUpon>CreateProfileView.xaml</DependentUpon>
     </Compile>

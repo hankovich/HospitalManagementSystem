@@ -1,16 +1,27 @@
 ﻿namespace Hms.UI.ViewModels
 {
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
     using System.Windows.Input;
 
-    using Hms.UI.Annotations;
     using Hms.UI.Infrastructure.Commands;
 
     using Ninject;
 
-    public class NavigationViewModel : INotifyPropertyChanged
+    public class NavigationViewModel : ViewModelBase
     {
+        private object selectedViewModel;
+
+        public NavigationViewModel()
+        {
+            this.MenuCommand = new RelayCommand(this.OpenMenu);
+            this.ProfileCommand = new RelayCommand(this.OpenProfile);
+            this.MainCommand = new RelayCommand(this.OpenMain);
+            this.LoginCommand = new RelayCommand(this.OpenLogin);
+            this.RegisterCommand = new RelayCommand(this.OpenRegister);
+            this.CreateProfileCommand = new RelayCommand(this.OpenCreateProfile);
+
+            this.OpenLogin();
+        }
+
         public ICommand MenuCommand { get; set; }
 
         public ICommand ProfileCommand { get; set; }
@@ -22,8 +33,6 @@
         public ICommand RegisterCommand { get; set; }
 
         public ICommand CreateProfileCommand { get; set; }
-
-        private object selectedViewModel;
 
         public object SelectedViewModel
         {
@@ -40,18 +49,6 @@
                     this.OnPropertyChanged();
                 }
             }
-        }
-
-        public NavigationViewModel()
-        { 
-            this.MenuCommand = new RelayCommand(this.OpenMenu);
-            this.ProfileCommand = new RelayCommand(this.OpenProfile);
-            this.MainCommand = new RelayCommand(this.OpenMain);
-            this.LoginCommand = new RelayCommand(this.OpenLogin);
-            this.RegisterCommand = new RelayCommand(this.OpenRegister);
-            this.CreateProfileCommand = new RelayCommand(this.OpenCreateProfile);
-
-            this.OpenLogin();
         }
 
         private void OpenLogin()
@@ -82,14 +79,6 @@
         private void OpenCreateProfile()
         {
             this.SelectedViewModel = App.Kernel.Get<CreateProfileViewModel>();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

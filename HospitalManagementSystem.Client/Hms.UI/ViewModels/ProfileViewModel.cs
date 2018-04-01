@@ -1,21 +1,17 @@
 ﻿namespace Hms.UI.ViewModels
 {
     using System;
-    using System.ComponentModel;
-    using System.Drawing;
     using System.IO;
-    using System.Runtime.CompilerServices;
 
     using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
-    using Hms.UI.Annotations;
     using Hms.UI.Infrastructure.Commands;
 
     using MahApps.Metro.Controls.Dialogs;
 
     using Microsoft.Win32;
 
-    public class ProfileViewModel : INotifyPropertyChanged
+    public class ProfileViewModel : ViewModelBase
     {
         private Profile profile;
 
@@ -56,6 +52,7 @@
                         {
                             var bytes = File.ReadAllBytes(diag.FileName);
 
+                            //TODO
                             //if (img.Width > MAX_IMAGE_WIDTH || img.Height > MAX_IMAGE_HEIGHT)
                             //{
                             //    dialogService.ShowNotification($"Image size should be {MAX_IMAGE_WIDTH} x {MAX_IMAGE_HEIGHT} or less.");
@@ -93,24 +90,12 @@
 
             set
             {
-                //if (this.profile != value)
+                //if (this.profile != value) // TODO
                 {
                     this.profile = value;
                     this.OnPropertyChanged();
                 }
             }
         }
-
-        #region NotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
     }
 }

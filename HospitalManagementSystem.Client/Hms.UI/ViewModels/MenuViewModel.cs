@@ -2,12 +2,8 @@
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
 
-    using Hms.UI.Annotations;
-
-    public class MenuViewModel : INotifyPropertyChanged
+    public class MenuViewModel : ViewModelBase
     {
         public MenuViewModel()
         {
@@ -42,14 +38,6 @@
                     this.OnPropertyChanged();
                 }
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
