@@ -45,12 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountService.cs" />
-    <Compile Include="BuildingService.cs" />
+    <Compile Include="BuildingDataService.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="GadgetInfoModel.cs" />
     <Compile Include="MedicalCardService.cs" />
-    <Compile Include="PolyclinicRegionService.cs" />
-    <Compile Include="ProfileService.cs" />
+    <Compile Include="PolyclinicRegionDataService.cs" />
+    <Compile Include="ProfileDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,9 +58,9 @@
       <Project>{503e23b4-34cd-422d-a192-501948e84838}</Project>
       <Name>Hms.Common.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hms.Services.Interface\Hms.Services.Interface.csproj">
+    <ProjectReference Include="..\Hms.Services.Interface\Hms.DataServices.Interface.csproj">
       <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>
-      <Name>Hms.Services.Interface</Name>
+      <Name>Hms.DataServices.Interface</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

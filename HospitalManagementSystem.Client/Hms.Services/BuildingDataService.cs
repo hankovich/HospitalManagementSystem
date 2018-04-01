@@ -8,9 +8,9 @@
     using Hms.Common.Interface.Geocoding;
     using Hms.Services.Interface;
 
-    public class BuildingService : IBuildingService
+    public class BuildingDataService : IBuildingDataService
     {
-        public BuildingService(IClient client)
+        public BuildingDataService(IClient client)
         {
             this.Client = client;
         }

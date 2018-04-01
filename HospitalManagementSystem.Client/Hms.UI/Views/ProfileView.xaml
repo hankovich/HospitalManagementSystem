@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hms.UI.Views"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
+             mah:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-        <BitmapImage x:Key="BlankImage" UriSource="/SignalChat;component/Imgs/blank.png"/>
+        <BitmapImage x:Key="BlankImage" UriSource="/Images/blank.png"/>
         <converters:ByteBitmapSourceConverter x:Key="ByteBmpSrcConverter"/>
     </UserControl.Resources>
     <i:Interaction.Triggers>

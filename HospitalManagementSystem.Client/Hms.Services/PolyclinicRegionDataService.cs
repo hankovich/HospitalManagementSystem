@@ -7,9 +7,9 @@
     using Hms.Common.Interface.Exceptions;
     using Hms.Services.Interface;
 
-    public class PolyclinicRegionService : IPolyclinicRegionService
+    public class PolyclinicRegionDataService : IPolyclinicRegionDataService
     {
-        public PolyclinicRegionService(IClient client)
+        public PolyclinicRegionDataService(IClient client)
         {
             this.Client = client;
         }

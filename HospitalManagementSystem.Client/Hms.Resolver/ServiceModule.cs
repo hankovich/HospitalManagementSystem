@@ -10,11 +10,11 @@
         public override void Load()
         {
             this.Bind<IClient>().To<Client>().InSingletonScope();
-            this.Bind<IMedicalCardService>().To<MedicalCardService>();
-            this.Bind<IProfileService>().To<ProfileService>();
+            this.Bind<IMedicalCardDataService>().To<MedicalCardDataService>();
+            this.Bind<IProfileDataService>().To<ProfileDataService>();
             this.Bind<IAccountService>().To<AccountService>();
-            this.Bind<IBuildingService>().To<BuildingService>();
-            this.Bind<IPolyclinicRegionService>().To<PolyclinicRegionService>();
+            this.Bind<IBuildingDataService>().To<BuildingDataService>();
+            this.Bind<IPolyclinicRegionDataService>().To<PolyclinicRegionDataService>();
         }
     }
 }

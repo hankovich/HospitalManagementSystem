@@ -4,7 +4,7 @@
 
     using Hms.Common.Interface.Domain;
 
-    public interface IPolyclinicRegionService
+    public interface IPolyclinicRegionDataService
     {
         Task<PolyclinicRegion> GetPolyclinicRegionAsync(int polyclinicRegionId);
 

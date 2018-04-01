@@ -4,7 +4,7 @@
 
     using Hms.Common.Interface.Domain;
 
-    public interface IProfileService
+    public interface IProfileDataService
     {
         IClient Client { get; }
 

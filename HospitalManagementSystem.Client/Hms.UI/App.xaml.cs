@@ -3,6 +3,7 @@
     using System.Windows;
 
     using Hms.Resolver;
+    using Hms.UI.Infrastructure.Controls.Editors;
     using Hms.UI.Infrastructure.Providers;
 
     using MahApps.Metro.Controls.Dialogs;
@@ -26,11 +27,7 @@
             Kernel.Load(new NinjectModule[] { new CommonModule(), new ServiceModule() });
 
             Kernel.Bind<IDialogCoordinator>().ToConstant(DialogCoordinator.Instance);
-
-            Kernel.Bind<ICitiesSuggestionProvider>().To<CitiesSuggestionProvider>();
-            Kernel.Bind<IStreetsSuggestionProvider>().To<StreetsSuggestionProvider>();
-            Kernel.Bind<IBuildingsSuggestionProvider>().To<BuildingsSuggestionProvider>();
-
+            Kernel.Bind<ISuggestionProvider>().To<GeoSuggestionProvider>();
             Current.MainWindow = Kernel.Get<MainWindow>();
             Current.MainWindow.Show();
         }

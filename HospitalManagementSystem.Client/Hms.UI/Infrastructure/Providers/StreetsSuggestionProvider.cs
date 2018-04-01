@@ -5,29 +5,23 @@ namespace Hms.UI.Infrastructure.Providers
     using System.Linq;
 
     using Hms.Common.Interface.Geocoding;
+    using Hms.UI.Infrastructure.Controls.Editors;
 
-    public class StreetsSuggestionProvider : IStreetsSuggestionProvider
+    public class StreetsSuggestionProvider : ISuggestionProvider
     {
         private readonly IGeoSuggester geoSuggester;
 
         private readonly IGeocoder geocoder;
 
-        public StreetsSuggestionProvider(ICitiesSuggestionProvider citiesSuggestionProvider)
+        public StreetsSuggestionProvider(IGeoSuggester geoSuggester, IGeocoder geocoder)
         {
-            this.CitiesSuggestionProvider = citiesSuggestionProvider;
-
-            this.geocoder = this.CitiesSuggestionProvider.Geocoder;
-            this.geoSuggester = this.CitiesSuggestionProvider.GeoSuggester;
+            this.geoSuggester = geoSuggester;
+            this.geocoder = geocoder;
         }
 
-        public IEnumerable GetSuggestions(string filter)
+        public IEnumerable GetSuggestions(string filter, object parameter)
         {
-            if (this.CitiesSuggestionProvider.SelectedCity == null)
-            {
-                return Enumerable.Empty<object>();
-            }
-
-            GeoObject city = this.CitiesSuggestionProvider.SelectedCity;
+            GeoObject city = (GeoObject)parameter;
 
             IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(city, filter)).GetAwaiter().GetResult().Take(100);
 
@@ -52,9 +46,5 @@ namespace Hms.UI.Infrastructure.Providers
         {
             return $"{city.GeocoderMetaData.Address.Locality} {filter}";
         }
-
-        public ICitiesSuggestionProvider CitiesSuggestionProvider { get; }
-
-        public GeoObject SelectedStreet { get; set; }
     }
 }

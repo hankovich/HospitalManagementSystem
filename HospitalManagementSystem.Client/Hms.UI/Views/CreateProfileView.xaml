@@ -7,17 +7,20 @@
              xmlns:ui="clr-namespace:Hms.UI"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:commands="clr-namespace:Hms.UI.Infrastructure.Commands"
+             xmlns:viewModels="clr-namespace:Hms.UI.ViewModels"
              mc:Ignorable="d" 
              mah:DialogParticipation.Register="{Binding}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:CommandChainMultiConverter x:Key="CommandChainMultiConverter"/>
 
-        <BitmapImage x:Key="BlankImage" UriSource="/SignalChat;component/Imgs/blank.png"/>
+        <BitmapImage x:Key="BlankImage" UriSource="/Images/blank.png"/>
         <converters:ByteBitmapSourceConverter x:Key="ByteBmpSrcConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-        
+        <converters:ArrayToObjectMultiConverter x:Key="ArrayToObjectMultiConverter"/>
+
         <Style x:Key="MaterialAutoCompleteTextBox" TargetType="editors:AutoCompleteTextBox" >
             <Setter Property="Focusable" Value="True" />
             <Setter Property="BorderThickness" Value="0 0 0 1"/>
@@ -53,7 +56,7 @@
                                              VerticalAlignment="Center"
                                              MaxLength="{Binding Path=MaxLength, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
                                              CharacterCasing="{Binding Path=CharacterCasing, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
-                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" Style="{DynamicResource CrearableTextBox}"/>
+                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" Style="{DynamicResource ClearableTextBox}"/>
                                 </Grid>
                             </DockPanel>
                             <Popup x:Name="PART_Popup"
@@ -120,7 +123,7 @@
             </Setter>
         </Style>
 
-        <Style x:Key="CrearableTextBox" BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
+        <Style x:Key="ClearableTextBox" BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
             <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
             <Style.Triggers>
                 <Trigger Property="mah:TextBoxHelper.HasText" Value="False">
@@ -134,125 +137,160 @@
     </UserControl.Resources>
     <Grid>
         <TabControl Margin="15" TabStripPlacement="Left" mah:TabControlHelper.Underlined="TabItems">
+
             <TabItem Header="Personal Info" Height="39" VerticalAlignment="Top">
-                <StackPanel Margin="50" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                    <Label Content="First Name" Target="{Binding ElementName=FirstName}" Margin="0 5"/>
-                    <TextBox Name="FirstName" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding FirstName, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+                <Border>
+                    <AdornerDecorator>
+                        <StackPanel Margin="50" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                            <Label Content="First Name" Target="{Binding ElementName=FirstName}" Margin="0 5"/>
+                            <TextBox Name="FirstName" Margin="0 5" Style="{StaticResource ClearableTextBox}" Text="{Binding Profile.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <Label Content="Middle Name" Target="{Binding ElementName=MiddleName}" Margin="0 5"/>
-                    <TextBox Name="MiddleName" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding MiddleName, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+                            <Label Content="Middle Name" Target="{Binding ElementName=MiddleName}" Margin="0 5"/>
+                            <TextBox Name="MiddleName" Margin="0 5" Style="{StaticResource ClearableTextBox}" Text="{Binding Profile.MiddleName, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <Label Content="Last Name" Target="{Binding ElementName=LastName}" Margin="0 5"/>
-                    <TextBox Name="LastName" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding LastName, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
+                            <Label Content="Last Name" Target="{Binding ElementName=LastName}" Margin="0 5"/>
+                            <TextBox Name="LastName" Margin="0 5" Style="{StaticResource ClearableTextBox}" Text="{Binding Profile.LastName, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <Label Content="Date Of Birth" Target="{Binding ElementName=DateOfBirth}" Margin="0 5"/>
-                    <DatePicker Name="DateOfBirth" SelectedDate="{Binding DateOfBirth, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
-                </StackPanel>
+                            <Label Content="Date Of Birth" Target="{Binding ElementName=DateOfBirth}" Margin="0 5"/>
+                            <DatePicker Name="DateOfBirth" SelectedDate="{Binding Profile.DateOfBirth, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </AdornerDecorator>
+                </Border>
             </TabItem>
+
+
             <TabItem Header="Address Info" Height="39" VerticalAlignment="Bottom">
-                <StackPanel Margin="50" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                    <Label Target="{Binding ElementName=City}" Content="City" Margin="0 5"/>
-                    <editors:AutoCompleteTextBox x:Name="City"
+                <Border>
+                    <AdornerDecorator>
+                        <StackPanel Margin="50" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                            <Label Target="{Binding ElementName=City}" Content="City" Margin="0 5"/>
+                            <editors:AutoCompleteTextBox x:Name="City"
                                          HorizontalAlignment="Stretch"
                                          MaxLength="50"                         
                                          HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
-                                         Provider="{Binding BuildingsSuggestionProvider.StreetsSuggestionProvider.CitiesSuggestionProvider}"
+                                         Provider="{Binding GeoSuggestionProvider}"
                                          Margin="0 5">
-                        <editors:AutoCompleteTextBox.SelectedItem>
-                            <Binding Path="City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
-                        </editors:AutoCompleteTextBox.SelectedItem>
-                        <editors:AutoCompleteTextBox.LoadingContent>
-                            <TextBlock Text="Loading..." Margin="5" />
-                        </editors:AutoCompleteTextBox.LoadingContent>
-                    </editors:AutoCompleteTextBox>
+                                <editors:AutoCompleteTextBox.SelectedItem>
+                                    <Binding Path="City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </editors:AutoCompleteTextBox.SelectedItem>
+                                <editors:AutoCompleteTextBox.LoadingContent>
+                                    <TextBlock Text="Loading..." Margin="5" />
+                                </editors:AutoCompleteTextBox.LoadingContent>
+                            </editors:AutoCompleteTextBox>
 
-                    <Label Target="{Binding ElementName=Street}" Content="Street" Margin="0 5"/>
-                    <editors:AutoCompleteTextBox x:Name="Street"
+                            <Label Target="{Binding ElementName=Street}" Content="Street" Margin="0 5"/>
+                            <editors:AutoCompleteTextBox x:Name="Street"
                                          HorizontalAlignment="Stretch"
                                          MaxLength="50"                         
                                          HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
-                                         Provider="{Binding BuildingsSuggestionProvider.StreetsSuggestionProvider}"
+                                         Provider="{Binding GeoSuggestionProvider}"
                                          Margin="0 5">
-                        <editors:AutoCompleteTextBox.SelectedItem>
-                            <Binding Path="Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
-                        </editors:AutoCompleteTextBox.SelectedItem>
-                        <editors:AutoCompleteTextBox.LoadingContent>
-                            <TextBlock Text="Loading..." Margin="5" />
-                        </editors:AutoCompleteTextBox.LoadingContent>
-                    </editors:AutoCompleteTextBox>
+                                <editors:AutoCompleteTextBox.SelectedItem>
+                                    <Binding Path="Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </editors:AutoCompleteTextBox.SelectedItem>
+                                <editors:AutoCompleteTextBox.LoadingContent>
+                                    <TextBlock Text="Loading..." Margin="5" />
+                                </editors:AutoCompleteTextBox.LoadingContent>
+                                <editors:AutoCompleteTextBox.ProviderParameter>
+                                    <MultiBinding Converter="{StaticResource ArrayToObjectMultiConverter}">
+                                        <Binding>
+                                            <Binding.Source>
+                                                <system:String>Street</system:String>
+                                            </Binding.Source>
+                                        </Binding>
+                                        <Binding Path="City" Mode="TwoWay"/>
+                                    </MultiBinding>
+                                </editors:AutoCompleteTextBox.ProviderParameter>
+                            </editors:AutoCompleteTextBox>
 
-                    <Label Target="{Binding ElementName=Building}" Content="Building" Margin="0 5"/>
-                    <editors:AutoCompleteTextBox x:Name="Building"
+                            <Label Target="{Binding ElementName=Building}" Content="Building" Margin="0 5"/>
+                            <editors:AutoCompleteTextBox x:Name="Building"
                                          HorizontalAlignment="Stretch"
                                          MaxLength="50"                   
                                          HorizontalContentAlignment="Stretch"
                                          Style="{StaticResource MaterialAutoCompleteTextBox}"
-                                         Provider="{Binding BuildingsSuggestionProvider}"
+                                         Provider="{Binding GeoSuggestionProvider}"
                                          Margin="0 5">
-                        <editors:AutoCompleteTextBox.SelectedItem>
-                            <Binding Path="Building" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnNotifyDataErrors="True"/>
-                        </editors:AutoCompleteTextBox.SelectedItem>
-                        <editors:AutoCompleteTextBox.LoadingContent>
-                            <TextBlock Text="Loading..." Margin="5" />
-                        </editors:AutoCompleteTextBox.LoadingContent>
-                    </editors:AutoCompleteTextBox>
+                                <editors:AutoCompleteTextBox.SelectedItem>
+                                    <Binding Path="Building" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                                </editors:AutoCompleteTextBox.SelectedItem>
+                                <editors:AutoCompleteTextBox.LoadingContent>
+                                    <TextBlock Text="Loading..." Margin="5" />
+                                </editors:AutoCompleteTextBox.LoadingContent>
+                                <editors:AutoCompleteTextBox.ProviderParameter>
+                                    <MultiBinding Converter="{StaticResource ArrayToObjectMultiConverter}">
+                                        <Binding>
+                                            <Binding.Source>
+                                                <system:String>Building</system:String>
+                                            </Binding.Source>
+                                        </Binding>
+                                        <Binding Path="Street" Mode="TwoWay"/>
+                                    </MultiBinding>
+                                </editors:AutoCompleteTextBox.ProviderParameter>
+                            </editors:AutoCompleteTextBox>
 
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="Entrance" Target="{Binding ElementName=Entrance}" Margin="0 5"/>
-                        <mah:NumericUpDown Value="{Binding Entrance}" Grid.Row="1" Minimum="1" Grid.Column="0" Name="Entrance" Margin="0 5 10 5" />
+                                <Label Grid.Row="0" Grid.Column="0" Content="Entrance" Target="{Binding ElementName=Entrance}" Margin="0 5"/>
+                                <mah:NumericUpDown Value="{Binding Profile.Entrance}" Grid.Row="1" Minimum="1" Grid.Column="0" Name="Entrance" Margin="0 5 10 5" />
 
-                        <Label Grid.Row="0" Grid.Column="1" Content="Floor" Target="{Binding ElementName=Floor}" Margin="0 5"/>
-                        <mah:NumericUpDown Value="{Binding Floor}" Grid.Row="1" Minimum="0" Grid.Column="1" Name="Floor" Margin="0 5 10 5" />
-                        
-                        <Label Grid.Row="0" Grid.Column="2" Content="Flat" Target="{Binding ElementName=Flat}" Margin="0 5"/>
-                        <mah:NumericUpDown Value="{Binding Flat}" Grid.Row="1" Minimum="1" Grid.Column="2" Name="Flat" Margin="0 5 0 5" />
-                    </Grid>
-                </StackPanel>
+                                <Label Grid.Row="0" Grid.Column="1" Content="Floor" Target="{Binding ElementName=Floor}" Margin="0 5"/>
+                                <mah:NumericUpDown Value="{Binding Profile.Floor}" Grid.Row="1" Minimum="0" Grid.Column="1" Name="Floor" Margin="0 5 10 5" />
+
+                                <Label Grid.Row="0" Grid.Column="2" Content="Flat" Target="{Binding ElementName=Flat}" Margin="0 5"/>
+                                <mah:NumericUpDown Value="{Binding Profile.Flat}" Grid.Row="1" Minimum="1" Grid.Column="2" Name="Flat" Margin="0 5 0 5" />
+                            </Grid>
+                        </StackPanel>
+                    </AdornerDecorator>
+                </Border>
             </TabItem>
             <TabItem Header="Profile Info">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+                <Border>
+                    <AdornerDecorator>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Row="0" Grid.RowSpan="2" Margin="50" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <Label Content="Photo" Target="{Binding ElementName=Photo}" Margin="0 5"/>
-                        <Button Name="Photo" Command="{Binding AddPhotoCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 5" MinHeight="100" MinWidth="100">
-                            <Image Source="{Binding Photo, Converter={StaticResource ByteBmpSrcConverter}, TargetNullValue={StaticResource BlankImage}}" Stretch="UniformToFill" MaxHeight="100" MaxWidth="100"/>
-                        </Button>
+                            <StackPanel Grid.Row="0" Grid.RowSpan="2" Margin="50" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Label Content="Photo" Target="{Binding ElementName=Photo}" Margin="0 5"/>
+                                <Button Name="Photo" Command="{Binding AddPhotoCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 5" MinHeight="100" MinWidth="100">
+                                    <Image Source="{Binding Profile.Photo, Converter={StaticResource ByteBmpSrcConverter}, TargetNullValue={StaticResource BlankImage}, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" MaxHeight="100" MaxWidth="100"/>
+                                </Button>
 
-                        <Label Content="Phone Number" Target="{Binding ElementName=PhoneNumber}" Margin="0 5"/>
-                        <TextBox Name="PhoneNumber" Margin="0 5" Style="{StaticResource CrearableTextBox}" Text="{Binding Phone, UpdateSourceTrigger=LostFocus, ValidatesOnNotifyDataErrors=True}"/>
-                    </StackPanel>
+                                <Label Content="Phone Number" Target="{Binding ElementName=PhoneNumber}" Margin="0 5"/>
+                                <TextBox Name="PhoneNumber" Margin="0 5" Style="{StaticResource ClearableTextBox}" Text="{Binding Profile.Phone, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
 
-                    <mah:ProgressRing Grid.Row="1" Grid.Column="0" Height="40" Width="40" Margin="0 0 0 15" HorizontalAlignment="Stretch" Visibility="{Binding ElementName=Register, Path=Command.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <Button Name="Register"  Grid.Row="1" Grid.Column="1" Content="Register" Margin="0 0 50 30" VerticalAlignment="Stretch">
-                        <Button.Command>
-                            <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
-                                <Binding Path="ValidateCommand"/>
-                                <Binding Path="CreateProfileCommand"/>
-                                <Binding Path="DataContext.MainCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
-                            </MultiBinding>
-                        </Button.Command>
-                    </Button>
-                </Grid>
+                            <mah:ProgressRing Grid.Row="1" Grid.Column="0" Height="40" Width="40" Margin="0 0 0 15" HorizontalAlignment="Stretch" Visibility="{Binding ElementName=Register, Path=Command.(commands:CommandComposite.IsRunning), Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <Button Name="Register"  Grid.Row="1" Grid.Column="1" Content="Register" Margin="0 0 50 30" VerticalAlignment="Stretch">
+                                <Button.Command>
+                                    <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
+                                        <Binding Path="ValidateCommand"/>
+                                        <Binding Path="CreateProfileCommand"/>
+                                        <Binding Path="DataContext.(viewModels:NavigationViewModel.MainCommand)" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
+                                    </MultiBinding>
+                                </Button.Command>
+                            </Button>
+                        </Grid>
+                    </AdornerDecorator>
+                </Border>
             </TabItem>
         </TabControl>
     </Grid>

@@ -5,7 +5,7 @@
     using Hms.Common.Interface.Domain;
     using Hms.Common.Interface.Geocoding;
 
-    public interface IBuildingService
+    public interface IBuildingDataService
     {
         Task<BuildingAddress> GetBuildingAsync(int buildingId);
 

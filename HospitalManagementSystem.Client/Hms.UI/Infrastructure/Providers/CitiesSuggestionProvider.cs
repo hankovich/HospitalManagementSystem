@@ -5,8 +5,9 @@ namespace Hms.UI.Infrastructure.Providers
     using System.Linq;
 
     using Hms.Common.Interface.Geocoding;
+    using Hms.UI.Infrastructure.Controls.Editors;
 
-    public class CitiesSuggestionProvider : ICitiesSuggestionProvider
+    public class CitiesSuggestionProvider : ISuggestionProvider
     {
         public CitiesSuggestionProvider(IGeoSuggester geoSuggester, IGeocoder geocoder)
         {
@@ -18,9 +19,7 @@ namespace Hms.UI.Infrastructure.Providers
 
         public IGeoSuggester GeoSuggester { get; }
 
-        public GeoObject SelectedCity { get; set; }
-
-        public IEnumerable GetSuggestions(string filter)
+        public IEnumerable GetSuggestions(string filter, object parameter)
         {
             IEnumerable<string> suggestions = this.GeoSuggester.SuggestAsync(filter).GetAwaiter().GetResult().Take(5);
 

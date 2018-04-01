@@ -44,7 +44,7 @@
             string response = responsePadded.Substring("suggest.apply(".Length).TrimEnd(')');
             var array = JsonConvert.DeserializeObject<JArray>(response)[1];
 
-            IEnumerable<string> suggestions = array.Select(arr => (arr as JArray)?[2]?.ToString()).Skip(1);
+            IEnumerable<string> suggestions = array.Select(arr => (arr as JArray)?[2]?.ToString());
 
             return suggestions;
         }

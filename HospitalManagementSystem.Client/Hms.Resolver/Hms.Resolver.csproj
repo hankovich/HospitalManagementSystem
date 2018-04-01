@@ -56,13 +56,13 @@
       <Project>{e55b906a-e4c2-4b82-a4d9-afe72e80894c}</Project>
       <Name>Hms.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hms.Services.Interface\Hms.Services.Interface.csproj">
+    <ProjectReference Include="..\Hms.Services.Interface\Hms.DataServices.Interface.csproj">
       <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>
-      <Name>Hms.Services.Interface</Name>
+      <Name>Hms.DataServices.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hms.Services\Hms.Services.csproj">
+    <ProjectReference Include="..\Hms.Services\Hms.DataServices.csproj">
       <Project>{E04AA01B-235B-4A8D-81B5-4CE6703DE8FA}</Project>
-      <Name>Hms.Services</Name>
+      <Name>Hms.DataServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

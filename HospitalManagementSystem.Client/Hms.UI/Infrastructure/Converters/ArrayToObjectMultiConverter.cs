@@ -17,6 +17,11 @@
 
             var type = values.First().GetType();
 
+            if (values.Select(value => value?.GetType()).Any(t => t != type))
+            {
+                type = typeof(object);
+            }
+
             dynamic list = Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
 
             foreach (object value in values)

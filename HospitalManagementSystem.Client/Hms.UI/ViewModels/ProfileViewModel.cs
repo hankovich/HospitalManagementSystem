@@ -6,6 +6,7 @@
     using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
     using Hms.UI.Infrastructure.Commands;
+    using Hms.UI.Wrappers;
 
     using MahApps.Metro.Controls.Dialogs;
 
@@ -13,9 +14,9 @@
 
     public class ProfileViewModel : ViewModelBase
     {
-        private Profile profile;
+        private ProfileWrapper profile;
 
-        public ProfileViewModel(IProfileService profileService, IDialogCoordinator dialogCoordinator)
+        public ProfileViewModel(IProfileDataService profileService, IDialogCoordinator dialogCoordinator)
         {
             this.ProfileService = profileService;
             this.DialogCoordinator = dialogCoordinator;
@@ -25,7 +26,8 @@
                 {
                     try
                     {
-                        this.Profile = await this.ProfileService.GetCurrentProfileAsync();
+                        Profile model = await this.ProfileService.GetCurrentProfileAsync();
+                        this.Profile = new ProfileWrapper(model);
                     }
                     catch (Exception e)
                     {
@@ -52,18 +54,9 @@
                         {
                             var bytes = File.ReadAllBytes(diag.FileName);
 
-                            //TODO
-                            //if (img.Width > MAX_IMAGE_WIDTH || img.Height > MAX_IMAGE_HEIGHT)
-                            //{
-                            //    dialogService.ShowNotification($"Image size should be {MAX_IMAGE_WIDTH} x {MAX_IMAGE_HEIGHT} or less.");
-                            //    return;
-                            //}
+                            this.Profile.Photo = bytes;
 
-                            Profile.Photo = bytes;
-
-                            await this.ProfileService.InsertOrUpdateProfileAsync(Profile);
-
-                            this.Profile = Profile; // TODO: Implement INPC
+                            await this.ProfileService.InsertOrUpdateProfileAsync(this.Profile.Model);
                         }
                     }
                     catch (Exception e)
@@ -73,7 +66,7 @@
                 });
         }
 
-        public IProfileService ProfileService { get; }
+        public IProfileDataService ProfileService { get; }
 
         public IDialogCoordinator DialogCoordinator { get; }
 
@@ -81,7 +74,7 @@
 
         public IAsyncCommand ChangePhotoCommand { get; set; }
 
-        public Profile Profile
+        public ProfileWrapper Profile
         {
             get
             {
@@ -90,7 +83,7 @@
 
             set
             {
-                //if (this.profile != value) // TODO
+                if (this.profile != value)
                 {
                     this.profile = value;
                     this.OnPropertyChanged();

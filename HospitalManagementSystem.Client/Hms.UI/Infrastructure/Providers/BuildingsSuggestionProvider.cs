@@ -1,37 +1,32 @@
 ﻿namespace Hms.UI.Infrastructure.Providers
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
     using Hms.Common.Interface.Geocoding;
+    using Hms.UI.Infrastructure.Controls.Editors;
 
-    public class BuildingsSuggestionProvider : IBuildingsSuggestionProvider
+    public class BuildingsSuggestionProvider : ISuggestionProvider
     {
-        private readonly IGeoSuggester geoSuggester;
-
-        private readonly IGeocoder geocoder;
-
-        public BuildingsSuggestionProvider(IStreetsSuggestionProvider streetsSuggestionProvider)
+        public BuildingsSuggestionProvider(IGeoSuggester geoSuggester, IGeocoder geocoder)
         {
-            this.StreetsSuggestionProvider = streetsSuggestionProvider;
-
-            this.geocoder = this.StreetsSuggestionProvider.CitiesSuggestionProvider.Geocoder;
-            this.geoSuggester = this.StreetsSuggestionProvider.CitiesSuggestionProvider.GeoSuggester;
+            this.GeoSuggester = geoSuggester;
+            this.Geocoder = geocoder;
         }
 
-        public IEnumerable GetSuggestions(string filter)
+        public IGeocoder Geocoder { get; }
+
+        public IGeoSuggester GeoSuggester { get; }
+
+        public IEnumerable GetSuggestions(string filter, object parameter)
         {
-            if (this.StreetsSuggestionProvider.SelectedStreet == null)
-            {
-                return Enumerable.Empty<object>();
-            }
+            GeoObject street = (GeoObject)parameter;
 
-            GeoObject street = this.StreetsSuggestionProvider.SelectedStreet;
+            IEnumerable<string> suggestions = this.GeoSuggester.SuggestAsync(this.BuildFilter(street, filter)).GetAwaiter().GetResult().Take(100);
 
-            IEnumerable<string> suggestions = this.geoSuggester.SuggestAsync(this.BuildFilter(street, filter)).GetAwaiter().GetResult().Take(100);
-
-            GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.geocoder.GeocodeAsync(elem, 15).GetAwaiter().GetResult()));
+            GeoObjectCollection objects = new GeoObjectCollection(suggestions.AsParallel().SelectMany(elem => this.Geocoder.GeocodeAsync(elem, 15).GetAwaiter().GetResult()));
 
             return objects.Where(o => this.IsBuildingOnCity(o, street)).Distinct().ToList();
         }
@@ -56,9 +51,5 @@
         {
             return $"{city.GeocoderMetaData.Address.Locality} {city.GeocoderMetaData.Address.Street} {filter}";
         }
-
-        public IStreetsSuggestionProvider StreetsSuggestionProvider { get; }
-
-        public GeoObject SelectedBuilding { get; set; }
     }
 }

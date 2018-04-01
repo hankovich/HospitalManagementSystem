@@ -4,7 +4,7 @@
 
     using Hms.Common.Interface.Domain;
 
-    public interface IMedicalCardService
+    public interface IMedicalCardDataService
     {
         Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20);
     }

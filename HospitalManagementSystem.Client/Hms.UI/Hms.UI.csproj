@@ -98,9 +98,7 @@
     <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Providers\CitiesSuggestionProvider.cs" />
     <Compile Include="Infrastructure\Providers\BuildingsSuggestionProvider.cs" />
-    <Compile Include="Infrastructure\Providers\IBuildingsSuggestionProvider.cs" />
-    <Compile Include="Infrastructure\Providers\ICitiesSuggestionProvider.cs" />
-    <Compile Include="Infrastructure\Providers\IStreetsSuggestionProvider.cs" />
+    <Compile Include="Infrastructure\Providers\GeoSuggestionProvider.cs" />
     <Compile Include="Infrastructure\Providers\StreetsSuggestionProvider.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\CreateProfileViewModel.cs" />
@@ -108,7 +106,10 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="Wrappers\MedicalCardWrapper.cs" />
+    <Compile Include="Wrappers\ModelWrapper.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
+    <Compile Include="ViewModels\NotifyDataErrorInfoBase.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wrappers\ProfileWrapper.cs" />
     <Page Include="Infrastructure\Controls\Editors\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -220,9 +222,9 @@
       <Project>{0ebaf1bd-10ea-45a2-bb6a-f5beb787c6d0}</Project>
       <Name>Hms.Resolver</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hms.Services.Interface\Hms.Services.Interface.csproj">
+    <ProjectReference Include="..\Hms.Services.Interface\Hms.DataServices.Interface.csproj">
       <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>
-      <Name>Hms.Services.Interface</Name>
+      <Name>Hms.DataServices.Interface</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,6 @@ namespace Hms.UI.Infrastructure.Controls.Editors
     using System;
     using System.Collections;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
@@ -82,10 +81,11 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             typeof(AutoCompleteTextBox),
             new FrameworkPropertyMetadata(null));
 
-        public static readonly DependencyProperty ItemTemplateSelectorProperty = DependencyProperty.Register(
-            "ItemTemplateSelector",
-            typeof(DataTemplateSelector),
-            typeof(AutoCompleteTextBox));
+        public static readonly DependencyProperty ItemTemplateSelectorProperty =
+            DependencyProperty.Register(
+                "ItemTemplateSelector",
+                typeof(DataTemplateSelector),
+                typeof(AutoCompleteTextBox));
 
         public static readonly DependencyProperty LoadingContentProperty = DependencyProperty.Register(
             "LoadingContent",
@@ -98,6 +98,12 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             typeof(ISuggestionProvider),
             typeof(AutoCompleteTextBox),
             new FrameworkPropertyMetadata(null));
+
+        public static readonly DependencyProperty ProviderParameterProperty = DependencyProperty.Register(
+                "ProviderParameter",
+                typeof(object),
+                typeof(AutoCompleteTextBox),
+                new FrameworkPropertyMetadata(null));
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
             "SelectedItem",
@@ -117,11 +123,12 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             typeof(AutoCompleteTextBox),
             new FrameworkPropertyMetadata(0));
 
-        public static readonly DependencyProperty CharacterCasingProperty = DependencyProperty.Register(
-            "CharacterCasing",
-            typeof(CharacterCasing),
-            typeof(AutoCompleteTextBox),
-            new FrameworkPropertyMetadata(CharacterCasing.Normal));
+        public static readonly DependencyProperty CharacterCasingProperty =
+            DependencyProperty.Register(
+                "CharacterCasing",
+                typeof(CharacterCasing),
+                typeof(AutoCompleteTextBox),
+                new FrameworkPropertyMetadata(CharacterCasing.Normal));
 
         public static readonly DependencyProperty MaxPopUpHeightProperty = DependencyProperty.Register(
             "MaxPopUpHeight",
@@ -135,11 +142,12 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             typeof(AutoCompleteTextBox),
             new FrameworkPropertyMetadata(string.Empty));
 
-        public static readonly DependencyProperty SuggestionBackgroundProperty = DependencyProperty.Register(
-            "SuggestionBackground",
-            typeof(Brush),
-            typeof(AutoCompleteTextBox),
-            new FrameworkPropertyMetadata(Brushes.White));
+        public static readonly DependencyProperty SuggestionBackgroundProperty =
+            DependencyProperty.Register(
+                "SuggestionBackground",
+                typeof(Brush),
+                typeof(AutoCompleteTextBox),
+                new FrameworkPropertyMetadata(Brushes.White));
 
         private BindingEvaluator _bindingEvaluator;
 
@@ -442,6 +450,19 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             }
         }
 
+        public object ProviderParameter
+        {
+            get
+            {
+                return this.GetValue(ProviderParameterProperty);
+            }
+
+            set
+            {
+                this.SetValue(ProviderParameterProperty, value);
+            }
+        }
+
         public object SelectedItem
         {
             get
@@ -554,7 +575,7 @@ namespace Hms.UI.Infrastructure.Controls.Editors
 
             }
 
-            this.GotFocus += this.AutoCompleteTextBox_GotFocus;
+            this.GotFocus += this.AutoCompleteTextBoxGotFocus;
 
             if (this.Popup != null)
             {
@@ -568,11 +589,11 @@ namespace Hms.UI.Infrastructure.Controls.Editors
                 this.SelectionAdapter.Commit += this.OnSelectionAdapterCommit;
                 this.SelectionAdapter.Cancel += this.OnSelectionAdapterCancel;
                 this.SelectionAdapter.SelectionChanged += this.OnSelectionAdapterSelectionChanged;
-                this.ItemsSelector.PreviewMouseDown += this.ItemsSelector_PreviewMouseDown;
+                this.ItemsSelector.PreviewMouseDown += this.ItemsSelectorPreviewMouseDown;
             }
         }
 
-        private void ItemsSelector_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void ItemsSelectorPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var pos_item = (e.OriginalSource as FrameworkElement)?.DataContext;
             if (pos_item == null) return;
@@ -581,7 +602,7 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             this.OnSelectionAdapterCommit();
         }
 
-        private void AutoCompleteTextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void AutoCompleteTextBoxGotFocus(object sender, RoutedEventArgs e)
         {
             this.Editor?.Focus();
         }
@@ -753,9 +774,9 @@ namespace Hms.UI.Infrastructure.Controls.Editors
             {
                 this._filter = searchText;
                 this._actb.IsLoading = true;
-                ParameterizedThreadStart thInfo = new ParameterizedThreadStart(this.GetSuggestions);
+                ParameterizedThreadStart thInfo = this.GetSuggestions;
                 Thread th = new Thread(thInfo);
-                th.Start(new object[] { searchText, this._actb.Provider });
+                th.Start(new object[] { searchText, this._actb.Provider, this._actb.ProviderParameter });
             }
 
             private void DisplaySuggestions(IEnumerable suggestions, string filter)
@@ -779,7 +800,8 @@ namespace Hms.UI.Infrastructure.Controls.Editors
                 object[] args = param as object[];
                 string searchText = Convert.ToString(args[0]);
                 ISuggestionProvider provider = args[1] as ISuggestionProvider;
-                IEnumerable list = provider.GetSuggestions(searchText);
+                object providerParameter = args[2];
+                IEnumerable list = provider.GetSuggestions(searchText, providerParameter);
 
                 this._actb.Dispatcher.BeginInvoke(
                     new Action<IEnumerable, string>(this.DisplaySuggestions),

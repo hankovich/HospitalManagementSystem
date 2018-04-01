@@ -7,9 +7,9 @@
     using Hms.Common.Interface.Exceptions;
     using Hms.Services.Interface;
 
-    public class MedicalCardService : IMedicalCardService
+    public class MedicalCardDataService : IMedicalCardDataService
     {
-        public MedicalCardService(IClient client)
+        public MedicalCardDataService(IClient client)
         {
             this.Client = client;
         }

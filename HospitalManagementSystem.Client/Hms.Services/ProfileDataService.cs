@@ -6,9 +6,9 @@
     using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
 
-    public class ProfileService : IProfileService
+    public class ProfileDataService : IProfileDataService
     {
-        public ProfileService(IClient client)
+        public ProfileDataService(IClient client)
         {
             this.Client = client;
         }
@@ -17,14 +17,14 @@
 
         public async Task<Profile> GetProfileAsync(int userId)
         {
-            var response = await this.Client.SendAsync<Profile>(HttpMethod.Get, $"api/profile/{userId}", null);
+            var response = await this.Client.SendAsync<Profile>(HttpMethod.Get, $"api/profile/{userId}");
 
             return response.Content;
         }
 
         public async Task<Profile> GetCurrentProfileAsync()
         {
-            var response = await this.Client.SendAsync<Profile>(HttpMethod.Get, "api/profile", null);
+            var response = await this.Client.SendAsync<Profile>(HttpMethod.Get, "api/profile");
 
             return response.Content;
         }

@@ -4,6 +4,6 @@
 
     public interface ISuggestionProvider
     {
-        IEnumerable GetSuggestions(string filter);
+        IEnumerable GetSuggestions(string filter, object parameter);
     }
 }

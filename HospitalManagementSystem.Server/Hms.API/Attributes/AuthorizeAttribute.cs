@@ -50,6 +50,8 @@
                     actionContext.RequestContext.Principal =
                         new GenericPrincipal(new GenericIdentity(authenticationResult.Principal.Login), authorizationResult.AllRoles);
                 }
+
+                // TODO: UserGadgetSession
             }
             catch
             {

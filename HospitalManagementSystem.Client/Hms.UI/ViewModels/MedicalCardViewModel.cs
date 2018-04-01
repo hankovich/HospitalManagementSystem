@@ -2,17 +2,17 @@
 {
     using System;
 
-    using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
     using Hms.UI.Infrastructure.Commands;
+    using Hms.UI.Wrappers;
 
     using MahApps.Metro.Controls.Dialogs;
 
     public class MedicalCardViewModel : ViewModelBase
     {
-        private MedicalCard medicalCard;
+        private MedicalCardWrapper medicalCard;
 
-        public MedicalCardViewModel(IMedicalCardService service, IDialogCoordinator dialogCoordinator)
+        public MedicalCardViewModel(IMedicalCardDataService service, IDialogCoordinator dialogCoordinator)
         {
             this.MedicalCardService = service;
             this.DialogCoordinator = dialogCoordinator;
@@ -21,7 +21,8 @@
             {
                 try
                 {
-                    this.MedicalCard = await this.MedicalCardService.GetMedicalCardAsync(0);
+                    var card = await this.MedicalCardService.GetMedicalCardAsync(0);
+                    this.MedicalCard = new MedicalCardWrapper(card);
                 }
                 catch (Exception e)
                 {
@@ -30,11 +31,11 @@
             });
         }
 
-        public IMedicalCardService MedicalCardService { get; }
+        public IMedicalCardDataService MedicalCardService { get; }
 
         public IDialogCoordinator DialogCoordinator { get; }
 
-        public MedicalCard MedicalCard
+        public MedicalCardWrapper MedicalCard
         {
             get
             {
@@ -51,6 +52,6 @@
             }
         }
 
-        public IAsyncCommand LoadedCommand { get; set; }
+        public IAsyncCommand LoadedCommand { get; }
     }
 }
