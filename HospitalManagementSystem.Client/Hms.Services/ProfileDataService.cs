@@ -8,12 +8,12 @@
 
     public class ProfileDataService : IProfileDataService
     {
-        public ProfileDataService(IClient client)
+        public ProfileDataService(IRequestCoordinator client)
         {
             this.Client = client;
         }
 
-        public IClient Client { get; set; }
+        public IRequestCoordinator Client { get; set; }
 
         public async Task<Profile> GetProfileAsync(int userId)
         {

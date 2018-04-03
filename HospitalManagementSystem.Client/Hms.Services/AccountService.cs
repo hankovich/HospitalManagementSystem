@@ -6,7 +6,7 @@
 
     public class AccountService : IAccountService
     {
-        public AccountService(IClient client)
+        public AccountService(IRequestCoordinator client)
         {
             if (client == null)
             {
@@ -16,7 +16,7 @@
             this.Client = client;
         }
 
-        public IClient Client { get; }
+        public IRequestCoordinator Client { get; }
 
         public async Task LoginAsync(string login, string password)
         {

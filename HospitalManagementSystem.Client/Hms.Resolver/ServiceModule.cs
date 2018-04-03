@@ -9,7 +9,7 @@
     {
         public override void Load()
         {
-            this.Bind<IClient>().To<Client>().InSingletonScope();
+            this.Bind<IRequestCoordinator>().To<RequestCoordinator>().InSingletonScope();
             this.Bind<IMedicalCardDataService>().To<MedicalCardDataService>();
             this.Bind<IProfileDataService>().To<ProfileDataService>();
             this.Bind<IAccountService>().To<AccountService>();

@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="AccountService.cs" />
     <Compile Include="BuildingDataService.cs" />
-    <Compile Include="Client.cs" />
+    <Compile Include="RequestCoordinator.cs" />
     <Compile Include="GadgetInfoModel.cs" />
     <Compile Include="MedicalCardService.cs" />
     <Compile Include="PolyclinicRegionDataService.cs" />

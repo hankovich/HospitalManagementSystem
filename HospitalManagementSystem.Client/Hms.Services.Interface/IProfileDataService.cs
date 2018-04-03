@@ -6,7 +6,7 @@
 
     public interface IProfileDataService
     {
-        IClient Client { get; }
+        IRequestCoordinator Client { get; }
 
         Task<Profile> GetProfileAsync(int userId);
 

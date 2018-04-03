@@ -10,12 +10,12 @@
 
     public class BuildingDataService : IBuildingDataService
     {
-        public BuildingDataService(IClient client)
+        public BuildingDataService(IRequestCoordinator client)
         {
             this.Client = client;
         }
 
-        public IClient Client { get; set; }
+        public IRequestCoordinator Client { get; set; }
 
         public async Task<BuildingAddress> GetBuildingAsync(int buildingId)
         {

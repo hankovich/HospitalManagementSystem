@@ -16,7 +16,7 @@
 
     using Newtonsoft.Json;
 
-    public class Client : IClient
+    public class RequestCoordinator : IRequestCoordinator
     {
         public ISymmetricCryptoProvider SymmetricCryptoProvider { get; }
 
@@ -24,7 +24,7 @@
 
         public IHttpContentService HttpContentService { get; }
 
-        public Client(
+        public RequestCoordinator(
             ISymmetricCryptoProvider symmetricCryptoProvider,
             IAsymmetricCryptoProvider asymmetricCryptoProvider,
             IHttpContentService httpContentService)
@@ -50,13 +50,13 @@
 
         private HttpClient HttpClient { get; } = new HttpClient();
 
-        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
         private async Task EnsureKeysInitializationAsync()
         {
             if (!this.IsInitialized)
             {
-                await semaphoreSlim.WaitAsync();
+                await SemaphoreSlim.WaitAsync();
 
                 if (!this.IsInitialized)
                 {
@@ -94,7 +94,7 @@
                     }
                     finally
                     {
-                        semaphoreSlim.Release();
+                        SemaphoreSlim.Release();
                     }
                 }
             }

@@ -9,12 +9,12 @@
 
     public class MedicalCardDataService : IMedicalCardDataService
     {
-        public MedicalCardDataService(IClient client)
+        public MedicalCardDataService(IRequestCoordinator client)
         {
             this.Client = client;
         }
 
-        public IClient Client { get; set; }
+        public IRequestCoordinator Client { get; set; }
 
         public async Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20)
         {

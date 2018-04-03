@@ -3,7 +3,7 @@
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    public interface IClient
+    public interface IRequestCoordinator
     {
         string Host { get; }
 

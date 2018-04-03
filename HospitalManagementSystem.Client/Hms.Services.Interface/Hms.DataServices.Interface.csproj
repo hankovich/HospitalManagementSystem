@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="IAccountService.cs" />
     <Compile Include="IBuildingDataService.cs" />
-    <Compile Include="IClient.cs" />
+    <Compile Include="IRequestCoordinator.cs" />
     <Compile Include="IMedicalCardDataService.cs" />
     <Compile Include="IPolyclinicRegionDataService.cs" />
     <Compile Include="IProfileDataService.cs" />

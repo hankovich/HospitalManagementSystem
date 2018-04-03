@@ -9,12 +9,12 @@
 
     public class PolyclinicRegionDataService : IPolyclinicRegionDataService
     {
-        public PolyclinicRegionDataService(IClient client)
+        public PolyclinicRegionDataService(IRequestCoordinator client)
         {
             this.Client = client;
         }
 
-        public IClient Client { get; set; }
+        public IRequestCoordinator Client { get; set; }
 
         public async Task<PolyclinicRegion> GetPolyclinicRegionAsync(int polyclinicRegionId)
         {
