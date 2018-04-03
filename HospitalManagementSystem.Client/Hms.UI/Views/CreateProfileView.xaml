@@ -172,7 +172,7 @@
                                          Provider="{Binding GeoSuggestionProvider}"
                                          Margin="0 5">
                                 <editors:AutoCompleteTextBox.SelectedItem>
-                                    <Binding Path="City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="Address.City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                                 </editors:AutoCompleteTextBox.SelectedItem>
                                 <editors:AutoCompleteTextBox.LoadingContent>
                                     <TextBlock Text="Loading..." Margin="5" />
@@ -188,7 +188,7 @@
                                          Provider="{Binding GeoSuggestionProvider}"
                                          Margin="0 5">
                                 <editors:AutoCompleteTextBox.SelectedItem>
-                                    <Binding Path="Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="Address.Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                                 </editors:AutoCompleteTextBox.SelectedItem>
                                 <editors:AutoCompleteTextBox.LoadingContent>
                                     <TextBlock Text="Loading..." Margin="5" />
@@ -200,7 +200,7 @@
                                                 <system:String>Street</system:String>
                                             </Binding.Source>
                                         </Binding>
-                                        <Binding Path="City" Mode="TwoWay"/>
+                                        <Binding Path="Address.City" Mode="TwoWay"/>
                                     </MultiBinding>
                                 </editors:AutoCompleteTextBox.ProviderParameter>
                             </editors:AutoCompleteTextBox>
@@ -214,7 +214,7 @@
                                          Provider="{Binding GeoSuggestionProvider}"
                                          Margin="0 5">
                                 <editors:AutoCompleteTextBox.SelectedItem>
-                                    <Binding Path="Building" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                                    <Binding Path="Address.Building" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                                 </editors:AutoCompleteTextBox.SelectedItem>
                                 <editors:AutoCompleteTextBox.LoadingContent>
                                     <TextBlock Text="Loading..." Margin="5" />
@@ -226,7 +226,7 @@
                                                 <system:String>Building</system:String>
                                             </Binding.Source>
                                         </Binding>
-                                        <Binding Path="Street" Mode="TwoWay"/>
+                                        <Binding Path="Address.Street" Mode="TwoWay"/>
                                     </MultiBinding>
                                 </editors:AutoCompleteTextBox.ProviderParameter>
                             </editors:AutoCompleteTextBox>

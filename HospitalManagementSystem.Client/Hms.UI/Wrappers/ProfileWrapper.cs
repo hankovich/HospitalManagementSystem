@@ -92,62 +92,65 @@
                 case nameof(this.MiddleName):
                 case nameof(this.LastName):
                 case nameof(this.Phone):
+                {
+                    if (string.IsNullOrWhiteSpace(this.GetValue<string>(propertyName)))
                     {
-                        if (string.IsNullOrWhiteSpace(this.GetValue<string>(propertyName)))
-                        {
-                            yield return $"{propertyName} must not be empty";
-                        }
-
-                        break;
+                        yield return $"{propertyName} must not be empty";
                     }
+
+                    break;
+                }
 
                 case nameof(this.Entrance):
+                {
+                    if (this.Model.Entrance.HasValue && this.Model.Entrance.Value < 1)
                     {
-                        if (this.Model.Entrance.HasValue && this.Model.Entrance.Value < 1)
-                        {
-                            yield return "Invalid entrance";
-                        }
-
-                        break;
+                        yield return "Invalid entrance";
                     }
+
+                    break;
+                }
+
                 case nameof(this.Flat):
+                {
+                    if (this.Flat.HasValue && this.Flat.Value <= 0)
                     {
-                        if (this.Flat.HasValue && this.Flat.Value <= 0)
-                        {
-                            yield return "Invalid flat";
-                        }
-
-                        break;
+                        yield return "Invalid flat";
                     }
+
+                    break;
+                }
+
                 case nameof(this.Floor):
+                {
+                    if (this.Floor.HasValue && this.Floor.Value < 0)
                     {
-                        if (this.Floor.HasValue && this.Floor.Value < 0)
-                        {
-                            yield return "Invalid floor";
-                        }
-
-                        break;
+                        yield return "Invalid floor";
                     }
+
+                    break;
+                }
+
                 case nameof(this.Photo):
+                {
+                    if (this.Photo == null)
                     {
-                        if (this.Photo == null)
-                        {
-                            yield return "Photo is required";
-                        }
-                        else if (this.Photo.Length == 0)
-                        {
-                            yield return "Photo must not be blanc";
-                        }
-
-                        //TODO
-                        //if (img.Width > MAX_IMAGE_WIDTH || img.Height > MAX_IMAGE_HEIGHT)
-                        //{
-                        //    dialogService.ShowNotification($"Image size should be {MAX_IMAGE_WIDTH} x {MAX_IMAGE_HEIGHT} or less.");
-                        //    return;
-                        //}
-
-                        break;
+                        yield return "Photo is required";
                     }
+                    else if (this.Photo.Length == 0)
+                    {
+                        yield return "Photo must not be blanc";
+                    }
+
+                    //TODO
+                    //if (img.Width > MAX_IMAGE_WIDTH || img.Height > MAX_IMAGE_HEIGHT)
+                    //{
+                    //    dialogService.ShowNotification($"Image size should be {MAX_IMAGE_WIDTH} x {MAX_IMAGE_HEIGHT} or less.");
+                    //    return;
+                    //}
+
+                    break;
+                }
             }
         }
     }

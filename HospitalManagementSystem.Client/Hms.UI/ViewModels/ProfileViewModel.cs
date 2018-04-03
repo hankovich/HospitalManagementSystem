@@ -5,19 +5,19 @@
 
     using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
+    using Hms.UI.Infrastructure;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Wrappers;
 
     using MahApps.Metro.Controls.Dialogs;
 
-    using Microsoft.Win32;
-
     public class ProfileViewModel : ViewModelBase
     {
         private ProfileWrapper profile;
 
-        public ProfileViewModel(IProfileDataService profileService, IDialogCoordinator dialogCoordinator)
+        public ProfileViewModel(IProfileDataService profileService, IDialogCoordinator dialogCoordinator, IFileDialogCoordinator fileDialogCoordinator)
         {
+            this.FileDialogCoordinator = fileDialogCoordinator;
             this.ProfileService = profileService;
             this.DialogCoordinator = dialogCoordinator;
 
@@ -40,24 +40,18 @@
                 {
                     try
                     {
-                        OpenFileDialog diag = new OpenFileDialog
+                        string filename = FileDialogCoordinator.OpenFile("Select image file", "Images (*.jpg;*.png)|*.jpg;*.png");
+
+                        if (string.IsNullOrEmpty(filename))
                         {
-                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-                            Title = "Select image file",
-                            Filter = "Images (*.jpg;*.png)|*.jpg;*.png",
-                            CheckFileExists = true,
-                            CheckPathExists = true,
-                            RestoreDirectory = true
-                        };
-
-                        if (diag.ShowDialog() == true)
-                        {
-                            var bytes = File.ReadAllBytes(diag.FileName);
-
-                            this.Profile.Photo = bytes;
-
-                            await this.ProfileService.InsertOrUpdateProfileAsync(this.Profile.Model);
+                            return;
                         }
+
+                        var bytes = File.ReadAllBytes(filename);
+
+                        this.Profile.Photo = bytes;
+
+                        await this.ProfileService.InsertOrUpdateProfileAsync(this.Profile.Model);
                     }
                     catch (Exception e)
                     {
@@ -70,9 +64,11 @@
 
         public IDialogCoordinator DialogCoordinator { get; }
 
-        public IAsyncCommand LoadedCommand { get; set; }
+        private IFileDialogCoordinator FileDialogCoordinator { get; }
+        
+        public IAsyncCommand LoadedCommand { get; }
 
-        public IAsyncCommand ChangePhotoCommand { get; set; }
+        public IAsyncCommand ChangePhotoCommand { get; }
 
         public ProfileWrapper Profile
         {

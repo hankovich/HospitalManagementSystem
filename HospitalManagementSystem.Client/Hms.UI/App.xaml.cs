@@ -3,6 +3,7 @@
     using System.Windows;
 
     using Hms.Resolver;
+    using Hms.UI.Infrastructure;
     using Hms.UI.Infrastructure.Controls.Editors;
     using Hms.UI.Infrastructure.Providers;
 
@@ -27,7 +28,10 @@
             Kernel.Load(new NinjectModule[] { new CommonModule(), new ServiceModule() });
 
             Kernel.Bind<IDialogCoordinator>().ToConstant(DialogCoordinator.Instance);
+            Kernel.Bind<IFileDialogCoordinator>().To<FileDialogCordinator>();
+
             Kernel.Bind<ISuggestionProvider>().To<GeoSuggestionProvider>();
+
             Current.MainWindow = Kernel.Get<MainWindow>();
             Current.MainWindow.Show();
         }

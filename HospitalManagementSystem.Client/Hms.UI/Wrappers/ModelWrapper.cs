@@ -30,20 +30,20 @@ namespace Hms.UI.Wrappers
             typeof(T).GetProperty(propertyName).SetValue(this.Model, value);
             this.OnPropertyChanged(propertyName);
 
-            ValidatePropertyInternal(propertyName);
+            this.ValidatePropertyInternal(propertyName);
         }
 
         private void ValidatePropertyInternal(string propertyName)
         {
-            ClearErrors(propertyName);
+            this.ClearErrors(propertyName);
 
-            var errors = ValidateProperty(propertyName);
+            var errors = this.ValidateProperty(propertyName);
 
             if (errors != null)
             {
                 foreach (var error in errors)
                 {
-                    AddError(error, propertyName);
+                    this.AddError(error, propertyName);
                 }
             }
         }
