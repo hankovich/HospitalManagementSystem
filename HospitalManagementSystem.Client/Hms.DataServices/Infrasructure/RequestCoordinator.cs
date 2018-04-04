@@ -1,10 +1,9 @@
 ﻿namespace Hms.DataServices.Infrasructure
 {
     using System;
+    using System.Diagnostics;
     using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,8 +13,6 @@
     using Hms.Common.Interface.Models;
     using Hms.DataServices.Interface;
     using Hms.DataServices.Interface.Infrastructure;
-
-    using Newtonsoft.Json;
 
     public class RequestCoordinator : IRequestCoordinator
     {
@@ -37,9 +34,9 @@
             this.ClientState = new ClientStateModel();
         }
 
-        public string Host => "http://localhost:52017/";
+        public string Host => "http://localhost.fiddler:52017/";
 
-        public int? UserId { get; set; }
+        public int? UserId { get; private set; }
 
         private bool IsInitialized { get; set; }
 
@@ -47,61 +44,42 @@
 
         private HttpClient HttpClient { get; } = new HttpClient();
 
-        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 
-        private async Task EnsureKeysInitializationAsync()
-        {
-            if (!this.IsInitialized)
-            {
-                await SemaphoreSlim.WaitAsync();
+        private static readonly SemaphoreSlim ChangeKeySemaphore = new SemaphoreSlim(1, 1);
 
-                if (!this.IsInitialized)
-                {
-                    try
-                    {
-                        this.ClientState.Identifier = Guid.NewGuid().ToString();
-
-                        this.ClientState.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
-                        byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.ClientState.PrivateKey);
-
-                        SetKeyModel content = new SetKeyModel { Identifier = this.ClientState.Identifier, Key = publicKey };
-
-                        ServerResponse<SetKeyModel> result = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content, false);
-
-                        if (!result.IsSuccessStatusCode)
-                        {
-                            throw new HmsException(result.ReasonPhrase);
-                        }
-
-                        SetKeyModel setKeyModel = result.Content;
-                        string clientSecret = await this.AsymmetricCryptoProvider.DecryptBase64ToBase64Async(setKeyModel.ClientSecret, this.ClientState.PrivateKey);
-                        this.ClientState.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(setKeyModel.RoundKey, this.ClientState.PrivateKey);
-
-                        this.ClientState.ClientSecret = clientSecret;
-
-                        this.IsInitialized = true;
-                    }
-                    finally
-                    {
-                        SemaphoreSlim.Release();
-                    }
-                }
-            }
-        }
-
+        private static readonly CountdownEvent CountdownEvent = new CountdownEvent(1);
+        
         public async Task ChangeRoundKey()
         {
-            ServerResponse<string> response = await this.SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.ClientState.Identifier}/", this.ClientState.ClientSecret);
+            Debug.WriteLine($"CKSemaphore count: {ChangeKeySemaphore.CurrentCount}");
+            await ChangeKeySemaphore.WaitAsync();
+            Debug.WriteLine($"CKSemaphore count exit waiting: {ChangeKeySemaphore.CurrentCount}");
+            CountdownEvent.Signal();
+            Debug.WriteLine($"Event count: {CountdownEvent.CurrentCount}");
+            CountdownEvent.Wait();
+            Debug.WriteLine($"Event exit waiting: {CountdownEvent.CurrentCount}");
+            CountdownEvent.Reset();
+            Debug.WriteLine($"Event exit reset: {CountdownEvent.CurrentCount}");
 
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                throw new HmsException(response.ReasonPhrase);
-            }
+                ServerResponse<string> response = await this.SendAsyncInternal<string>(HttpMethod.Put, $"api/key/round/{this.ClientState.Identifier}/", this.ClientState.ClientSecret, needsThreadSafe: false);
 
-            this.ClientState.RoundKey = Convert.FromBase64String(response.Content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HmsException(response.ReasonPhrase);
+                }
+
+                this.ClientState.RoundKey = Convert.FromBase64String(response.Content);
+            }
+            finally
+            {
+                ChangeKeySemaphore.Release();
+            }
         }
 
-        public async Task ChangeAsymmetricKey()
+        public async Task ChangeAsymmetricKey() // Not thread-safe
         {
             this.ClientState.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
             byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.ClientState.PrivateKey);
@@ -134,29 +112,7 @@
             object content = null,
             bool needsEncryption = true)
         {
-            if (needsEncryption)
-            {
-                await this.EnsureKeysInitializationAsync();
-            }
-
-            RequestProcessor requestProcessor =
-                this.RequestProcessorBuilder.UseEncryption(needsEncryption).Build(this.ClientState);
-
-            using (var request = await requestProcessor.CreateRequestAsync(method, this.Host + url, content))
-            {
-                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request))
-                {
-                    if (response.StatusCode == (HttpStatusCode)424)
-                    {
-                        await this.ChangeRoundKey();
-                        return await this.SendAsync<TContent>(method, url, content, needsEncryption);
-                    }
-
-                    var result = await requestProcessor.ProcessResponseAsync<TContent>(response);
-
-                    return result;
-                }
-            }
+            return await this.SendAsyncInternal<TContent>(method, url, content, needsEncryption);
         }
 
         public async Task LoginAsync(string login, string password)
@@ -197,6 +153,95 @@
             this.UserId = null;
 
             return Task.CompletedTask;
+        }
+
+        private async Task EnsureKeysInitializationAsync()
+        {
+            if (!this.IsInitialized)
+            {
+                await InitializationSemaphore.WaitAsync();
+
+                if (!this.IsInitialized)
+                {
+                    try
+                    {
+                        this.ClientState.Identifier = Guid.NewGuid().ToString();
+
+                        this.ClientState.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
+                        byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.ClientState.PrivateKey);
+
+                        SetKeyModel content = new SetKeyModel { Identifier = this.ClientState.Identifier, Key = publicKey };
+
+                        ServerResponse<SetKeyModel> result = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content, false);
+
+                        if (!result.IsSuccessStatusCode)
+                        {
+                            throw new HmsException(result.ReasonPhrase);
+                        }
+
+                        SetKeyModel setKeyModel = result.Content;
+                        string clientSecret = await this.AsymmetricCryptoProvider.DecryptBase64ToBase64Async(setKeyModel.ClientSecret, this.ClientState.PrivateKey);
+                        this.ClientState.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(setKeyModel.RoundKey, this.ClientState.PrivateKey);
+
+                        this.ClientState.ClientSecret = clientSecret;
+
+                        this.IsInitialized = true;
+                    }
+                    finally
+                    {
+                        InitializationSemaphore.Release();
+                    }
+                }
+            }
+        }
+
+        private async Task<ServerResponse<TContent>> SendAsyncInternal<TContent>(
+            HttpMethod method,
+            string url,
+            object content = null,
+            bool needsEncryption = true,
+            bool needsThreadSafe = true)
+        {
+            if (needsEncryption)
+            {
+                await this.EnsureKeysInitializationAsync();
+            }
+
+            if (needsThreadSafe)
+            {
+                Debug.WriteLine($"Wait handle: {method} {url} {Thread.CurrentThread.ManagedThreadId}");
+                WaitHandle.WaitAny(new[] { ChangeKeySemaphore.AvailableWaitHandle });
+                Debug.WriteLine($"Wait handle release: {method} {url}");
+            }
+
+            Debug.WriteLine($"Entering event: {CountdownEvent.CurrentCount} {method} {url}");
+            CountdownEvent.AddCount();
+            Debug.WriteLine($"Exiting event: {CountdownEvent.CurrentCount} {method} {url}");
+
+            RequestProcessor requestProcessor =
+                this.RequestProcessorBuilder.UseEncryption(needsEncryption).Build(this.ClientState);
+
+            using (var request = await requestProcessor.CreateRequestAsync(method, this.Host + url, content))
+            {
+                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request))
+                {
+                    Debug.WriteLine($"Entering signal: {CountdownEvent.CurrentCount} {method} {url}"); 
+                    CountdownEvent.Signal();
+                    Debug.WriteLine($"Exiting signal: {CountdownEvent.CurrentCount} {method} {url}");
+
+                    if (response.StatusCode == (HttpStatusCode)424)
+                    {
+                        Debug.WriteLine($"Change round key: {method} {url}");
+                        await this.ChangeRoundKey();
+                        Debug.WriteLine($"End change round key: {method} {url}");
+                        return await this.SendAsync<TContent>(method, url, content, needsEncryption);
+                    }
+
+                    var result = await requestProcessor.ProcessResponseAsync<TContent>(response);
+
+                    return result;
+                }
+            }
         }
     }
 }
