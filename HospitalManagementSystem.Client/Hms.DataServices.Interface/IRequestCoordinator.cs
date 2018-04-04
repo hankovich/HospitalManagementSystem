@@ -1,4 +1,4 @@
-﻿namespace Hms.Services.Interface
+﻿namespace Hms.DataServices.Interface
 {
     using System.Net.Http;
     using System.Threading.Tasks;

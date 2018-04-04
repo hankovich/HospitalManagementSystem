@@ -1,8 +1,8 @@
-﻿namespace Hms.Services
+﻿namespace Hms.DataServices
 {
     using System.Threading.Tasks;
 
-    using Hms.Services.Interface;
+    using Hms.DataServices.Interface;
 
     public class AccountService : IAccountService
     {

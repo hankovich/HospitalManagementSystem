@@ -1,4 +1,4 @@
-﻿namespace Hms.Services
+﻿namespace Hms.Common
 {
     using System;
     using System.IO;

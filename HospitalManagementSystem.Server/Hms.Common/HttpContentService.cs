@@ -1,4 +1,4 @@
-﻿namespace Hms.Services
+﻿namespace Hms.Common
 {
     using System;
     using System.Linq;
@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
 
     using Hms.Common.Interface;
-    
+
     public class HttpContentService : IHttpContentService
     {
         public HttpContentService(ISymmetricCryptoProvider cryptoProvider)
@@ -20,7 +20,7 @@
             this.CryptoProvider = cryptoProvider;
         }
 
-        public ISymmetricCryptoProvider CryptoProvider { get; set; }
+        public ISymmetricCryptoProvider CryptoProvider { get; }
 
         public async Task<HttpContent> DecryptAsync(HttpContent originalContent, byte[] key)
         {

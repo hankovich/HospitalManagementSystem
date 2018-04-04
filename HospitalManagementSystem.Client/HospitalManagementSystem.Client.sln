@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.UI", "Hms.UI\Hms.UI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Resolver", "Hms.Resolver\Hms.Resolver.csproj", "{0EBAF1BD-10EA-45A2-BB6A-F5BEB787C6D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.DataServices.Interface", "Hms.Services.Interface\Hms.DataServices.Interface.csproj", "{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.DataServices.Interface", "Hms.DataServices.Interface\Hms.DataServices.Interface.csproj", "{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.DataServices", "Hms.Services\Hms.DataServices.csproj", "{E04AA01B-235B-4A8D-81B5-4CE6703DE8FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.DataServices", "Hms.DataServices\Hms.DataServices.csproj", "{E04AA01B-235B-4A8D-81B5-4CE6703DE8FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

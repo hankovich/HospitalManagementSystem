@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E04AA01B-235B-4A8D-81B5-4CE6703DE8FA}</ProjectGuid>
+    <ProjectGuid>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hms.Services</RootNamespace>
-    <AssemblyName>Hms.Services</AssemblyName>
+    <RootNamespace>Hms.DataServices.Interface</RootNamespace>
+    <AssemblyName>Hms.DataServices.Interface</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HospitalManagementSystem.Server\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,27 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountService.cs" />
-    <Compile Include="BuildingDataService.cs" />
-    <Compile Include="RequestCoordinator.cs" />
-    <Compile Include="GadgetInfoModel.cs" />
-    <Compile Include="MedicalCardService.cs" />
-    <Compile Include="PolyclinicRegionDataService.cs" />
-    <Compile Include="ProfileDataService.cs" />
+    <Compile Include="IAccountService.cs" />
+    <Compile Include="IBuildingDataService.cs" />
+    <Compile Include="IRequestCoordinator.cs" />
+    <Compile Include="IMedicalCardDataService.cs" />
+    <Compile Include="IPolyclinicRegionDataService.cs" />
+    <Compile Include="IProfileDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HospitalManagementSystem.Server\Hms.Common.Interface\Hms.Common.Interface.csproj">
-      <Project>{503e23b4-34cd-422d-a192-501948e84838}</Project>
+      <Project>{503E23B4-34CD-422D-A192-501948E84838}</Project>
       <Name>Hms.Common.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hms.Services.Interface\Hms.DataServices.Interface.csproj">
-      <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>
-      <Name>Hms.DataServices.Interface</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

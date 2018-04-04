@@ -4,7 +4,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public static class SymmetricCryptoProviderExtensions
+    public static class CryptoProviderExtensions
     {
         public static async Task<string> EncryptBase64ToBase64Async(
             this ISymmetricCryptoProvider provider,
@@ -74,6 +74,19 @@
             }
 
             return Convert.ToBase64String(await provider.DecryptBytesAsync(Encoding.UTF8.GetBytes(message), key, iv));
+        }
+
+        public static async Task<string> DecryptBase64ToBase64Async(
+            this IAsymmetricCryptoProvider provider,
+            string message,
+            byte[] privateKey)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return string.Empty;
+            }
+
+            return Convert.ToBase64String(await provider.DecryptBytesAsync(Convert.FromBase64String(message), privateKey));
         }
     }
 }

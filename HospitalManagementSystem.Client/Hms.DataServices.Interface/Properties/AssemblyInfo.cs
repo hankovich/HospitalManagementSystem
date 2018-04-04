@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Hms.Services.Interface")]
+[assembly: AssemblyTitle("Hms.DataServices.Interface")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("EPAM Systems")]
-[assembly: AssemblyProduct("Hms.Services.Interface")]
+[assembly: AssemblyProduct("Hms.DataServices.Interface")]
 [assembly: AssemblyCopyright("Copyright © EPAM Systems 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -56,7 +56,7 @@
     <Compile Include="Domain\User.cs" />
     <Compile Include="Exceptions\HmsException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
-    <Compile Include="Extensions\SymmetricCryptoProviderExtensions.cs" />
+    <Compile Include="Extensions\CryptoProviderExtensions.cs" />
     <Compile Include="Geocoding\Address.cs" />
     <Compile Include="Geocoding\GeoBound.cs" />
     <Compile Include="Geocoding\GeoMetaData.cs" />

@@ -6,7 +6,7 @@
     using System.Windows.Input;
 
     using Hms.Common.Interface.Domain;
-    using Hms.Services.Interface;
+    using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Controls.Editors;

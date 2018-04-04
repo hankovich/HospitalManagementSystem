@@ -4,7 +4,6 @@
     using Hms.Common.Geocoding;
     using Hms.Common.Interface;
     using Hms.Common.Interface.Geocoding;
-    using Hms.Services;
 
     using Ninject.Modules;
 

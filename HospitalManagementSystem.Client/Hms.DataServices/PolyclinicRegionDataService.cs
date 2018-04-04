@@ -1,11 +1,11 @@
-﻿namespace Hms.Services
+﻿namespace Hms.DataServices
 {
     using System.Net.Http;
     using System.Threading.Tasks;
 
     using Hms.Common.Interface.Domain;
     using Hms.Common.Interface.Exceptions;
-    using Hms.Services.Interface;
+    using Hms.DataServices.Interface;
 
     public class PolyclinicRegionDataService : IPolyclinicRegionDataService
     {

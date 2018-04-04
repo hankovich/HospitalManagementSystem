@@ -1,4 +1,4 @@
-﻿namespace Hms.Services.Interface
+﻿namespace Hms.DataServices.Interface
 {
     public class ServerResponse<T>
     {

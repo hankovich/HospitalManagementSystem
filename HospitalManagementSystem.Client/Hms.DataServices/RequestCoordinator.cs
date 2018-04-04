@@ -1,4 +1,4 @@
-﻿namespace Hms.Services
+﻿namespace Hms.DataServices
 {
     using System;
     using System.Net;
@@ -12,7 +12,7 @@
     using Hms.Common.Interface.Exceptions;
     using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
-    using Hms.Services.Interface;
+    using Hms.DataServices.Interface;
 
     using Newtonsoft.Json;
 
@@ -32,6 +32,8 @@
             this.SymmetricCryptoProvider = symmetricCryptoProvider;
             this.AsymmetricCryptoProvider = asymmetricCryptoProvider;
             this.HttpContentService = httpContentService;
+
+            this.ClientState = new ClientStateModel();
         }
 
         public string Host => "http://localhost:52017/";
@@ -40,13 +42,7 @@
 
         private bool IsInitialized { get; set; }
 
-        private LoginModel AuthInfo { get; set; }
-
-        private GadgetInfoModel GadgetInfo { get; set; }
-
-        private byte[] PrivateKey { get; set; }
-
-        private byte[] RoundKey { get; set; }
+        private ClientStateModel ClientState { get; }
 
         private HttpClient HttpClient { get; } = new HttpClient();
 
@@ -62,13 +58,12 @@
                 {
                     try
                     {
-                        this.AuthInfo = new LoginModel();
-                        this.GadgetInfo = new GadgetInfoModel { Identifier = Guid.NewGuid().ToString() };
+                        this.ClientState.Identifier = Guid.NewGuid().ToString();
 
-                        this.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
-                        byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.PrivateKey);
+                        this.ClientState.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
+                        byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.ClientState.PrivateKey);
 
-                        SetKeyModel content = new SetKeyModel { Identifier = this.GadgetInfo.Identifier, Key = publicKey };
+                        SetKeyModel content = new SetKeyModel { Identifier = this.ClientState.Identifier, Key = publicKey };
 
                         ServerResponse<SetKeyModel> result = await this.SendAsync<SetKeyModel>(HttpMethod.Put, "api/key/public", content, false);
 
@@ -78,17 +73,10 @@
                         }
 
                         SetKeyModel setKeyModel = result.Content;
-                        byte[] enryptedClientSecretBytes = Convert.FromBase64String(setKeyModel.ClientSecret);
-                        string clientSecret = Convert.ToBase64String(
-                            await this.AsymmetricCryptoProvider.DecryptBytesAsync(
-                                enryptedClientSecretBytes,
-                                this.PrivateKey));
+                        string clientSecret = await this.AsymmetricCryptoProvider.DecryptBase64ToBase64Async(setKeyModel.ClientSecret, this.ClientState.PrivateKey);
+                        this.ClientState.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(setKeyModel.RoundKey, this.ClientState.PrivateKey);
 
-                        this.RoundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(
-                                            setKeyModel.RoundKey,
-                                            this.PrivateKey);
-
-                        this.GadgetInfo.ClientSecret = clientSecret;
+                        this.ClientState.ClientSecret = clientSecret;
 
                         this.IsInitialized = true;
                     }
@@ -102,27 +90,27 @@
 
         public async Task ChangeRoundKey()
         {
-            ServerResponse<string> response = await SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.GadgetInfo.Identifier}/", this.GadgetInfo.ClientSecret);
+            ServerResponse<string> response = await SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.ClientState.Identifier}/", this.ClientState.ClientSecret);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new HmsException(response.ReasonPhrase);
             }
 
-            this.RoundKey = Convert.FromBase64String(response.Content);
+            this.ClientState.RoundKey = Convert.FromBase64String(response.Content);
         }
 
         public async Task ChangeAsymmetricKey()
         {
-            this.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
-            byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.PrivateKey);
+            this.ClientState.PrivateKey = this.AsymmetricCryptoProvider.GeneratePrivateKey();
+            byte[] publicKey = this.AsymmetricCryptoProvider.GetPublicKey(this.ClientState.PrivateKey);
             byte[] iv = this.SymmetricCryptoProvider.GenerateIv();
 
             SetKeyModel content = new SetKeyModel
             {
-                Identifier = this.GadgetInfo.Identifier,
+                Identifier = this.ClientState.Identifier,
                 Key = publicKey,
-                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.GadgetInfo.ClientSecret, this.RoundKey, iv),
+                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.ClientState.ClientSecret, this.ClientState.RoundKey, iv),
                 Iv = iv
             };
 
@@ -135,8 +123,8 @@
 
             SetKeyModel encryptedLoginModel = response.Content;
             byte[] encryptedRoundKey = encryptedLoginModel.RoundKey;
-            byte[] roundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(encryptedRoundKey, this.PrivateKey);
-            this.RoundKey = roundKey;
+            byte[] roundKey = await this.AsymmetricCryptoProvider.DecryptBytesAsync(encryptedRoundKey, this.ClientState.PrivateKey);
+            this.ClientState.RoundKey = roundKey;
         }
 
         public async Task<ServerResponse<TContent>> SendAsync<TContent>(
@@ -215,8 +203,8 @@
                 throw new HmsException(response.ReasonPhrase);
             }
 
-            this.AuthInfo.Login = login;
-            this.AuthInfo.Password = password;
+            this.ClientState.AuthInfo.Login = login;
+            this.ClientState.AuthInfo.Password = password;
             this.UserId = response.Content;
         }
 
@@ -236,7 +224,7 @@
 
         public Task LogoutAsync()
         {
-            this.AuthInfo.Login = this.AuthInfo.Password = null;
+            this.ClientState.AuthInfo.Login = this.ClientState.AuthInfo.Password = null;
             this.UserId = null;
 
             return Task.CompletedTask;
@@ -248,10 +236,10 @@
 
             AuthHeaderModel model = new AuthHeaderModel
             {
-                Indentifier = this.GadgetInfo.Identifier,
-                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.GadgetInfo.ClientSecret, this.RoundKey, iv),
-                Login = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.AuthInfo?.Login, this.RoundKey, iv),
-                Password = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.AuthInfo?.Password, this.RoundKey, iv),
+                Indentifier = this.ClientState.Identifier,
+                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.ClientState.ClientSecret, this.ClientState.RoundKey, iv),
+                Login = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.ClientState.AuthInfo?.Login, this.ClientState.RoundKey, iv),
+                Password = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.ClientState.AuthInfo?.Password, this.ClientState.RoundKey, iv),
                 Iv = iv
             };
 
@@ -266,7 +254,7 @@
 
             if (needsEncryption && httpContent != null)
             {
-                return await this.HttpContentService.EncryptAsync(httpContent, this.RoundKey);
+                return await this.HttpContentService.EncryptAsync(httpContent, this.ClientState.RoundKey);
             }
 
             return httpContent;
@@ -281,7 +269,7 @@
 
             if (needsDecryption)
             {
-                content = await this.HttpContentService.DecryptAsync(content, this.RoundKey);
+                content = await this.HttpContentService.DecryptAsync(content, this.ClientState.RoundKey);
             }
 
             return await content.ReadAsStringAsync();

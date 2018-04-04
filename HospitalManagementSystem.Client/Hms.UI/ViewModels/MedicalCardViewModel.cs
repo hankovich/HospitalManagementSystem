@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Hms.Services.Interface;
+    using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Wrappers;
 

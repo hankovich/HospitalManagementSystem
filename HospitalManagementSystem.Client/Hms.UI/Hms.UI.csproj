@@ -226,7 +226,7 @@
       <Project>{0ebaf1bd-10ea-45a2-bb6a-f5beb787c6d0}</Project>
       <Name>Hms.Resolver</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Hms.Services.Interface\Hms.DataServices.Interface.csproj">
+    <ProjectReference Include="..\Hms.DataServices.Interface\Hms.DataServices.Interface.csproj">
       <Project>{6E6C6F6D-287E-46FF-9DDC-63B4F470C10C}</Project>
       <Name>Hms.DataServices.Interface</Name>
     </ProjectReference>

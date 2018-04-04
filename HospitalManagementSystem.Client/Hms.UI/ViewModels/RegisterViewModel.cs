@@ -7,7 +7,7 @@
     using System.Windows.Controls;
     using System.Windows.Input;
 
-    using Hms.Services.Interface;
+    using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure.Commands;
 
     using MahApps.Metro.Controls.Dialogs;

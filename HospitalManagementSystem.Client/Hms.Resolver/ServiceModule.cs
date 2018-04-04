@@ -1,7 +1,7 @@
 ﻿namespace Hms.Resolver
 {
-    using Hms.Services;
-    using Hms.Services.Interface;
+    using Hms.DataServices;
+    using Hms.DataServices.Interface;
 
     using Ninject.Modules;
 
