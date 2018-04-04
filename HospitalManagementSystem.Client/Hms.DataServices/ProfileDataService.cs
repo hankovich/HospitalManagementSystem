@@ -5,6 +5,7 @@
 
     using Hms.Common.Interface.Domain;
     using Hms.DataServices.Interface;
+    using Hms.DataServices.Interface.Infrastructure;
 
     public class ProfileDataService : IProfileDataService
     {

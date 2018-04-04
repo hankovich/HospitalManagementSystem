@@ -1,4 +1,4 @@
-﻿namespace Hms.DataServices
+﻿namespace Hms.DataServices.Infrasructure
 {
     using Hms.Common.Interface.Models;
 

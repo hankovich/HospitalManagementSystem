@@ -1,4 +1,4 @@
-﻿namespace Hms.DataServices
+﻿namespace Hms.DataServices.Infrasructure
 {
     using System;
     using System.Net;
@@ -13,6 +13,7 @@
     using Hms.Common.Interface.Extensions;
     using Hms.Common.Interface.Models;
     using Hms.DataServices.Interface;
+    using Hms.DataServices.Interface.Infrastructure;
 
     using Newtonsoft.Json;
 
@@ -22,16 +23,16 @@
 
         public IAsymmetricCryptoProvider AsymmetricCryptoProvider { get; }
 
-        public IHttpContentService HttpContentService { get; }
+        public IRequestProcessorBuilder RequestProcessorBuilder { get; }
 
         public RequestCoordinator(
             ISymmetricCryptoProvider symmetricCryptoProvider,
             IAsymmetricCryptoProvider asymmetricCryptoProvider,
-            IHttpContentService httpContentService)
+            IRequestProcessorBuilder requestProcessorBuilder)
         {
             this.SymmetricCryptoProvider = symmetricCryptoProvider;
             this.AsymmetricCryptoProvider = asymmetricCryptoProvider;
-            this.HttpContentService = httpContentService;
+            this.RequestProcessorBuilder = requestProcessorBuilder;
 
             this.ClientState = new ClientStateModel();
         }
@@ -90,7 +91,7 @@
 
         public async Task ChangeRoundKey()
         {
-            ServerResponse<string> response = await SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.ClientState.Identifier}/", this.ClientState.ClientSecret);
+            ServerResponse<string> response = await this.SendAsync<string>(HttpMethod.Put, $"api/key/round/{this.ClientState.Identifier}/", this.ClientState.ClientSecret);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -138,12 +139,11 @@
                 await this.EnsureKeysInitializationAsync();
             }
 
-            using (var request = new HttpRequestMessage(method, this.Host + url))
+            RequestProcessor requestProcessor =
+                this.RequestProcessorBuilder.UseEncryption(needsEncryption).Build(this.ClientState);
+
+            using (var request = await requestProcessor.CreateRequestAsync(method, this.Host + url, content))
             {
-                request.Content = await this.SerializeToHttpContentAsync(content, needsEncryption);
-
-                request.Headers.Authorization = await this.CreateCredentialsAsync();
-
                 using (HttpResponseMessage response = await this.HttpClient.SendAsync(request))
                 {
                     if (response.StatusCode == (HttpStatusCode)424)
@@ -152,38 +152,7 @@
                         return await this.SendAsync<TContent>(method, url, content, needsEncryption);
                     }
 
-                    string responseString = await this.DeserializeFromHttpContentAsync(response.Content, needsEncryption && response.IsSuccessStatusCode);
-
-                    TContent receivedContent = string.IsNullOrEmpty(responseString) || !response.IsSuccessStatusCode
-                                                   ? default(TContent)
-                                                   : JsonConvert.DeserializeObject<TContent>(responseString);
-
-                    string reasonPhrase;
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        try
-                        {
-                            reasonPhrase = JsonConvert.DeserializeObject<dynamic>(responseString).Message;
-                        }
-                        catch
-                        {
-                            reasonPhrase = response.ReasonPhrase;
-                        }
-                    }
-                    else
-                    {
-                        reasonPhrase = response.ReasonPhrase;
-                    }
-
-
-                    var result = new ServerResponse<TContent>
-                    {
-                        Content = receivedContent,
-                        IsSuccessStatusCode = response.IsSuccessStatusCode,
-                        ReasonPhrase = reasonPhrase,
-                        StatusCode = (int)response.StatusCode
-                    };
+                    var result = await requestProcessor.ProcessResponseAsync<TContent>(response);
 
                     return result;
                 }
@@ -228,61 +197,6 @@
             this.UserId = null;
 
             return Task.CompletedTask;
-        }
-
-        private async Task<AuthenticationHeaderValue> CreateCredentialsAsync()
-        {
-            byte[] iv = this.SymmetricCryptoProvider.GenerateIv();
-
-            AuthHeaderModel model = new AuthHeaderModel
-            {
-                Indentifier = this.ClientState.Identifier,
-                ClientSecret = await this.SymmetricCryptoProvider.EncryptBase64ToBase64Async(this.ClientState.ClientSecret, this.ClientState.RoundKey, iv),
-                Login = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.ClientState.AuthInfo?.Login, this.ClientState.RoundKey, iv),
-                Password = await this.SymmetricCryptoProvider.EncryptUtf8ToBase64Async(this.ClientState.AuthInfo?.Password, this.ClientState.RoundKey, iv),
-                Iv = iv
-            };
-
-            byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(model));
-
-            return new AuthenticationHeaderValue("Hospital", Convert.ToBase64String(bytes));
-        }
-
-        private async Task<HttpContent> SerializeToHttpContentAsync(object content, bool needsEncryption)
-        {
-            HttpContent httpContent = ConvertToHttpContent(content);
-
-            if (needsEncryption && httpContent != null)
-            {
-                return await this.HttpContentService.EncryptAsync(httpContent, this.ClientState.RoundKey);
-            }
-
-            return httpContent;
-        }
-
-        private async Task<string> DeserializeFromHttpContentAsync(HttpContent content, bool needsDecryption)
-        {
-            if (content == null || (content.Headers.ContentLength ?? 0) == 0)
-            {
-                return null;
-            }
-
-            if (needsDecryption)
-            {
-                content = await this.HttpContentService.DecryptAsync(content, this.ClientState.RoundKey);
-            }
-
-            return await content.ReadAsStringAsync();
-        }
-
-        private static HttpContent ConvertToHttpContent(object content)
-        {
-            if (content == null)
-            {
-                return null;
-            }
-
-            return new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
         }
     }
 }

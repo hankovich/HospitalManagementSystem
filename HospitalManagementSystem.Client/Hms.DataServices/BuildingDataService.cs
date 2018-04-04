@@ -7,6 +7,7 @@
     using Hms.Common.Interface.Exceptions;
     using Hms.Common.Interface.Geocoding;
     using Hms.DataServices.Interface;
+    using Hms.DataServices.Interface.Infrastructure;
 
     public class BuildingDataService : IBuildingDataService
     {

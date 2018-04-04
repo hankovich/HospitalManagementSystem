@@ -1,7 +1,9 @@
 ﻿namespace Hms.Resolver
 {
     using Hms.DataServices;
+    using Hms.DataServices.Infrasructure;
     using Hms.DataServices.Interface;
+    using Hms.DataServices.Interface.Infrastructure;
 
     using Ninject.Modules;
 
@@ -9,6 +11,9 @@
     {
         public override void Load()
         {
+            this.Bind<IRequestProcessorBuilder>().To<RequestProcessorBuilder>();
+            this.Bind<IHttpContentProcessor>().To<HttpContentProcessor>();
+
             this.Bind<IRequestCoordinator>().To<RequestCoordinator>().InSingletonScope();
             this.Bind<IMedicalCardDataService>().To<MedicalCardDataService>();
             this.Bind<IProfileDataService>().To<ProfileDataService>();
