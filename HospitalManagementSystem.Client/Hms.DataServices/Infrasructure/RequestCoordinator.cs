@@ -223,18 +223,14 @@
 
             using (var request = await requestProcessor.CreateRequestAsync(method, this.Host + url, content))
             {
-                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request))
+                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request).ContinueWith(this.ContinuationAction))
                 {
-                    Debug.WriteLine($"Entering signal: {CountdownEvent.CurrentCount} {method} {url}"); 
-                    CountdownEvent.Signal();
-                    Debug.WriteLine($"Exiting signal: {CountdownEvent.CurrentCount} {method} {url}");
-
                     if (response.StatusCode == (HttpStatusCode)424)
                     {
                         Debug.WriteLine($"Change round key: {method} {url}");
                         await this.ChangeRoundKey();
                         Debug.WriteLine($"End change round key: {method} {url}");
-                        return await this.SendAsync<TContent>(method, url, content, needsEncryption);
+                        return await SendAsyncInternal<TContent>(method, url, content, needsEncryption, needsThreadSafe);
                     }
 
                     var result = await requestProcessor.ProcessResponseAsync<TContent>(response);
@@ -242,6 +238,15 @@
                     return result;
                 }
             }
+        }
+
+        private HttpResponseMessage ContinuationAction(Task<HttpResponseMessage> task)
+        {
+            Debug.WriteLine($"Entering signal: {CountdownEvent.CurrentCount} {task.Result.RequestMessage.RequestUri}");
+            CountdownEvent.Signal();
+            Debug.WriteLine($"Exiting signal: {CountdownEvent.CurrentCount} {task.Result.RequestMessage.RequestUri}");
+
+            return task.Result;
         }
     }
 }
