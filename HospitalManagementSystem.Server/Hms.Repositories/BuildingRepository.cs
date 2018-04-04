@@ -49,8 +49,8 @@
 	                [Latitude],
 	                [Longitude],
 	                [PolyclinicRegionId]
-	                FROM [PolyclinicRegion] PR
-                    WHERE PR.[Id] = @id";
+	                FROM [BuildingAddress] BA
+                    WHERE BA.[Id] = @id";
 
                     var address = await connection.QueryFirstOrDefaultAsync<BuildingAddress>(command, new { id });
 
