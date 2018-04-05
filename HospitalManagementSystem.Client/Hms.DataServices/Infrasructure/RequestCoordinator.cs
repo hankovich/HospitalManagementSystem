@@ -1,7 +1,6 @@
 ﻿namespace Hms.DataServices.Infrasructure
 {
     using System;
-    using System.Diagnostics;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
@@ -13,6 +12,8 @@
     using Hms.Common.Interface.Models;
     using Hms.DataServices.Interface;
     using Hms.DataServices.Interface.Infrastructure;
+
+    using Nito.AsyncEx;
 
     public class RequestCoordinator : IRequestCoordinator
     {
@@ -48,19 +49,14 @@
 
         private static readonly SemaphoreSlim ChangeKeySemaphore = new SemaphoreSlim(1, 1);
 
-        private static readonly CountdownEvent CountdownEvent = new CountdownEvent(1);
+        private static AsyncCountdownEvent CountdownEvent = new AsyncCountdownEvent(1);
         
         public async Task ChangeRoundKey()
         {
-            Debug.WriteLine($"CKSemaphore count: {ChangeKeySemaphore.CurrentCount}");
             await ChangeKeySemaphore.WaitAsync();
-            Debug.WriteLine($"CKSemaphore count exit waiting: {ChangeKeySemaphore.CurrentCount}");
             CountdownEvent.Signal();
-            Debug.WriteLine($"Event count: {CountdownEvent.CurrentCount}");
-            CountdownEvent.Wait();
-            Debug.WriteLine($"Event exit waiting: {CountdownEvent.CurrentCount}");
-            CountdownEvent.Reset();
-            Debug.WriteLine($"Event exit reset: {CountdownEvent.CurrentCount}");
+            await CountdownEvent.WaitAsync();
+            CountdownEvent = new AsyncCountdownEvent(1);
 
             try
             {
@@ -209,28 +205,22 @@
 
             if (needsThreadSafe)
             {
-                Debug.WriteLine($"Wait handle: {method} {url} {Thread.CurrentThread.ManagedThreadId}");
-                WaitHandle.WaitAny(new[] { ChangeKeySemaphore.AvailableWaitHandle });
-                Debug.WriteLine($"Wait handle release: {method} {url}");
+                await AsyncFactory.FromWaitHandle(ChangeKeySemaphore.AvailableWaitHandle);
             }
 
-            Debug.WriteLine($"Entering event: {CountdownEvent.CurrentCount} {method} {url}");
             CountdownEvent.AddCount();
-            Debug.WriteLine($"Exiting event: {CountdownEvent.CurrentCount} {method} {url}");
 
             RequestProcessor requestProcessor =
                 this.RequestProcessorBuilder.UseEncryption(needsEncryption).Build(this.ClientState);
 
             using (var request = await requestProcessor.CreateRequestAsync(method, this.Host + url, content))
             {
-                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request).ContinueWith(this.ContinuationAction))
+                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request).ContinueWith(this.DecrementEvent))
                 {
                     if (response.StatusCode == (HttpStatusCode)424)
                     {
-                        Debug.WriteLine($"Change round key: {method} {url}");
                         await this.ChangeRoundKey();
-                        Debug.WriteLine($"End change round key: {method} {url}");
-                        return await SendAsyncInternal<TContent>(method, url, content, needsEncryption, needsThreadSafe);
+                        return await this.SendAsyncInternal<TContent>(method, url, content, needsEncryption, needsThreadSafe);
                     }
 
                     var result = await requestProcessor.ProcessResponseAsync<TContent>(response);
@@ -240,12 +230,9 @@
             }
         }
 
-        private HttpResponseMessage ContinuationAction(Task<HttpResponseMessage> task)
+        private HttpResponseMessage DecrementEvent(Task<HttpResponseMessage> task)
         {
-            Debug.WriteLine($"Entering signal: {CountdownEvent.CurrentCount} {task.Result.RequestMessage.RequestUri}");
             CountdownEvent.Signal();
-            Debug.WriteLine($"Exiting signal: {CountdownEvent.CurrentCount} {task.Result.RequestMessage.RequestUri}");
-
             return task.Result;
         }
     }
