@@ -25,7 +25,7 @@
             <Label Content="Login" Margin="5"/>
             <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
             <Label Content="Password" Margin="5"/>
-            <PasswordBox Name="PasswordBox" Password="password" Margin="5" mah:PasswordBoxHelper.CapsLockWarningToolTip="Caps Lock is on" Style="{StaticResource Win8MetroPasswordBox}"/>
+            <PasswordBox Name="PasswordBox" Password="password" Margin="5" mah:PasswordBoxHelper.CapsLockWarningToolTip="Caps Lock is on" Style="{StaticResource Win8MetroPasswordBox}" FontSize="12"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
