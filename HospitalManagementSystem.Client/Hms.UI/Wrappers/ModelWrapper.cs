@@ -1,7 +1,9 @@
 namespace Hms.UI.Wrappers
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
 
     using Hms.UI.ViewModels;
@@ -27,11 +29,37 @@ namespace Hms.UI.Wrappers
 
         protected virtual void SetValue<TValue>(TValue value, [CallerMemberName] string propertyName = null)
         {
-            typeof(T).GetProperty(propertyName).SetValue(this.Model, value);
-            this.OnPropertyChanged(propertyName);
+            PropertyInfo info = typeof(T).GetProperty(propertyName);
+            var currentValue = info.GetValue(this.Model);
 
-            this.ValidatePropertyInternal(propertyName);
+            if (!currentValue.Equals(value))
+            {
+                info.SetValue(this.Model, value);
+                this.OnPropertyChanged(propertyName);
+
+                this.ValidatePropertyInternal(propertyName);
+            }
         }
+
+        protected virtual IEnumerable<string> ValidateProperty(string propertyName)
+        {
+            return null;
+        }
+
+        protected void RegisterCollection<TWrapper, TModel>(
+            ObservableCollection<TWrapper> wrapperCollection,
+            ICollection<TModel> modelCollection) where TWrapper : ModelWrapper<TModel>
+        {
+            wrapperCollection.CollectionChanged += (sender, args) =>
+            {
+                modelCollection.Clear();
+
+                foreach (var model in wrapperCollection.Select(w => w.Model))
+                {
+                    modelCollection.Add(model);
+                }
+            };
+        } 
 
         private void ValidatePropertyInternal(string propertyName)
         {
@@ -48,9 +76,5 @@ namespace Hms.UI.Wrappers
             }
         }
 
-        protected virtual IEnumerable<string> ValidateProperty(string propertyName)
-        {
-            return null;
-        }
     }
 }
