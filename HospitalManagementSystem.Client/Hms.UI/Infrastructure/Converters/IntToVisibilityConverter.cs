@@ -5,16 +5,18 @@
     using System.Windows;
     using System.Windows.Data;
 
-    public class IntToVisibiliryConverter : IValueConverter
+    public class IntToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is int)
+            try
             {
-                return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
+                return (int?)value > 0 ? Visibility.Visible : Visibility.Collapsed;
             }
-
-            throw new NotSupportedException();
+            catch
+            {
+                throw new NotSupportedException();
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

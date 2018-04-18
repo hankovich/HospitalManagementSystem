@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -9,15 +10,12 @@
     using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Controls.PagingControl;
-    using Hms.UI.Wrappers;
 
     using MahApps.Metro.Controls.Dialogs;
 
-    using Ninject.Infrastructure.Language;
-
     public class MedicalCardViewModel : ViewModelBase
     {
-        private MedicalCardWrapper medicalCard;
+        private int? totalRecords;
 
         public MedicalCardViewModel(IMedicalCardDataService service, IDialogCoordinator dialogCoordinator)
         {
@@ -25,12 +23,14 @@
             this.DialogCoordinator = dialogCoordinator;
             this.PageContract = new PageControlContract(service);
 
+            this.PageSizes = new ObservableCollection<int> { 10, 20, 50, 100, 200 };
+
             this.LoadedCommand = AsyncCommand.Create(async () =>
             {
                 try
                 {
                     var card = await this.MedicalCardService.GetMedicalCardAsync(0);
-                    this.MedicalCard = new MedicalCardWrapper(card);
+                    this.TotalRecords = card.TotalRecords;
                 }
                 catch (Exception e)
                 {
@@ -43,35 +43,34 @@
 
         public IDialogCoordinator DialogCoordinator { get; }
 
-        public MedicalCardWrapper MedicalCard
+        public IAsyncCommand LoadedCommand { get; }
+
+        public ObservableCollection<int> PageSizes { get; }
+
+        public int? TotalRecords
         {
             get
             {
-                return this.medicalCard;
+                return this.totalRecords;
             }
 
             set
             {
-                if (medicalCard != value)
-                {
-                    this.medicalCard = value;
-                    this.OnPropertyChanged();
-                }
+                this.totalRecords = value;
+                this.OnPropertyChanged();
             }
         }
-
-        public IAsyncCommand LoadedCommand { get; }
 
         public PageControlContract PageContract { get; }
 
         public class PageControlContract : IPageControlContract
         {
-            public IMedicalCardDataService MedicalCardService { get; }
-
             public PageControlContract(IMedicalCardDataService medicalCardService)
             {
                 this.MedicalCardService = medicalCardService;
             }
+
+            public IMedicalCardDataService MedicalCardService { get; }
 
             public async Task<int> GetTotalCountAsync()
             {

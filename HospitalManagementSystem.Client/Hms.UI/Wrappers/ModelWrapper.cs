@@ -32,7 +32,7 @@ namespace Hms.UI.Wrappers
             PropertyInfo info = typeof(T).GetProperty(propertyName);
             var currentValue = info.GetValue(this.Model);
 
-            if (!currentValue.Equals(value))
+            if (!currentValue?.Equals(value) ?? true)
             {
                 info.SetValue(this.Model, value);
                 this.OnPropertyChanged(propertyName);

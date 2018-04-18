@@ -103,9 +103,10 @@
     <Compile Include="Infrastructure\Converters\ArrayToObjectMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\CommandChainMultiConverter.cs" />
-    <Compile Include="Infrastructure\Converters\IntToVisibiliryConverter.cs" />
+    <Compile Include="Infrastructure\Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\NegateIntToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Events\OpenMenuItemEvent.cs" />
     <Compile Include="Infrastructure\FileDialogCordinator.cs" />

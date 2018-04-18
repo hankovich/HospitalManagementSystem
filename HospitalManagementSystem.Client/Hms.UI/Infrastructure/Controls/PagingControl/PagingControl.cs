@@ -78,6 +78,11 @@
             {
                 return this.GetValue(PageSizesProperty) as ObservableCollection<int>;
             }
+
+            set
+            {
+                this.SetValue(PageSizesProperty, value);
+            }
         }
 
         public ObservableCollection<object> ItemsSource
@@ -85,11 +90,6 @@
             get
             {
                 return this.GetValue(ItemsSourceProperty) as ObservableCollection<object>;
-            }
-
-            set
-            {
-                this.SetValue(ItemsSourceProperty, value);
             }
         }
 
@@ -205,7 +205,6 @@
 
         public PagingControl()
         {
-            this.ItemsSource = new ObservableCollection<object>();
             this.Loaded += this.PaggingControlLoaded;
         }
 
@@ -354,11 +353,6 @@
 
         private async Task NavigateAsync(PageChanges change)
         {
-            if (this.ItemsSource == null)
-            {
-                this.ItemsSource = new ObservableCollection<object>();
-            }
-
             if (this.PageContract == null)
             {
                 return;
@@ -414,11 +408,6 @@
             this.RaisePreviewPageChange(this.Page, newPage);
 
             this.Page = newPage;
-
-            if (this.ItemsSource == null)
-            {
-                this.ItemsSource = new ObservableCollection<object>();
-            }
 
             this.ItemsSource.Clear();
 
