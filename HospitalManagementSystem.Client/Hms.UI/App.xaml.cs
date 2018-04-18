@@ -12,6 +12,8 @@
     using Ninject;
     using Ninject.Modules;
 
+    using Prism.Events;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -31,6 +33,7 @@
             Kernel.Bind<IFileDialogCoordinator>().To<FileDialogCordinator>();
 
             Kernel.Bind<ISuggestionProvider>().To<GeoSuggestionProvider>();
+            Kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
 
             Current.MainWindow = Kernel.Get<MainWindow>();
             Current.MainWindow.Show();

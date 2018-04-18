@@ -36,7 +36,7 @@
             set { this.SetValue(value); }
         }
 
-        public ICollection<MedicalCardRecord> Records
+        public ICollection<MedicalCardRecord> Records // TODO: Create MedicalCardRecordWrapper and use ObservableCollection<MedicalCardRecordWrapper>
         {
             get { return this.GetValue<ICollection<MedicalCardRecord>>(); }
             set { this.SetValue(value); }

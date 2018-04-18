@@ -2,14 +2,37 @@
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Windows.Input;
+
+    using Hms.UI.Infrastructure.Commands;
+    using Hms.UI.Infrastructure.Events;
+
+    using Prism.Events;
 
     public class MenuViewModel : ViewModelBase
     {
-        public MenuViewModel()
+        private ObservableCollection<MenuItem> menuItems;
+
+        public MenuViewModel(IEventAggregator eventAggregator)
         {
+            this.EventAggregator = eventAggregator;
             this.MenuItems = new ObservableCollection<MenuItem>();
 
             var rnd = new Random();
+
+            this.MenuItems.Add(new MenuItem
+            {
+                Name = "Medical Card",
+                ViewModelName = "MedicalCardViewModel",
+                Badge = null
+            });
+
+            this.MenuItems.Add(new MenuItem
+            {
+                Name = "Profile Card",
+                ViewModelName = "ProfileViewModel",
+                Badge = null
+            });
 
             for (int i = 0; i < 20; i++)
             {
@@ -19,9 +42,12 @@
                     Badge = rnd.NextDouble() > 0.5 ? (int?)null : rnd.Next() % 20
                 });    
             }
+
+            this.OpenMenuItem =
+                new RelayCommand<string>(vm => this.EventAggregator.GetEvent<OpenMenuItemEvent>().Publish(vm));
         }
 
-        private ObservableCollection<MenuItem> menuItems;
+        public IEventAggregator EventAggregator { get; }
 
         public ObservableCollection<MenuItem> MenuItems
         {
@@ -39,11 +65,15 @@
                 }
             }
         }
+
+        public ICommand OpenMenuItem { get; }
     }
 
     public class MenuItem
     {
         public string Name { get; set; }
+        
+        public string ViewModelName { get; set; }
 
         public int? Badge { get; set; }
     }

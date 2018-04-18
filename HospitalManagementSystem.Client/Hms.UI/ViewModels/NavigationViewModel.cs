@@ -22,17 +22,17 @@
             this.OpenLogin();
         }
 
-        public ICommand MenuCommand { get; set; }
+        public ICommand MenuCommand { get; }
 
-        public ICommand ProfileCommand { get; set; }
+        public ICommand ProfileCommand { get; }
 
-        public ICommand MainCommand { get; set; }
+        public ICommand MainCommand { get; }
 
-        public ICommand LoginCommand { get; set; }
+        public ICommand LoginCommand { get; }
 
-        public ICommand RegisterCommand { get; set; }
+        public ICommand RegisterCommand { get; }
 
-        public ICommand CreateProfileCommand { get; set; }
+        public ICommand CreateProfileCommand { get; }
 
         public object SelectedViewModel
         {

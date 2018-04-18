@@ -7,27 +7,94 @@
              xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:customControl="clr-namespace:Hms.UI.Infrastructure.Controls.PagingControl"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <intr:Interaction.Triggers>
         <intr:EventTrigger EventName="Loaded">
             <intr:InvokeCommandAction Command="{Binding LoadedCommand}"/>
         </intr:EventTrigger>
     </intr:Interaction.Triggers>
-    <Grid SnapsToDevicePixels="True">
+    <Grid>
         <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
-        <ItemsControl ItemsSource="{Binding MedicalCard.Records}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
+        <customControl:PagingControl Visibility="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding MedicalCard.Records}" PageContract="{Binding PageContract}">
+            <customControl:PagingControl.PageSizes>
+                <system:Int32>2</system:Int32>
+                <system:Int32>20</system:Int32>
+                <system:Int32>50</system:Int32>
+                <system:Int32>100</system:Int32>
+            </customControl:PagingControl.PageSizes>
+            <customControl:PagingControl.Template>
+                <ControlTemplate TargetType="{x:Type customControl:PagingControl}">
                     <Grid>
-                        <Button Content="{Binding Content}" Margin="5"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <ItemsControl ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Style.Triggers>
+                                        <Trigger Property="HasItems" Value="False">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <TextBlock Text="The card is empty" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                                </ItemsControl.Style>
+                                <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding AddedAtUtc}" Margin="5"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Content}" Margin="5"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Author.Specialization.Name}" Margin="5"/>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Name="PART_FirstPageButton" Content="&lt;&lt;" Grid.Column="0" />
+                            <Button Name="PART_PreviousPageButton" Content="&lt;" Grid.Column="1" />
+                            <TextBox Name="PART_PageTextBox" Grid.Column="2" />
+                            <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="3" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="PART_NextPageButton" Content="&gt;" Grid.Column="4" />
+                            <Button Name="PART_LastPageButton" Content="&gt;&gt;" Grid.Column="5" />
+                            <ComboBox Name="PART_PageSizesCombobox" Grid.Column="6" />
+                        </Grid>
                     </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                </ControlTemplate>
+            </customControl:PagingControl.Template>
+        </customControl:PagingControl>
     </Grid>
 </UserControl>

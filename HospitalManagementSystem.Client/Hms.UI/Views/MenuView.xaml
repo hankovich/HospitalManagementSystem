@@ -20,7 +20,7 @@
                         <DataTemplate>
                             <Grid>
                                 <mah:Badged Badge="{Binding Badge}">
-                                    <Button Content="{Binding Name}" Margin="5 0"/>
+                                    <Button Content="{Binding Name}" Margin="5 0" Command="{Binding DataContext.OpenMenuItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ViewModelName}"/>
                                 </mah:Badged>
                             </Grid>
                         </DataTemplate>
