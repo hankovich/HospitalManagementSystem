@@ -8,6 +8,7 @@
              xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:customControl="clr-namespace:Hms.UI.Infrastructure.Controls.PagingControl"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -31,11 +32,27 @@
                 <ControlTemplate TargetType="{x:Type customControl:PagingControl}">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                        <TextBox mah:TextBoxHelper.ClearTextButton="True"
+                         mah:TextBoxHelper.UseFloatingWatermark="True"
+                         mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
+                                    <Style.Triggers>
+                                        <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
+                                            <Setter Property="mah:TextBoxHelper.ButtonContent" Value="r" />
+                                            <Setter Property="mah:TextBoxHelper.ButtonContentTemplate" Value="{x:Null}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -56,24 +73,35 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Button Name="PART_FirstPageButton" Content="&lt;&lt;" Grid.Column="0" />
-                            <Button Name="PART_PreviousPageButton" Content="&lt;" Grid.Column="1" />
-                            <TextBox Name="PART_PageTextBox" Grid.Column="2" />
-                            <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="3" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Button Name="PART_NextPageButton" Content="&gt;" Grid.Column="4" />
-                            <Button Name="PART_LastPageButton" Content="&gt;&gt;" Grid.Column="5" />
-                            <ComboBox Name="PART_PageSizesCombobox" Grid.Column="6" />
+                        <Grid Grid.Row="2">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                <Button Name="PART_FirstPageButton" Grid.Column="0" BorderThickness="0">
+                                    <iconPacks:PackIconMaterial Kind="PageFirst" Foreground="{StaticResource AccentColorBrush2}"/>
+                                </Button>
+                                <Button Name="PART_PreviousPageButton" Grid.Column="1" BorderThickness="0">
+                                    <iconPacks:PackIconMaterial Kind="ChevronLeft" Foreground="{StaticResource AccentColorBrush2}"/>
+                                </Button>
+                                <TextBox Name="PART_PageTextBox" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="20">
+                                    <Validation.ErrorTemplate>
+                                        <ControlTemplate>
+                                            <DockPanel>
+                                                <Border BorderBrush="Red" BorderThickness="1" Margin="-1">
+                                                    <AdornedElementPlaceholder x:Name="controlWithError"/>
+                                                </Border>
+                                            </DockPanel>
+                                        </ControlTemplate>
+                                    </Validation.ErrorTemplate>
+                                </TextBox>
+                                <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}}"
+                                           TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Button Name="PART_NextPageButton" BorderThickness="0">
+                                    <iconPacks:PackIconMaterial Kind="ChevronRight" Foreground="{StaticResource AccentColorBrush2}"/>
+                                </Button>
+                                <Button Name="PART_LastPageButton" BorderThickness="0">
+                                    <iconPacks:PackIconMaterial Kind="PageLast" Foreground="{StaticResource AccentColorBrush2}"/>
+                                </Button>
+                                <ComboBox Name="PART_PageSizesCombobox" />
+                            </StackPanel>
                         </Grid>
                     </Grid>
                 </ControlTemplate>
