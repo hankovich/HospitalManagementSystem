@@ -23,7 +23,7 @@
             this.DialogCoordinator = dialogCoordinator;
             this.PageContract = new PageControlContract(service);
 
-            this.PageSizes = new ObservableCollection<int> { 10, 20, 50, 100, 200 };
+            this.PageSizes = new ObservableCollection<int> { 2, 10, 20, 50, 100, 200 };
 
             this.LoadedCommand = AsyncCommand.Create(async () =>
             {

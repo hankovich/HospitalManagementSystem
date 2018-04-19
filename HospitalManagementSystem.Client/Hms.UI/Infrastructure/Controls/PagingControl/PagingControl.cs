@@ -7,6 +7,9 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
+    using System.Windows.Input;
+
+    using Hms.UI.Infrastructure.Commands;
 
     [TemplatePart(Name = "PART_FirstPageButton", Type = typeof(Button)),
      TemplatePart(Name = "PART_PreviousPageButton", Type = typeof(Button)),
@@ -195,12 +198,12 @@
                 typeof(PagingControl));
         }
 
-        private static void Target(
+        private async static void Target(
             DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var target = (PagingControl)dependencyObject;
-            target.NavigateAsync(PageChanges.Current);
+            await target.NavigateAsync(PageChanges.Current);
         }
 
         public PagingControl()
@@ -236,32 +239,52 @@
 
         public async void BtnFirstPageClick(object sender, RoutedEventArgs e)
         {
+            this.SetButtonsIsEnabled(false);
             await this.NavigateAsync(PageChanges.First);
+            this.SetButtonsIsEnabled(true);
         }
 
         public async void BtnPreviousPageClick(object sender, RoutedEventArgs e)
         {
+            this.SetButtonsIsEnabled(false);
             await this.NavigateAsync(PageChanges.Previous);
+            this.SetButtonsIsEnabled(true);
         }
 
         public async void BtnNextPageClick(object sender, RoutedEventArgs e)
         {
+            this.SetButtonsIsEnabled(false);
             await this.NavigateAsync(PageChanges.Next);
+            this.SetButtonsIsEnabled(true);
         }
 
         public async void BtnLastPageClick(object sender, RoutedEventArgs e)
         {
+            this.SetButtonsIsEnabled(false);
             await this.NavigateAsync(PageChanges.Last);
+            this.SetButtonsIsEnabled(true);
         }
 
         public async void TxtPageLostFocus(object sender, RoutedEventArgs e)
         {
+            this.SetButtonsIsEnabled(false);
             await this.NavigateAsync(PageChanges.Current);
+            this.SetButtonsIsEnabled(true);
         }
 
         public async void CmbPageSizesSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            this.SetButtonsIsEnabled(false);
             await this.NavigateAsync(PageChanges.Current);
+            this.SetButtonsIsEnabled(true);
+        }
+
+        public void SetButtonsIsEnabled(bool isEnabled)
+        {
+            this.BtnFirstPage.IsEnabled = isEnabled;
+            this.BtnPreviousPage.IsEnabled = isEnabled;
+            this.BtnNextPage.IsEnabled = isEnabled;
+            this.BtnLastPage.IsEnabled = isEnabled;
         }
 
         #endregion
@@ -293,7 +316,11 @@
             this.BtnNextPage.Click += this.BtnNextPageClick;
             this.BtnLastPage.Click += this.BtnLastPageClick;
 
-            this.TxtPage.LostFocus += this.TxtPageLostFocus;
+            this.TxtPage.LostKeyboardFocus += this.TxtPageLostFocus;
+
+            this.TxtPage.InputBindings.Add(new InputBinding(
+                new RelayCommand(Keyboard.ClearFocus),
+                new KeyGesture(Key.Enter)));
 
             this.CmbPageSizes.SelectionChanged += this.CmbPageSizesSelectionChanged;
         }
@@ -305,7 +332,7 @@
             this.BtnNextPage.Click -= this.BtnNextPageClick;
             this.BtnLastPage.Click -= this.BtnLastPageClick;
 
-            this.TxtPage.LostFocus -= this.TxtPageLostFocus;
+            this.TxtPage.LostKeyboardFocus -= this.TxtPageLostFocus;
 
             this.CmbPageSizes.SelectionChanged -= this.CmbPageSizesSelectionChanged;
         }
