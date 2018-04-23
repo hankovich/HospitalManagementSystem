@@ -49,6 +49,8 @@
 
         public static readonly DependencyProperty FilterProperty;
 
+        public static readonly DependencyProperty IsLoadingProperty;
+
         public int Page
         {
             get
@@ -59,6 +61,19 @@
             set
             {
                 this.SetValue(PageProperty, value);
+            }
+        }
+
+        public bool IsLoading
+        {
+            get
+            {
+                return (bool)this.GetValue(IsLoadingProperty);
+            }
+
+            set
+            {
+                this.SetValue(IsLoadingProperty, value);
             }
         }
 
@@ -166,6 +181,7 @@
         {
             TotalPagesProperty = DependencyProperty.Register("TotalPages", typeof(int), typeof(PagingControl));
             PageProperty = DependencyProperty.Register("Page", typeof(int), typeof(PagingControl));
+            IsLoadingProperty = DependencyProperty.Register("IsLoading", typeof(bool), typeof(PagingControl), new PropertyMetadata(false));
             ItemsSourceProperty = DependencyProperty.Register(
                 "ItemsSource",
                 typeof(ObservableCollection<object>),
@@ -385,7 +401,9 @@
                 return;
             }
 
-            var totalRecords = await this.PageContract.GetTotalCountAsync();
+            this.IsLoading = true;
+
+            var totalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
             var newPageSize = (int)this.CmbPageSizes.SelectedItem;
 
             if (totalRecords == 0)
@@ -445,6 +463,7 @@
             }
 
             this.RaisePageChanged(oldPage, this.Page);
+            this.IsLoading = false;
         }
 
         #endregion

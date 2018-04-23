@@ -101,6 +101,7 @@
     <Compile Include="Infrastructure\Controls\PagingControl\PageChanges.cs" />
     <Compile Include="Infrastructure\Controls\PagingControl\PagingControl.cs" />
     <Compile Include="Infrastructure\Converters\ArrayToObjectMultiConverter.cs" />
+    <Compile Include="Infrastructure\Converters\BoolArrayToVisibilityMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\CommandChainMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\IntToVisibilityConverter.cs" />

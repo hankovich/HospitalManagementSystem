@@ -24,15 +24,15 @@
             this.MedicalCardService = medicalCardService;
         }
 
-        public IMedicalCardService MedicalCardService { get; set; }
+        public IMedicalCardService MedicalCardService { get; }
 
         [Encrypted, Authorize(Roles = Role.Patient)]
-        [HttpGet, Route("{pageIndex}/{pageSize}")]
-        public async Task<IHttpActionResult> Get(int pageIndex, int pageSize = 20)
+        [HttpGet, Route("{pageIndex}/{pageSize}/{filter?}")]
+        public async Task<IHttpActionResult> Get(int pageIndex, int pageSize, string filter = "")
         {
             try
             {
-                MedicalCard card = await this.MedicalCardService.GetMedicalCardPagesAsync(this.User.Identity.Name, pageIndex, pageSize);
+                MedicalCard card = await this.MedicalCardService.GetMedicalCardPagesAsync(this.User.Identity.Name, pageIndex, pageSize, filter);
                 return this.Ok(card);
             }
             catch

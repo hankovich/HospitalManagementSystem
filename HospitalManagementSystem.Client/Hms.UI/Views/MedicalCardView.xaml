@@ -14,6 +14,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <conv:BoolArrayToVisibilityMultiConverter x:Key="BoolArrayToVisibilityMultiConverter"/>
         <conv:NegateIntToVisibilityConverter x:Key="NegateIntToVisibilityConverter"/>
         <conv:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
     </UserControl.Resources>
@@ -51,9 +52,27 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
+
+                        <TextBlock Grid.Row="1" Text="No records found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                            <TextBlock.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
+                                    <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
+                                    <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type customControl:PagingControl}}" Converter="{StaticResource InverseBooleanConverter}"/>
+                                </MultiBinding>
+                            </TextBlock.Visibility>
+                        </TextBlock>
                         
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
+                        <mah:ProgressRing Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                            <mah:ProgressRing.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
+                                    <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
+                                    <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type customControl:PagingControl}}"/>
+                                </MultiBinding>
+                            </mah:ProgressRing.Visibility>
+                        </mah:ProgressRing>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer">
+                            <ItemsControl Name="Records" ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0">
@@ -75,13 +94,13 @@
                         </ScrollViewer>
                         <Grid Grid.Row="2">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                <Button Name="PART_FirstPageButton" Grid.Column="0" BorderThickness="0">
+                                <Button Name="PART_FirstPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="PageFirst" Foreground="{StaticResource AccentColorBrush2}"/>
                                 </Button>
-                                <Button Name="PART_PreviousPageButton" Grid.Column="1" BorderThickness="0">
+                                <Button Name="PART_PreviousPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="ChevronLeft" Foreground="{StaticResource AccentColorBrush2}"/>
                                 </Button>
-                                <TextBox Name="PART_PageTextBox" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MinWidth="20">
+                                <TextBox Name="PART_PageTextBox" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="20" Margin="5">
                                     <Validation.ErrorTemplate>
                                         <ControlTemplate>
                                             <DockPanel>
@@ -92,12 +111,13 @@
                                         </ControlTemplate>
                                     </Validation.ErrorTemplate>
                                 </TextBox>
+                                <TextBlock Text=" / " TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}}"
-                                           TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Button Name="PART_NextPageButton" BorderThickness="0">
+                                           TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                <Button Name="PART_NextPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="ChevronRight" Foreground="{StaticResource AccentColorBrush2}"/>
                                 </Button>
-                                <Button Name="PART_LastPageButton" BorderThickness="0">
+                                <Button Name="PART_LastPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="PageLast" Foreground="{StaticResource AccentColorBrush2}"/>
                                 </Button>
                                 <ComboBox Name="PART_PageSizesCombobox" />

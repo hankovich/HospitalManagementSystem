@@ -6,6 +6,6 @@
 
     public interface IMedicalCardDataService
     {
-        Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20);
+        Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20, string filter = "");
     }
 }

@@ -21,14 +21,14 @@
 
         public IMedicalCardRepository MedicalCardRepository { get; set; }
 
-        public async Task<MedicalCard> GetMedicalCardPagesAsync(string login, int pageIndex, int pageSize = 20)
+        public async Task<MedicalCard> GetMedicalCardPagesAsync(string login, int pageIndex, int pageSize = 20, string filter = "")
         {
             if (login == null)
             {
                 throw new ArgumentNullException(nameof(login));
             }
 
-            return await this.MedicalCardRepository.GetMedicalCardPagesAsync(login, pageIndex, pageSize);
+            return await this.MedicalCardRepository.GetMedicalCardPagesAsync(login, pageIndex, pageSize, filter);
         }
     }
 }

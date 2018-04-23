@@ -5,8 +5,8 @@
 
     public interface IPageControlContract
     {
-        Task<int> GetTotalCountAsync();
+        Task<int> GetTotalCountAsync(object filter);
 
-        Task<ICollection<object>> GetRecordsAsync(int startingIndex, int numberOfRecords, object sortData);
+        Task<ICollection<object>> GetRecordsAsync(int startingIndex, int numberOfRecords, object filter);
     }
 }

@@ -25,7 +25,7 @@
 
         public string ConnectionString { get; set; }
 
-        public async Task<MedicalCard> GetMedicalCardPagesAsync(string login, int pageIndex, int pageSize = 20)
+        public async Task<MedicalCard> GetMedicalCardPagesAsync(string login, int pageIndex, int pageSize = 20, string filter = "")
         {
             try
             {
@@ -79,7 +79,8 @@
 								ON D.[HealthcareInstitutionId] = HI.[Id]
 								LEFT JOIN [MedicalSpecialization] MS 
 								ON D.[MedicalSpecializationId] = MS.[Id]
-								WHERE U.[Id] = @userId
+								WHERE U.[Id] = @userId 
+                                AND U.[Login] + CONVERT(NVARCHAR, MCR.[AddedAtUtc], 10) + CONVERT(NVARCHAR, MCR.[ModifiedAtUtc], 10) + MCR.[Content] + MS.[Name] LIKE '%' + @filter + '%'
 								
                                 ORDER BY MCR.[AddedAtUtc] ASC
 								OFFSET @offset ROWS
@@ -118,7 +119,7 @@
 
                                 return card;
                             }, 
-                            new { login, offset = pageSize * pageIndex, pageSize });
+                            new { login, offset = pageSize * pageIndex, pageSize, filter });
 
                     var medicalCard = cards.GroupBy(o => o.Id).Select(
                         group =>

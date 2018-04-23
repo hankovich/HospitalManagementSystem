@@ -72,14 +72,14 @@
 
             public IMedicalCardDataService MedicalCardService { get; }
 
-            public async Task<int> GetTotalCountAsync()
+            public async Task<int> GetTotalCountAsync(object filter)
             {
-                return (await this.MedicalCardService.GetMedicalCardAsync(0)).TotalRecords;
+                return (await this.MedicalCardService.GetMedicalCardAsync(0, 20, filter as string ?? string.Empty)).TotalRecords;
             }
 
-            public async Task<ICollection<object>> GetRecordsAsync(int startingIndex, int numberOfRecords, object sortData)
+            public async Task<ICollection<object>> GetRecordsAsync(int startingIndex, int numberOfRecords, object filter)
             {
-                MedicalCard medicalCard = await this.MedicalCardService.GetMedicalCardAsync(startingIndex / numberOfRecords, numberOfRecords);
+                MedicalCard medicalCard = await this.MedicalCardService.GetMedicalCardAsync(startingIndex / numberOfRecords, numberOfRecords, filter as string ?? string.Empty);
                 
                 return medicalCard.Records.Cast<object>().ToList();
             }

@@ -1,5 +1,6 @@
 ﻿namespace Hms.DataServices
 {
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -15,15 +16,15 @@
             this.Client = client;
         }
 
-        public IRequestCoordinator Client { get; set; }
+        public IRequestCoordinator Client { get; }
 
-        public async Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20)
+        public async Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20, string filter = "")
         {
-            var response = await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}");
+            var response = await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}/{filter}");
 
             if (response.Content == null)
             {
-                throw new HmsException(response.ReasonPhrase);
+                return new MedicalCard { TotalRecords = 0, Records = new List<MedicalCardRecord>() };
             }
 
             return response.Content;
