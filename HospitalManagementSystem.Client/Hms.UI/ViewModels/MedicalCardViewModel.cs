@@ -5,13 +5,17 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows.Input;
 
     using Hms.Common.Interface.Domain;
     using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Controls.PagingControl;
+    using Hms.UI.Infrastructure.Events;
 
     using MahApps.Metro.Controls.Dialogs;
+
+    using Prism.Events;
 
     public class MedicalCardViewModel : ViewModelBase
     {
@@ -23,35 +27,49 @@
 
         private object filter;
 
-        private int totalPages;
-
-        public MedicalCardViewModel(IMedicalCardDataService service, IDialogCoordinator dialogCoordinator)
+        public MedicalCardViewModel(
+            IMedicalCardDataService service,
+            IDialogCoordinator dialogCoordinator,
+            IEventAggregator eventAggregator)
         {
             this.MedicalCardService = service;
             this.DialogCoordinator = dialogCoordinator;
+            this.EventAggregator = eventAggregator;
             this.PageContract = new PageControlContract(service);
 
             this.PageSizes = new ObservableCollection<int> { 2, 10, 20, 50, 100, 200 };
 
-            this.LoadedCommand = AsyncCommand.Create(async () =>
-            {
-                try
+            this.LoadedCommand = AsyncCommand.Create(
+                async () =>
                 {
-                    var card = await this.MedicalCardService.GetMedicalCardAsync(0);
-                    this.TotalRecords = card.TotalRecords;
-                }
-                catch (Exception e)
+                    try
+                    {
+                        var card = await this.MedicalCardService.GetMedicalCardAsync(0);
+                        this.TotalRecords = card.TotalRecords;
+                    }
+                    catch (Exception e)
+                    {
+                        await this.DialogCoordinator.ShowMessageAsync(this, "Oops", e.Message);
+                    }
+                });
+
+            this.OpenRecordCommand = new RelayCommand<int>(
+                recordId =>
                 {
-                    await this.DialogCoordinator.ShowMessageAsync(this, "Oops", e.Message);
-                }
-            });
+                    var @event = this.EventAggregator.GetEvent<OpenRecordEvent>();
+                    @event.Publish(new OpenRecordEventArgs { RecordId = recordId, CardViewModel = this });
+                });
         }
 
         public IMedicalCardDataService MedicalCardService { get; }
 
         public IDialogCoordinator DialogCoordinator { get; }
 
-        public IAsyncCommand LoadedCommand { get; }
+        public IEventAggregator EventAggregator { get; }
+
+        public ICommand LoadedCommand { get; }
+
+        public ICommand OpenRecordCommand { get; }
 
         public ObservableCollection<int> PageSizes { get; }
 
@@ -95,20 +113,6 @@
             set
             {
                 this.pageSize = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public int TotalPages
-        {
-            get
-            {
-                return this.totalPages;
-            }
-
-            set
-            {
-                this.totalPages = value;
                 this.OnPropertyChanged();
             }
         }

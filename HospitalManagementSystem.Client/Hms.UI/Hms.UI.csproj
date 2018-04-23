@@ -109,7 +109,10 @@
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateIntToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Events\NavigationEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenMenuItemEvent.cs" />
+    <Compile Include="Infrastructure\Events\OpenRecordEvent.cs" />
+    <Compile Include="Infrastructure\Events\OpenRecordEventArgs.cs" />
     <Compile Include="Infrastructure\FileDialogCordinator.cs" />
     <Compile Include="Infrastructure\IFileDialogCoordinator.cs" />
     <Compile Include="Infrastructure\Providers\CitiesSuggestionProvider.cs" />
@@ -121,8 +124,12 @@
     <Compile Include="ViewModels\CreateProfileViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MedicalCardRecordViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="Views\MedicalRecordView.xaml.cs">
+      <DependentUpon>MedicalRecordView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Wrappers\AddressWrapper.cs" />
     <Compile Include="Wrappers\MedicalCardWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
@@ -186,6 +193,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MedicalCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MedicalRecordView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

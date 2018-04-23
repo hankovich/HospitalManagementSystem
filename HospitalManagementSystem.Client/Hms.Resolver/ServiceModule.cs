@@ -16,6 +16,7 @@
 
             this.Bind<IRequestCoordinator>().To<RequestCoordinator>().InSingletonScope();
             this.Bind<IMedicalCardDataService>().To<MedicalCardDataService>();
+            this.Bind<IMedicalRecordDataService>().To<MedicalRecordDataService>();
             this.Bind<IProfileDataService>().To<ProfileDataService>();
             this.Bind<IAccountService>().To<AccountService>();
             this.Bind<IBuildingDataService>().To<BuildingDataService>();

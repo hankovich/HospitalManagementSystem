@@ -81,7 +81,7 @@
                             <ItemsControl Name="Records" ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0">
+                                        <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0" Command="{Binding DataContext.OpenRecordCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Id}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"></ColumnDefinition>

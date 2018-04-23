@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="IAccountService.cs" />
     <Compile Include="IBuildingDataService.cs" />
+    <Compile Include="IMedicalRecordDataService.cs" />
     <Compile Include="Infrastructure\IHttpContentProcessor.cs" />
     <Compile Include="Infrastructure\IRequestCoordinator.cs" />
     <Compile Include="IMedicalCardDataService.cs" />

@@ -59,6 +59,7 @@
     <Compile Include="Infrasructure\RequestProcessor.cs" />
     <Compile Include="Infrasructure\RequestProcessorBuilder.cs" />
     <Compile Include="MedicalCardDataService.cs" />
+    <Compile Include="MedicalRecordDataService.cs" />
     <Compile Include="PolyclinicRegionDataService.cs" />
     <Compile Include="ProfileDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

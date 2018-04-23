@@ -9,6 +9,7 @@
     using Hms.UI.Infrastructure.Events;
 
     using Ninject;
+    using Ninject.Parameters;
 
     using Prism.Events;
 
@@ -26,6 +27,8 @@
             this.OpenCard();
 
             eventAggregator.GetEvent<OpenMenuItemEvent>().Subscribe(this.OnOpenMenuItem);
+            eventAggregator.GetEvent<OpenRecordEvent>().Subscribe(this.OnOpenRecord);
+            eventAggregator.GetEvent<NavigationEvent>().Subscribe(this.OnNavigation);
 
             DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             timer.Tick += (sender, args) => this.OnPropertyChanged(nameof(this.Time));
@@ -58,11 +61,23 @@
             this.SelectedViewModel = App.Kernel.Get<MedicalCardViewModel>();
         }
 
+        private void OnOpenRecord(OpenRecordEventArgs args)
+        {
+            var recordId = new ConstructorArgument("recordId", args.RecordId);
+            var parentViewModel = new ConstructorArgument("parentViewModel", args.CardViewModel);
+            this.SelectedViewModel = App.Kernel.Get<MedicalCardRecordViewModel>(recordId, parentViewModel);
+        }
+
         private void OnOpenMenuItem(string viewModelName)
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
             var type = executingAssembly.GetType($"Hms.UI.ViewModels.{viewModelName}");
             this.SelectedViewModel = App.Kernel.Get(type);
+        }
+
+        private void OnNavigation(object obj)
+        {
+            this.SelectedViewModel = obj;
         }
     }
 }

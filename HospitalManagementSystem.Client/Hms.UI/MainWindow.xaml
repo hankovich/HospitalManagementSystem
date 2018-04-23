@@ -22,6 +22,10 @@
             <v:MedicalCardView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:MedicalCardRecordViewModel}">
+            <v:MedicalRecordView/>
+        </DataTemplate>
+        
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <v:MainView/>
         </DataTemplate>
