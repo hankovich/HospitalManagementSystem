@@ -38,9 +38,14 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBox mah:TextBoxHelper.ClearTextButton="True"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.ClearTextButton="True"
                          mah:TextBoxHelper.UseFloatingWatermark="True"
-                         mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                         mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                             <TextBox.Style>
                                 <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
                                     <Style.Triggers>
@@ -52,8 +57,9 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
+                        <ComboBox Grid.Row="0" Grid.Column="1" Name="PART_PageSizesCombobox" Margin="5" VerticalAlignment="Bottom"/>
 
-                        <TextBlock Grid.Row="1" Text="No records found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="No records found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
                             <TextBlock.Visibility>
                                 <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
                                     <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
@@ -61,8 +67,8 @@
                                 </MultiBinding>
                             </TextBlock.Visibility>
                         </TextBlock>
-                        
-                        <mah:ProgressRing Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+
+                        <mah:ProgressRing Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
                             <mah:ProgressRing.Visibility>
                                 <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
                                     <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
@@ -71,7 +77,7 @@
                             </mah:ProgressRing.Visibility>
                         </mah:ProgressRing>
 
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer">
+                        <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer">
                             <ItemsControl Name="Records" ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -92,7 +98,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
-                        <Grid Grid.Row="2">
+                        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                 <Button Name="PART_FirstPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="PageFirst" Foreground="{StaticResource AccentColorBrush2}"/>
@@ -120,7 +126,6 @@
                                 <Button Name="PART_LastPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="PageLast" Foreground="{StaticResource AccentColorBrush2}"/>
                                 </Button>
-                                <ComboBox Name="PART_PageSizesCombobox" />
                             </StackPanel>
                         </Grid>
                     </Grid>
