@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
     using System.Windows.Data;
     using System.Windows.Input;
 
@@ -45,6 +46,8 @@
 
         public static readonly DependencyProperty PageSizesProperty;
 
+        public static readonly DependencyProperty PageSizeProperty;
+
         public static readonly DependencyProperty PageContractProperty;
 
         public static readonly DependencyProperty FilterProperty;
@@ -61,6 +64,19 @@
             set
             {
                 this.SetValue(PageProperty, value);
+            }
+        }
+
+        public int PageSize
+        {
+            get
+            {
+                return (int)this.GetValue(PageSizeProperty);
+            }
+
+            set
+            {
+                this.SetValue(PageSizeProperty, value);
             }
         }
 
@@ -181,6 +197,7 @@
         {
             TotalPagesProperty = DependencyProperty.Register("TotalPages", typeof(int), typeof(PagingControl));
             PageProperty = DependencyProperty.Register("Page", typeof(int), typeof(PagingControl));
+            PageSizeProperty = DependencyProperty.Register("PageSize", typeof(int), typeof(PagingControl));
             IsLoadingProperty = DependencyProperty.Register("IsLoading", typeof(bool), typeof(PagingControl), new PropertyMetadata(false));
             ItemsSourceProperty = DependencyProperty.Register(
                 "ItemsSource",
@@ -380,6 +397,15 @@
             };
 
             this.CmbPageSizes.SetBinding(ItemsControl.ItemsSourceProperty, propBinding);
+
+            propBinding = new Binding("PageSize")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+
+            this.CmbPageSizes.SetBinding(Selector.SelectedItemProperty, propBinding);
         }
 
         private void RaisePageChanged(int oldPage, int newPage)
@@ -405,6 +431,8 @@
 
             var totalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
             var newPageSize = (int)this.CmbPageSizes.SelectedItem;
+
+            this.PageSize = newPageSize;
 
             if (totalRecords == 0)
             {

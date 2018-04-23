@@ -48,13 +48,10 @@
 								DECLARE @cardId AS INT
 								SELECT TOP(1) @cardId = [Id] FROM [MedicalCard] WHERE [UserId] = @userId
 
-								DECLARE @count AS INT
-								SELECT @count = COUNT(*) FROM [MedicalCardRecord] WHERE [MedicalCardId] = @cardId
-
-				                SELECT 
+								SELECT 
 								MC.[Id], 
 								[StartedAtUtc], 
-								@count AS TotalRecords,
+								COUNT(*) OVER() AS TotalRecords,
 								U.[Id], U.[Login], NULL AS [PasswordHash], 
 								MCR.[Id], 
 								MCR.[AddedAtUtc], MCR.[ModifiedAtUtc], MCR.[Content],

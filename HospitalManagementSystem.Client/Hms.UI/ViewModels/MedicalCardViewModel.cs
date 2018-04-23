@@ -17,6 +17,14 @@
     {
         private int? totalRecords;
 
+        private int page;
+
+        private int pageSize;
+
+        private object filter;
+
+        private int totalPages;
+
         public MedicalCardViewModel(IMedicalCardDataService service, IDialogCoordinator dialogCoordinator)
         {
             this.MedicalCardService = service;
@@ -62,6 +70,62 @@
         }
 
         public PageControlContract PageContract { get; }
+
+        public int Page
+        {
+            get
+            {
+                return this.page;
+            }
+
+            set
+            {
+                this.page = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public int PageSize
+        {
+            get
+            {
+                return this.pageSize;
+            }
+
+            set
+            {
+                this.pageSize = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public int TotalPages
+        {
+            get
+            {
+                return this.totalPages;
+            }
+
+            set
+            {
+                this.totalPages = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public object Filter
+        {
+            get
+            {
+                return this.filter;
+            }
+
+            set
+            {
+                this.filter = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public class PageControlContract : IPageControlContract
         {

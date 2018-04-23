@@ -28,7 +28,7 @@
 
         <TextBlock Text="The card is empty" Visibility="{Binding TotalRecords, Converter={StaticResource NegateIntToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
 
-        <customControl:PagingControl Visibility="{Binding TotalRecords, Converter={StaticResource IntToVisibilityConverter}}" PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}">
+        <customControl:PagingControl Visibility="{Binding TotalRecords, Converter={StaticResource IntToVisibilityConverter}}" PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}" Filter="{Binding Filter, Mode=TwoWay}" Page="{Binding Page, Mode=TwoWay}" PageSize="{Binding PageSize, Mode=TwoWay}">
             <customControl:PagingControl.Template>
                 <ControlTemplate TargetType="{x:Type customControl:PagingControl}">
                     <Grid>
@@ -118,7 +118,7 @@
                                     </Validation.ErrorTemplate>
                                 </TextBox>
                                 <TextBlock Text=" / " TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}}"
+                                <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                            TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                                 <Button Name="PART_NextPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="ChevronRight" Foreground="{StaticResource AccentColorBrush2}"/>
