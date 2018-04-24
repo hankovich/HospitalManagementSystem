@@ -452,22 +452,36 @@
                 case PageChanges.First:
                     if (this.Page == 1)
                     {
+                        this.IsLoading = false;
                         return;
                     }
 
                     break;
                 case PageChanges.Previous:
+                    if (this.Page == 1)
+                    {
+                        this.IsLoading = false;
+                        return;
+                    }
+
                     newPage = (this.Page - 1 > this.TotalPages) ? this.TotalPages : (this.Page - 1 < 1) ? 1 : this.Page - 1;
                     break;
                 case PageChanges.Current:
                     newPage = (this.Page > this.TotalPages) ? this.TotalPages : (this.Page < 1) ? 1 : this.Page;
                     break;
                 case PageChanges.Next:
+                    if (this.Page == this.TotalPages)
+                    {
+                        this.IsLoading = false;
+                        return;
+                    }
+
                     newPage = (this.Page + 1 > this.TotalPages) ? this.TotalPages : this.Page + 1;
                     break;
                 case PageChanges.Last:
                     if (this.Page == this.TotalPages)
                     {
+                        this.IsLoading = false;
                         return;
                     }
 
@@ -482,9 +496,10 @@
 
             this.Page = newPage;
 
+            ICollection<object> fetchData =
+                await this.PageContract.GetRecordsAsync(startingIndex, newPageSize, this.Filter);
             this.ItemsSource.Clear();
 
-            ICollection<object> fetchData = await this.PageContract.GetRecordsAsync(startingIndex, newPageSize, this.Filter);
             foreach (object row in fetchData)
             {
                 this.ItemsSource.Add(row);

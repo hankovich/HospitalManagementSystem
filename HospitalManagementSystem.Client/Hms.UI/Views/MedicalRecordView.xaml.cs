@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace Hms.UI.Views
+﻿namespace Hms.UI.Views
 {
+    using System.Windows.Controls;
+
     /// <summary>
     /// Логика взаимодействия для MedicalRecordView.xaml
     /// </summary>
@@ -22,7 +9,7 @@ namespace Hms.UI.Views
     {
         public MedicalRecordView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

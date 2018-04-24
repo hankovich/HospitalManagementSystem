@@ -2,10 +2,6 @@
 {
     using System.Windows.Controls;
 
-    using Hms.UI.ViewModels;
-
-    using Ninject;
-
     /// <summary>
     /// Логика взаимодействия для MedicalCardView.xaml
     /// </summary>
@@ -13,8 +9,7 @@
     {
         public MedicalCardView()
         {
-            InitializeComponent();
-            this.DataContext = App.Kernel.Get<MedicalCardViewModel>();
+            this.InitializeComponent();
         }
     }
 }

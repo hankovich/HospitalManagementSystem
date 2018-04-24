@@ -20,7 +20,7 @@
 
         public async Task<MedicalCard> GetMedicalCardAsync(int pageIndex, int pageSize = 20, string filter = "")
         {
-            var response = await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}/{filter}");
+            var response = await this.Client.SendAsync<MedicalCard>(HttpMethod.Get, $"api/card/{pageIndex}/{pageSize}/{filter?.Trim()}");
 
             if (response.Content == null)
             {

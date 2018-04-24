@@ -72,6 +72,12 @@
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
             var type = executingAssembly.GetType($"Hms.UI.ViewModels.{viewModelName}");
+
+            if (type == this.SelectedViewModel.GetType())
+            {
+                return;
+            }
+
             this.SelectedViewModel = App.Kernel.Get(type);
         }
 

@@ -9,7 +9,7 @@
     {
         public CreateProfileView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

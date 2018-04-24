@@ -2,10 +2,6 @@
 {
     using System.Windows.Controls;
 
-    using Hms.UI.ViewModels;
-
-    using Ninject;
-
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
@@ -14,7 +10,6 @@
         public LoginView()
         {
             this.InitializeComponent();
-            this.DataContext = App.Kernel.Get<LoginViewModel>();
         }
     }
 }
