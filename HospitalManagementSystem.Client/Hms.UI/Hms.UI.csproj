@@ -131,6 +131,7 @@
       <DependentUpon>MedicalRecordView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wrappers\AddressWrapper.cs" />
+    <Compile Include="Wrappers\MedicalCardRecordWrapper.cs" />
     <Compile Include="Wrappers\MedicalCardWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />

@@ -6,12 +6,13 @@
     using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Events;
+    using Hms.UI.Wrappers;
 
     using Prism.Events;
 
-    public class MedicalCardRecordViewModel
+    public class MedicalCardRecordViewModel : ViewModelBase
     {
-        private readonly object parentViewModel;
+        private MedicalCardRecordWrapper record;
 
         public MedicalCardRecordViewModel(
             int recordId,
@@ -19,13 +20,32 @@
             IMedicalRecordDataService dataService,
             IEventAggregator eventAggregator)
         {
-            this.parentViewModel = parentViewModel;
             this.RecordId = recordId;
             this.DataService = dataService;
             this.EventAggregator = eventAggregator;
-            this.LoadedCommand = AsyncCommand.Create(async () => { await Task.CompletedTask; });
-            this.BackCommand =
-                new RelayCommand(() => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
+            this.LoadedCommand =
+                AsyncCommand.Create(
+                    async () =>
+                    {
+                        var model = await this.DataService.GetMedicalCardRecordAsync(recordId);
+                        this.Record = new MedicalCardRecordWrapper(model);
+                    });
+            this.BackCommand = new RelayCommand(
+                () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
+        }
+
+        public MedicalCardRecordWrapper Record
+        {
+            get
+            {
+                return this.record;
+            }
+
+            set
+            {
+                this.record = value;
+                this.OnPropertyChanged();
+            }
         }
 
         public ICommand LoadedCommand { get; }

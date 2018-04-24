@@ -1,7 +1,7 @@
 ﻿namespace Hms.UI.Wrappers
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     using Hms.Common.Interface.Domain;
 
@@ -10,6 +10,7 @@
         public MedicalCardWrapper(MedicalCard model)
             : base(model)
         {
+            this.RegisterCollection(this.Records, Model.Records);
         }
 
         public int Id
@@ -36,9 +37,9 @@
             set { this.SetValue(value); }
         }
 
-        public ICollection<MedicalCardRecord> Records // TODO: Create MedicalCardRecordWrapper and use ObservableCollection<MedicalCardRecordWrapper>
+        public ObservableCollection<MedicalCardRecordWrapper> Records // TODO: Create MedicalCardRecordWrapper and use ObservableCollection<MedicalCardRecordWrapper>
         {
-            get { return this.GetValue<ICollection<MedicalCardRecord>>(); }
+            get { return this.GetValue<ObservableCollection<MedicalCardRecordWrapper>>(); }
             set { this.SetValue(value); }
         }
     }
