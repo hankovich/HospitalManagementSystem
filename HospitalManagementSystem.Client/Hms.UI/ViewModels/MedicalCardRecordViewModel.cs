@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     using Hms.Common.Interface.Domain;
@@ -16,37 +18,59 @@
     {
         private MedicalCardRecordWrapper record;
 
+        private ProfileWrapper profile;
+
         public MedicalCardRecordViewModel(
             int recordId,
             object parentViewModel,
             IMedicalRecordDataService recordDataService,
             IAttachmentDataService attachmentDataService,
+            IProfileDataService profileDataService,
             IEventAggregator eventAggregator)
         {
             this.RecordId = recordId;
             this.RecordDataService = recordDataService;
             this.AttachmentDataService = attachmentDataService;
+            this.ProfileDataService = profileDataService;
             this.EventAggregator = eventAggregator;
-            this.Attachments = new ObservableCollection<Attachment>();
+            this.Attachments = new ObservableCollection<AttachmentInfoWrapper>();
 
             this.LoadedCommand =
                 AsyncCommand.Create(
                     async () =>
                     {
                         var model = await this.RecordDataService.GetMedicalCardRecordAsync(recordId);
+
+                        var profileModel = await this.ProfileDataService.GetProfileAsync(model.Author.Id);
+                        this.Profile = new ProfileWrapper(profileModel);
+
                         this.Record = new MedicalCardRecordWrapper(model);
 
-                        if (this.Record.AttachmentIds != null)
+                        if (model.AttachmentIds != null)
                         {
-                            foreach (var attachmentId in this.Record.AttachmentIds)
+                            foreach (var attachmentId in model.AttachmentIds)
                             {
-                                this.Attachments.Add(await this.AttachmentDataService.GetAttachmentAsync(attachmentId));
+                                var attachment = await this.AttachmentDataService.GetAttachmentInfoAsync(attachmentId);
+                                this.Attachments.Add(new AttachmentInfoWrapper(attachment));
                             }
                         }
                     });
 
             this.BackCommand = new RelayCommand(
                 () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
+
+            this.OpenAttachmentCommand = AsyncCommand.Create(
+                (int attachmentId) =>
+                {
+                    var attachment = this.Attachments.FirstOrDefault(att => att.Id == attachmentId);
+                    if (attachment != null)
+                    {
+                        attachment.IsLoading = !attachment.IsLoading;
+                    }
+
+                    return Task.CompletedTask;
+                });
+            this.ShowAttachmentInFolderCommand = AsyncCommand.Create(() => Task.CompletedTask);
         }
 
         public MedicalCardRecordWrapper Record
@@ -63,17 +87,37 @@
             }
         }
 
-        public ObservableCollection<Attachment> Attachments { get; }
+        public ProfileWrapper Profile
+        {
+            get
+            {
+                return this.profile;
+            }
+
+            set
+            {
+                this.profile = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<AttachmentInfoWrapper> Attachments { get; }
 
         public ICommand LoadedCommand { get; }
 
         public ICommand BackCommand { get; }
+
+        public ICommand OpenAttachmentCommand { get; }
+
+        public ICommand ShowAttachmentInFolderCommand { get; }
 
         public int RecordId { get; }
 
         public IMedicalRecordDataService RecordDataService { get; }
 
         public IAttachmentDataService AttachmentDataService { get; }
+
+        public IProfileDataService ProfileDataService { get; set; }
 
         public IEventAggregator EventAggregator { get; }
     }

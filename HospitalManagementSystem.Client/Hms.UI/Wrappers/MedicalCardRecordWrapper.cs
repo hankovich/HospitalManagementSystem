@@ -50,7 +50,7 @@
 
         public ObservableCollection<int> AttachmentIds
         {
-            get { return this.GetValue<ObservableCollection<int>>(); }
+            get { return this.GetValue<ObservableCollection<int>>(); } // TODO: fix Exception :(
             set { this.SetValue(value); }
         }
     }

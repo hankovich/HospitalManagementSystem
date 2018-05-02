@@ -228,9 +228,9 @@
                         group =>
                         {
                             var cardTemplate = group.First();
-                            cardTemplate.AttachmentIds =
-                                new List<int>(
-                                    group.Select(gr => gr.AttachmentIds.FirstOrDefault()));
+                            var ids = group.Select(gr => gr.AttachmentIds.FirstOrDefault()).Where(id => id != default(int));
+
+                            cardTemplate.AttachmentIds = new List<int>(ids);
 
                             return cardTemplate;
                         }).FirstOrDefault();
