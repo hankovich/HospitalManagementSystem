@@ -37,7 +37,7 @@
             set { this.SetValue(value); }
         }
 
-        public ObservableCollection<MedicalCardRecordWrapper> Records // TODO: Create MedicalCardRecordWrapper and use ObservableCollection<MedicalCardRecordWrapper>
+        public ObservableCollection<MedicalCardRecordWrapper> Records
         {
             get { return this.GetValue<ObservableCollection<MedicalCardRecordWrapper>>(); }
             set { this.SetValue(value); }

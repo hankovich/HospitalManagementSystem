@@ -35,7 +35,7 @@
             this.ClientState = new ClientStateModel();
         }
 
-        public string Host => /*"http://localhost:52017/"; //*/ "http://localhost.fiddler:52017/";
+        public string Host => "http://localhost:52017/"; //*/ "http://localhost.fiddler:52017/";
 
         public int? UserId { get; private set; }
 

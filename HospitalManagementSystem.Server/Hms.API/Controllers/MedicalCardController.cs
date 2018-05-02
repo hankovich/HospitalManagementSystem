@@ -40,5 +40,20 @@
                 return this.BadRequest();
             }
         }
+
+        [Encrypted, Authorize(Roles = Role.Patient)]
+        [HttpGet, Route("{recordId}")]
+        public async Task<IHttpActionResult> Get(int recordId)
+        {
+            try
+            {
+                MedicalCardRecord cardRecord = await this.MedicalCardService.GetMedicalRecordAsync(this.User.Identity.Name, recordId);
+                return this.Ok(cardRecord);
+            }
+            catch
+            {
+                return this.BadRequest();
+            }
+        }
     }
 }

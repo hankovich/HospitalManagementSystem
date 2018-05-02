@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachmentService.cs" />
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="AuthorizationService.cs" />
     <Compile Include="BuildingService.cs" />

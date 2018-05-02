@@ -7,5 +7,7 @@
     public interface IMedicalCardService
     {
         Task<MedicalCard> GetMedicalCardPagesAsync(string login, int pageIndex, int pageSize = 20, string filter = "");
+
+        Task<MedicalCardRecord> GetMedicalRecordAsync(string login, int recordId);
     }
 }

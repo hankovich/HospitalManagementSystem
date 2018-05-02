@@ -137,5 +137,111 @@
                 throw new ArgumentException(e.Message);
             }
         }
+
+        public async Task<MedicalCardRecord> GetMedicalRecordAsync(string login, int recordId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"
+                    BEGIN TRAN
+	                    IF EXISTS (SELECT [Id] FROM [User] WHERE [Login] = @login) 
+		                    BEGIN
+			                    DECLARE @userId AS INT
+								SELECT TOP(1) @userId = [Id] FROM [User] WHERE [Login] = @login
+
+								IF NOT EXISTS (SELECT [Id] FROM [MedicalCard] WHERE [UserId] = @userId) 
+								BEGIN
+									INSERT INTO [MedicalCard]([UserId]) VALUES (@userId)
+								END
+
+								IF NOT EXISTS (SELECT [MCR].[Id] FROM [MedicalCardRecord] MCR JOIN [MedicalCard] MC ON MCR.[MedicalCardId] = MC.[Id] WHERE [UserId] = @userId AND [MCR].[Id] = @recordId) 
+								BEGIN
+									RAISERROR ('There is no such record for this user', 16, 1)
+								END
+
+								SELECT 
+                                MCR.[Id], MCR.[AssociatedRecordId], MCR.[AddedAtUtc], MCR.[ModifiedAtUtc], MCR.[Content],
+								UD.[Id], UD.[Login], NULL AS PasswordHash, D.[Info], D.[CabinetNumber], HI.[Id], HI.[Name], MS.[Id], MS.[Name], MS.[Description], A.[Id]
+								
+								FROM [MedicalCardRecord] MCR 
+								LEFT JOIN [Attachment] A 
+								ON
+								MCR.[ID] = A.[MedicalCardRecordId]
+								LEFT JOIN [Doctor] D 
+								ON 
+								D.[UserId] = MCR.[DoctorId] 
+								LEFT JOIN 
+								[User] UD 
+								ON 
+								UD.[Id] = D.[UserId]
+								LEFT JOIN [HealthcareInstitution] HI
+								ON D.[HealthcareInstitutionId] = HI.[Id]
+								LEFT JOIN [MedicalSpecialization] MS 
+								ON D.[MedicalSpecializationId] = MS.[Id]
+								JOIN [MedicalCard] MC
+								ON MCR.[MedicalCardId] = MC.[Id]
+								WHERE MC.[UserId] = @userId 
+                                AND MCR.[Id] = @recordId
+		                    END
+	                    ELSE
+		                    BEGIN
+			                    RAISERROR ('There is no such user', 16, 1)
+		                    END
+                    COMMIT TRAN";
+
+                    IEnumerable<MedicalCardRecord> records =
+                        await
+                            connection.QueryAsync<MedicalCardRecord, Doctor, HealthcareInstitution, MedicalSpecialization, int?, MedicalCardRecord>(
+                                command,
+                                (record, doctor, institution, specialization, attachmentId) =>
+                                {
+                                    if (doctor != null)
+                                    {
+                                        doctor.Institution = institution;
+                                        doctor.Specialization = specialization;
+
+                                        if (record != null)
+                                        {
+                                            record.Author = doctor;
+
+                                            if (record.AttachmentIds == null)
+                                            {
+                                                record.AttachmentIds = new List<int>();
+                                            }
+
+                                            if (attachmentId != null)
+                                            {
+                                                record.AttachmentIds.Add(attachmentId.Value);
+                                            }
+                                        }
+                                    }
+
+                                    return record;
+                                },
+                                new { login, recordId });
+
+                    var medicalCardRecord = records.GroupBy(o => o.Id).Select(
+                        group =>
+                        {
+                            var cardTemplate = group.First();
+                            cardTemplate.AttachmentIds =
+                                new List<int>(
+                                    group.Select(gr => gr.AttachmentIds.FirstOrDefault()));
+
+                            return cardTemplate;
+                        }).FirstOrDefault();
+
+                    return medicalCardRecord;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
     }
 }

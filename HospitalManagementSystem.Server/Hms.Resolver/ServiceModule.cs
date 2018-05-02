@@ -35,6 +35,7 @@ namespace Hms.Resolver
             this.Bind<IProfileService>().To<ProfileService>();
             this.Bind<IBuildingService>().To<BuildingService>();
             this.Bind<IPolyclinicRegionService>().To<PolyclinicRegionService>();
+            this.Bind<IAttachmentService>().To<AttachmentService>();
 
             this.Bind<IPolyclinicRegionProvider>().To<DummyPolyclinicRegionProvider>();
             

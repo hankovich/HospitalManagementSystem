@@ -30,5 +30,15 @@
 
             return await this.MedicalCardRepository.GetMedicalCardPagesAsync(login, pageIndex, pageSize, filter);
         }
+
+        public async Task<MedicalCardRecord> GetMedicalRecordAsync(string login, int recordId)
+        {
+            if (login == null)
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
+
+            return await this.MedicalCardRepository.GetMedicalRecordAsync(login, recordId);
+        }
     }
 }

@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Attachment.cs" />
+    <Compile Include="Domain\AttachmentInfo.cs" />
     <Compile Include="Domain\BuildingAddress.cs" />
     <Compile Include="Domain\Doctor.cs" />
     <Compile Include="Domain\HealthcareInstitution.cs" />
