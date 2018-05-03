@@ -70,7 +70,11 @@
 
                     return Task.CompletedTask;
                 });
-            this.ShowAttachmentInFolderCommand = AsyncCommand.Create(() => Task.CompletedTask);
+
+            this.ShowAttachmentInFolderCommand = AsyncCommand.Create((int attachmentId) =>
+            {
+                return Task.CompletedTask;
+            });
         }
 
         public MedicalCardRecordWrapper Record

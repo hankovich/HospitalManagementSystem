@@ -7,13 +7,19 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
-             xmlns:viewModels="clr-namespace:Hms.UI.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:NegateBooleanToVisibilityConverter x:Key="NegateBooleanToVisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="{x:Type Run}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="DarkOrange" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -35,72 +41,87 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
+
             <Button Grid.Column="0" Command="{Binding BackCommand}" Style="{StaticResource MetroCircleButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" IsCancel="True">
                 <iconPacks:PackIconMaterial Kind="ArrowLeftBoldCircleOutline" Foreground="{StaticResource AccentBaseColorBrush}" Width="30" Height="30"/>
             </Button>
 
             <TextBlock Grid.Column="1" Text="{Binding Record.AddedAtUtc, StringFormat=dd MMM yyyy hh:mm}" FontSize="20" Margin="10"/>
 
-            <Grid Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Column="0" Text="{Binding Profile.FirstName}" FontSize="20" Margin="10" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Column="1" Text="{Binding Profile.LastName}" FontSize="20" Margin="10" HorizontalAlignment="Right"/>
-            </Grid>
+            <TextBlock Grid.Column="2" FontSize="20" Margin="10" HorizontalAlignment="Right">
+                <Hyperlink Command="ContextMenu">
+                    <Run Text="{Binding Profile.FirstName}"/>
+                    <Run Text="{Binding Profile.LastName}"/>
+                </Hyperlink>
+            </TextBlock>
         </Grid>
-        
+
         <TextBox Grid.Row="1" Text="{Binding Record.Content}" IsReadOnly="True" Margin="10 5 10 10" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
 
-        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Visible">
-            <ItemsControl ItemsSource="{Binding Attachments}" AlternationCount="4">
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Attachments}" AlternationCount="100">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="10 0 10 10">
-                            <Border Width="50" Height="50" CornerRadius="15,15,15,15" BorderThickness="3" Background="Red">
-                                <Button Command="{Binding Path=DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Path=DataContext.Id, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}">
-                                    <Button.Style>
-                                        <Style>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
+                        <Grid Margin="10 0 5 10">
+                            <Button Width="50" Height="50" Command="{Binding Path=DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Path=DataContext.Id, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+                                <Button.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
                                                    RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" Value="0">
-                                                    <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
+                                                <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
                                                    RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" Value="1">
-                                                    <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush2}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
+                                                <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush2}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
                                                    RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" Value="2">
-                                                    <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush3}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
+                                                <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush3}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=(ItemsControl.AlternationIndex), 
                                                    RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" Value="3">
-                                                    <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush4}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                    <Grid>
-                                        <iconPacks:PackIconMaterial Kind="Download" Foreground="{StaticResource WhiteBrush}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" Visibility="{Binding Path=DataContext.IsLoading, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Converter={StaticResource NegateBooleanToVisibilityConverter}}" Width="25" Height="25"/>
-                                        <mah:ProgressRing Foreground="{StaticResource WhiteBrush}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" Visibility="{Binding Path=DataContext.IsLoading, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Converter={StaticResource BooleanToVisibilityConverter}}" Width="40" Height="40"/>
-                                    </Grid>
-                                    <Button.ToolTip>
-                                        <ToolTip>
-                                            <TextBlock Text="{Binding Name}"/>
-                                        </ToolTip>
-                                    </Button.ToolTip>
-                                    <Button.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Open" Command="{Binding Path=DataContext.(viewModels:MedicalCardRecordViewModel.OpenAttachmentCommand), RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" CommandParameter="{Binding Path=DataContext.Id, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                            <MenuItem Header="Show In Folder" Command="{Binding Path=DataContext.ShowAttachmentInFolderCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
-                                        </ContextMenu>
-                                    </Button.ContextMenu>
-                                </Button>
-                            </Border>
+                                                <Setter Property="Button.Background" Value="{StaticResource AccentColorBrush4}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <Button.Template>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Grid x:Name="grid">
+                                            <Border x:Name="border" CornerRadius="10" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="3" Background="{Binding Path=Background, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.FontWeight="Bold" />
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Opacity" TargetName="border" Value="0.75"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource GrayBrush5}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Grid>
+                                    <iconPacks:PackIconMaterial Kind="Download" Foreground="{StaticResource WhiteBrush}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" Visibility="{Binding Path=DataContext.IsLoading, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Converter={StaticResource NegateBooleanToVisibilityConverter}}"/>
+                                    <mah:ProgressRing Foreground="{StaticResource WhiteBrush}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Center" Visibility="{Binding Path=DataContext.IsLoading, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Converter={StaticResource BooleanToVisibilityConverter}}" Width="40" Height="40"/>
+                                </Grid>
+                                <Button.ToolTip>
+                                    <ToolTip>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Button.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Open" Command="{Binding PlacementTarget.Tag.OpenAttachmentCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}}" CommandParameter="{Binding Path=DataContext.Id, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        <MenuItem Header="Show In Folder" Command="{Binding PlacementTarget.Tag.ShowAttachmentInFolderCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}}" CommandParameter="{Binding Path=DataContext.Id, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                            </Button>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

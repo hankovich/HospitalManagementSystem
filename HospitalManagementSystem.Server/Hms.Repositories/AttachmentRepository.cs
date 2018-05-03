@@ -21,7 +21,7 @@
             this.ConnectionString = connectionString;
         }
 
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; }
 
         public async Task<Attachment> GetAttachmentAsync(string login, int attachmentId)
         {
