@@ -9,7 +9,6 @@
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:commands="clr-namespace:Hms.UI.Infrastructure.Commands"
-             xmlns:viewModels="clr-namespace:Hms.UI.ViewModels"
              mc:Ignorable="d" 
              mah:DialogParticipation.Register="{Binding}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -284,7 +283,7 @@
                                     <MultiBinding Converter="{StaticResource CommandChainMultiConverter}">
                                         <Binding Path="ValidateCommand"/>
                                         <Binding Path="CreateProfileCommand"/>
-                                        <Binding Path="DataContext.(viewModels:NavigationViewModel.MainCommand)" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
+                                        <Binding Path="DataContext.MainCommand" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ui:MainWindow}}"/>
                                     </MultiBinding>
                                 </Button.Command>
                             </Button>

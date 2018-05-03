@@ -13,10 +13,13 @@
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:NegateBooleanToVisibilityConverter x:Key="NegateBooleanToVisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <Style TargetType="{x:Type Run}">
+        <Style TargetType="{x:Type Hyperlink}">
+            <Setter Property="TextDecorations" Value="Underline"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBaseColorBrush}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="DarkOrange" />
+                    <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -42,14 +45,14 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Command="{Binding BackCommand}" Style="{StaticResource MetroCircleButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" IsCancel="True">
+            <Button Grid.Column="0" Command="{Binding BackCommand}" Style="{StaticResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Margin="10" IsCancel="True">
                 <iconPacks:PackIconMaterial Kind="ArrowLeftBoldCircleOutline" Foreground="{StaticResource AccentBaseColorBrush}" Width="30" Height="30"/>
             </Button>
 
             <TextBlock Grid.Column="1" Text="{Binding Record.AddedAtUtc, StringFormat=dd MMM yyyy hh:mm}" FontSize="20" Margin="10"/>
 
-            <TextBlock Grid.Column="2" FontSize="20" Margin="10" HorizontalAlignment="Right">
-                <Hyperlink Command="ContextMenu">
+            <TextBlock Grid.Column="2" FontSize="20" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Hyperlink Command="{Binding OpenDoctorCommand}">
                     <Run Text="{Binding Profile.FirstName}"/>
                     <Run Text="{Binding Profile.LastName}"/>
                 </Hyperlink>
@@ -59,7 +62,7 @@
         <TextBox Grid.Row="1" Text="{Binding Record.Content}" IsReadOnly="True" Margin="10 5 10 10" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
 
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
-            <ItemsControl ItemsSource="{Binding Attachments}" AlternationCount="100">
+            <ItemsControl ItemsSource="{Binding Attachments}" AlternationCount="4">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="10 0 5 10">

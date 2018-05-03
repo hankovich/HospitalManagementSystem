@@ -29,6 +29,7 @@
             eventAggregator.GetEvent<OpenMenuItemEvent>().Subscribe(this.OnOpenMenuItem);
             eventAggregator.GetEvent<OpenRecordEvent>().Subscribe(this.OnOpenRecord);
             eventAggregator.GetEvent<NavigationEvent>().Subscribe(this.OnNavigation);
+            eventAggregator.GetEvent<OpenDoctorEvent>().Subscribe(this.OnOpenDoctor);
 
             DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             timer.Tick += (sender, args) => this.OnPropertyChanged(nameof(this.Time));
@@ -84,6 +85,13 @@
         private void OnNavigation(object obj)
         {
             this.SelectedViewModel = obj;
+        }
+
+        private void OnOpenDoctor(OpenDoctorEventArgs args)
+        {
+            var recordId = new ConstructorArgument("doctor", args.Doctor);
+            var parentViewModel = new ConstructorArgument("parentViewModel", args.ParentViewModel);
+            this.SelectedViewModel = App.Kernel.Get<DoctorViewModel>(recordId, parentViewModel);
         }
     }
 }

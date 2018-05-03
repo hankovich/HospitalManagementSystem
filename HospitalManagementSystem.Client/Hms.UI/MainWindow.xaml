@@ -41,6 +41,10 @@
         <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
             <v:RegisterView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:DoctorViewModel}">
+            <v:DoctorView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <ContentControl Content="{Binding SelectedViewModel}" />
