@@ -1,6 +1,8 @@
 ﻿namespace Hms.UI.ViewModels
 {
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -36,10 +38,7 @@
             this.LoadedCommand = AsyncCommand.Create(this.OnLoadedAsync);
             this.OpenAttachmentCommand = AsyncCommand.Create<int>(this.OnOpenAttachmentAsync);
 
-            this.ShowAttachmentInFolderCommand = AsyncCommand.Create((int attachmentId) =>
-            {
-                return Task.CompletedTask;
-            });
+            this.ShowAttachmentInFolderCommand = AsyncCommand.Create<int>(this.OnShowAttachmentAsync);
 
             this.BackCommand = new RelayCommand(
                 () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
@@ -85,9 +84,9 @@
 
         public ICommand BackCommand { get; }
 
-        public ICommand OpenAttachmentCommand { get; }
+        public IAsyncCommand OpenAttachmentCommand { get; }
 
-        public ICommand ShowAttachmentInFolderCommand { get; }
+        public IAsyncCommand ShowAttachmentInFolderCommand { get; }
 
         public ICommand OpenDoctorCommand { get; }
 
@@ -121,15 +120,50 @@
             }
         }
 
-        private Task OnOpenAttachmentAsync(int attachmentId)
+        private async Task OnOpenAttachmentAsync(int attachmentId)
         {
-            var attachment = this.Attachments.FirstOrDefault(att => att.Id == attachmentId);
-            if (attachment != null)
-            {
-                attachment.IsLoading = !attachment.IsLoading;
-            }
+            string path = await this.DownloadAttachmentAsync(attachmentId);
 
-            return Task.CompletedTask;
+            Process.Start(path);
+        }
+
+        private async Task OnShowAttachmentAsync(int attachmentId)
+        {
+            string path = await this.DownloadAttachmentAsync(attachmentId);
+
+            Process.Start("explorer.exe", $"/select, {path}");
+        }
+
+        private async Task<string> DownloadAttachmentAsync(int attachmentId)
+        {
+            var attachmentInfo = this.Attachments.FirstOrDefault(att => att.Id == attachmentId);
+
+            ChangeAttachmentState(attachmentInfo, true);
+
+            try
+            {
+                var attachment = await this.AttachmentDataService.GetAttachmentAsync(attachmentId);
+                string path = Path.Combine(Path.GetTempPath(), attachment.Name);
+
+                using (FileStream fs = File.OpenWrite(path))
+                {
+                    await fs.WriteAsync(attachment.Content, 0, attachment.Content.Length);
+                }
+
+                return path;
+            }
+            finally
+            {
+                ChangeAttachmentState(attachmentInfo, false);
+            }
+        }
+
+        private static void ChangeAttachmentState(AttachmentInfoWrapper attachmentInfo, bool isLoading)
+        {
+            if (attachmentInfo != null)
+            {
+                attachmentInfo.IsLoading = isLoading;
+            }
         }
     }
 }

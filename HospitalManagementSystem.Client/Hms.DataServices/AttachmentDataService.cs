@@ -1,6 +1,7 @@
 ﻿namespace Hms.DataServices
 {
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Hms.Common.Interface.Domain;
@@ -21,7 +22,7 @@
         {
             var response = await this.RequestCoordinator.SendAsync<AttachmentInfo>(
                 HttpMethod.Get,
-                $"api/attachments/{attachmentId}");
+                $"api/attachments/info/{attachmentId}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -31,11 +32,12 @@
             return response.Content;
         }
 
-        public async Task<Attachment> GetAttachmentAsync(int attachmentId)
+        public async Task<Attachment> GetAttachmentAsync(int attachmentId, CancellationToken token = default(CancellationToken))
         {
             var response = await this.RequestCoordinator.SendAsync<Attachment>(
                                HttpMethod.Get,
-                               $"api/attachments/info/{attachmentId}");
+                               $"api/attachments/{attachmentId}", 
+                               cancellationToken: token);
 
             if (!response.IsSuccessStatusCode)
             {

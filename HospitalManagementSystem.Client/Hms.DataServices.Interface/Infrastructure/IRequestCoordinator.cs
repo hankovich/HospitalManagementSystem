@@ -1,6 +1,7 @@
 ﻿namespace Hms.DataServices.Interface.Infrastructure
 {
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public interface IRequestCoordinator
@@ -9,7 +10,7 @@
 
         int? UserId { get; }
 
-        Task<ServerResponse<T>> SendAsync<T>(HttpMethod method, string url, object content = null, bool needsEncryption = true);
+        Task<ServerResponse<T>> SendAsync<T>(HttpMethod method, string url, object content = null, bool needsEncryption = true, CancellationToken cancellationToken = default(CancellationToken));
 
         Task LoginAsync(string username, string password);
 

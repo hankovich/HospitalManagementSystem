@@ -106,9 +106,10 @@
             HttpMethod method,
             string url,
             object content = null,
-            bool needsEncryption = true)
+            bool needsEncryption = true, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await this.SendAsyncInternal<TContent>(method, url, content, needsEncryption);
+            return await this.SendAsyncInternal<TContent>(method, url, content, needsEncryption, cancellationToken: cancellationToken);
         }
 
         public async Task LoginAsync(string login, string password)
@@ -196,7 +197,8 @@
             string url,
             object content = null,
             bool needsEncryption = true,
-            bool needsThreadSafe = true)
+            bool needsThreadSafe = true, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (needsEncryption)
             {
@@ -205,7 +207,7 @@
 
             if (needsThreadSafe)
             {
-                await AsyncFactory.FromWaitHandle(ChangeKeySemaphore.AvailableWaitHandle);
+                await AsyncFactory.FromWaitHandle(ChangeKeySemaphore.AvailableWaitHandle, cancellationToken);
             }
 
             CountdownEvent.AddCount();
@@ -215,12 +217,12 @@
 
             using (var request = await requestProcessor.CreateRequestAsync(method, this.Host + url, content))
             {
-                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request).ContinueWith(this.DecrementEvent))
+                using (HttpResponseMessage response = await this.HttpClient.SendAsync(request, cancellationToken).ContinueWith(this.DecrementEvent))
                 {
                     if (response.StatusCode == (HttpStatusCode)424)
                     {
                         await this.ChangeRoundKey();
-                        return await this.SendAsyncInternal<TContent>(method, url, content, needsEncryption, needsThreadSafe);
+                        return await this.SendAsyncInternal<TContent>(method, url, content, needsEncryption, needsThreadSafe, cancellationToken);
                     }
 
                     var result = await requestProcessor.ProcessResponseAsync<TContent>(response);
