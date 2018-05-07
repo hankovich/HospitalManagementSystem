@@ -15,13 +15,17 @@
     {
         private ProfileWrapper profile;
 
+        private Doctor doctor;
+
         public DoctorViewModel(
-            Doctor doctor,
+            int doctorId,
             object parentViewModel,
+            IDoctorDataService doctorDataService,
             IProfileDataService profileDataService,
             IEventAggregator eventAggregator)
         {
-            this.Doctor = doctor;
+            this.DoctorId = doctorId;
+            this.DoctorDataService = doctorDataService;
             this.ProfileDataService = profileDataService;
             this.EventAggregator = eventAggregator;
 
@@ -30,7 +34,19 @@
                 () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
         }
 
-        public Doctor Doctor { get; }
+        public Doctor Doctor
+        {
+            get
+            {
+                return this.doctor;
+            }
+
+            set
+            {
+                this.doctor = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public ProfileWrapper Profile
         {
@@ -46,6 +62,10 @@
             }
         }
 
+        public int DoctorId { get; }
+
+        public IDoctorDataService DoctorDataService { get; }
+
         public IProfileDataService ProfileDataService { get; }
 
         public IEventAggregator EventAggregator { get; }
@@ -56,6 +76,7 @@
 
         private async Task OnLoadedAsync()
         {
+            this.Doctor = await this.DoctorDataService.GetDoctorAsync(this.DoctorId);
             var profileModel = await this.ProfileDataService.GetProfileAsync(this.Doctor.Id);
             this.Profile = new ProfileWrapper(profileModel);
         }

@@ -7,7 +7,7 @@
     using Hms.Services.Interface;
     using Hms.Services.Interface.Models;
 
-    [RoutePrefix("api/attachments")]
+    [RoutePrefix("api/attachment")]
     public class AttachmentController : ApiController
     {
         public AttachmentController(IAttachmentService attachmentService)

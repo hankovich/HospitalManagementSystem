@@ -25,7 +25,7 @@
             this.MedicalSpecializationRepository = medicalSpecializationRepository;
         }
 
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; }
 
         public IHealthcareInstitutionRepository HealthcareInstitutionRepository { get; }
 

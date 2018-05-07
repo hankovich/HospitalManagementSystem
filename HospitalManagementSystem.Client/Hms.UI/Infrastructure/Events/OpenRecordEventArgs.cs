@@ -4,6 +4,6 @@
     {
         public int RecordId { get; set; }
 
-        public object CardViewModel { get; set; }
+        public object ParentViewModel { get; set; }
     }
 }

@@ -4,7 +4,7 @@
 
     public class OpenDoctorEventArgs
     {
-        public Doctor Doctor { get; set; }
+        public int DoctorId { get; set; }
 
         public object ParentViewModel { get; set; }
     }

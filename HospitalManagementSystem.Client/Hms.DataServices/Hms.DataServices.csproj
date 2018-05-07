@@ -53,6 +53,7 @@
     <Compile Include="AccountService.cs" />
     <Compile Include="AttachmentDataService.cs" />
     <Compile Include="BuildingDataService.cs" />
+    <Compile Include="DoctorDataService.cs" />
     <Compile Include="Infrasructure\ClientStateModel.cs" />
     <Compile Include="Infrasructure\HttpContentProcessor.cs" />
     <Compile Include="Infrasructure\IRequestProcessorBuilder.cs" />

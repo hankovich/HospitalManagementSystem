@@ -57,7 +57,7 @@
                 recordId =>
                 {
                     var @event = this.EventAggregator.GetEvent<OpenRecordEvent>();
-                    @event.Publish(new OpenRecordEventArgs { RecordId = recordId, CardViewModel = this });
+                    @event.Publish(new OpenRecordEventArgs { RecordId = recordId, ParentViewModel = this });
                 });
         }
 

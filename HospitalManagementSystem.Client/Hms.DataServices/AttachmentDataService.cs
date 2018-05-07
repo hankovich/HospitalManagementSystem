@@ -22,7 +22,7 @@
         {
             var response = await this.RequestCoordinator.SendAsync<AttachmentInfo>(
                 HttpMethod.Get,
-                $"api/attachments/info/{attachmentId}");
+                $"api/attachment/info/{attachmentId}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -36,7 +36,7 @@
         {
             var response = await this.RequestCoordinator.SendAsync<Attachment>(
                                HttpMethod.Get,
-                               $"api/attachments/{attachmentId}", 
+                               $"api/attachment/{attachmentId}", 
                                cancellationToken: token);
 
             if (!response.IsSuccessStatusCode)

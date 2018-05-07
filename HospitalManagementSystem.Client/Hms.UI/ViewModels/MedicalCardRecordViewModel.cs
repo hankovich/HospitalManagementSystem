@@ -37,15 +37,21 @@
 
             this.LoadedCommand = AsyncCommand.Create(this.OnLoadedAsync);
             this.OpenAttachmentCommand = AsyncCommand.Create<int>(this.OnOpenAttachmentAsync);
-
+            
             this.ShowAttachmentInFolderCommand = AsyncCommand.Create<int>(this.OnShowAttachmentAsync);
 
             this.BackCommand = new RelayCommand(
                 () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
 
+            this.OpenAssociatedRecordCommand = new RelayCommand(() => this.EventAggregator.GetEvent<OpenRecordEvent>().Publish(new OpenRecordEventArgs
+            {
+                RecordId = this.Record.AssociatedRecordId.Value,
+                ParentViewModel = this
+            }));
+
             this.OpenDoctorCommand = new RelayCommand(() => this.EventAggregator.GetEvent<OpenDoctorEvent>().Publish(new OpenDoctorEventArgs
             {
-                Doctor = this.Record.Author,
+                DoctorId = this.Record.Author.Id,
                 ParentViewModel = this
             }));
         }
@@ -89,6 +95,8 @@
         public IAsyncCommand ShowAttachmentInFolderCommand { get; }
 
         public ICommand OpenDoctorCommand { get; }
+
+        public ICommand OpenAssociatedRecordCommand { get; }
 
         public int RecordId { get; }
 

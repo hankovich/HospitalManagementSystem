@@ -64,8 +64,9 @@
 
         private void OnOpenRecord(OpenRecordEventArgs args)
         {
+            this.SelectedViewModel = new LoadingViewModel();
             var recordId = new ConstructorArgument("recordId", args.RecordId);
-            var parentViewModel = new ConstructorArgument("parentViewModel", args.CardViewModel);
+            var parentViewModel = new ConstructorArgument("parentViewModel", args.ParentViewModel);
             this.SelectedViewModel = App.Kernel.Get<MedicalCardRecordViewModel>(recordId, parentViewModel);
         }
 
@@ -89,7 +90,7 @@
 
         private void OnOpenDoctor(OpenDoctorEventArgs args)
         {
-            var recordId = new ConstructorArgument("doctor", args.Doctor);
+            var recordId = new ConstructorArgument("doctorId", args.DoctorId);
             var parentViewModel = new ConstructorArgument("parentViewModel", args.ParentViewModel);
             this.SelectedViewModel = App.Kernel.Get<DoctorViewModel>(recordId, parentViewModel);
         }

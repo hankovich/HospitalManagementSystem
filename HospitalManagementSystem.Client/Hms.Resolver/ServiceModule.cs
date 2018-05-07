@@ -23,6 +23,7 @@
             this.Bind<IBuildingDataService>().To<BuildingDataService>();
             this.Bind<IPolyclinicRegionDataService>().To<PolyclinicRegionDataService>();
             this.Bind<IAttachmentDataService>().To<AttachmentDataService>();
+            this.Bind<IDoctorDataService>().To<DoctorDataService>();
         }
     }
 }

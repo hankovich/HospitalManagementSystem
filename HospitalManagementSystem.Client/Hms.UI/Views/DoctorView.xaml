@@ -33,11 +33,20 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Command="{Binding BackCommand}" Style="{StaticResource MetroCircleButtonStyle}" HorizontalAlignment="Center" Margin="10" IsCancel="True">
-                <iconPacks:PackIconMaterial Kind="ArrowLeftBoldCircleOutline" Foreground="{StaticResource AccentBaseColorBrush}" Width="30" Height="30"/>
+            <Button Grid.Column="0" Command="{Binding BackCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" IsCancel="True" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <Grid>
+                                <iconPacks:PackIconMaterial Kind="ArrowLeftBoldCircleOutline" Foreground="{StaticResource AccentBaseColorBrush}" Width="30" Height="30"/>
+                                <ContentPresenter/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
 
-            <TextBlock Grid.Column="1" FontSize="25" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Grid.Column="1" FontSize="25" Margin="10,0,10,10" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                 <Run Text="{Binding Profile.FirstName}"/>
                 <Run Text="{Binding Profile.MiddleName}"/>
                 <Run Text="{Binding Profile.LastName}"/>
@@ -56,10 +65,11 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" MaxHeight="200" MaxWidth="200" Margin="10" BorderThickness="2" BorderBrush="Blue" HorizontalAlignment="Left">
+            <Border Grid.Row="0" MaxHeight="200" MaxWidth="200" Margin="10,0,10,10" BorderThickness="2" BorderBrush="{StaticResource AccentBaseColorBrush}" HorizontalAlignment="Left">
                 <Image Source="{Binding Profile.Photo, Converter={StaticResource ByteBmpSrcConverter}, TargetNullValue={StaticResource BlankImage}, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill"/>
             </Border>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Doctor.Info}" Margin="10" FontSize="15" IsEnabled="True" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextWrapping="WrapWithOverflow"/>
+            
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Doctor.Info}" Margin="10,0,10,10" FontSize="15" IsReadOnly="True" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextWrapping="WrapWithOverflow"/>
 
             <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
