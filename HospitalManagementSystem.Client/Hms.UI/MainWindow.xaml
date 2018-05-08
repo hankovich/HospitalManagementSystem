@@ -45,12 +45,8 @@
         <DataTemplate DataType="{x:Type vm:DoctorViewModel}">
             <v:DoctorView/>
         </DataTemplate>
-
-        <DataTemplate DataType="{x:Type vm:LoadingViewModel}">
-            <v:LoadingView/>
-        </DataTemplate>
     </Window.Resources>
     <Grid>
-        <ContentControl Content="{Binding SelectedViewModel}" />
+        <ContentControl Content="{Binding SelectedViewModel}"/>
     </Grid>
 </controls:MetroWindow>

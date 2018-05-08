@@ -64,7 +64,6 @@
 
         private void OnOpenRecord(OpenRecordEventArgs args)
         {
-            this.SelectedViewModel = new LoadingViewModel();
             var recordId = new ConstructorArgument("recordId", args.RecordId);
             var parentViewModel = new ConstructorArgument("parentViewModel", args.ParentViewModel);
             this.SelectedViewModel = App.Kernel.Get<MedicalCardRecordViewModel>(recordId, parentViewModel);
