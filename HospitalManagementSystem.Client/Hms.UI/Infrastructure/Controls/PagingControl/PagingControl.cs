@@ -212,7 +212,7 @@
             PageContractProperty = DependencyProperty.Register(
                 "PageContract",
                 typeof(IPageControlContract),
-                typeof(PagingControl));
+                typeof(PagingControl), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnPageContractChanged)));
             FilterProperty = DependencyProperty.Register(
                 "Filter",
                 typeof(object),
@@ -229,6 +229,11 @@
                 RoutingStrategy.Bubble,
                 typeof(PageChangedEventHandler),
                 typeof(PagingControl));
+        }
+
+        private static async void OnPageContractChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            await((PagingControl)dependencyObject).NavigateAsync(PageChanges.Current);
         }
 
         private async static void Target(
@@ -365,6 +370,7 @@
             this.BtnNextPage.Click -= this.BtnNextPageClick;
             this.BtnLastPage.Click -= this.BtnLastPageClick;
 
+            this.TxtPage.InputBindings.Clear();
             this.TxtPage.LostKeyboardFocus -= this.TxtPageLostFocus;
 
             this.CmbPageSizes.SelectionChanged -= this.CmbPageSizesSelectionChanged;

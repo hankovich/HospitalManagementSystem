@@ -22,7 +22,7 @@
             this.RegionRepository = regionRepository;
         }
 
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; }
 
         public IPolyclinicRegionRepository RegionRepository { get; }
 
@@ -52,8 +52,8 @@
 	                FROM [BuildingAddress] BA
                     WHERE BA.[Id] = @id";
 
-                    var address = await connection.QueryFirstOrDefaultAsync<BuildingAddress>(command, new { id });
-
+                    var address = await connection.QueryFirstOrDefaultAsync<BuildingAddressInfo>(command, new { id });
+                    address.PolyclinicRegion = await this.RegionRepository.GetRegionAsync(address.PolyclinicRegionId);
                     return address;
                 }
             }
@@ -136,5 +136,10 @@
                 throw new ArgumentException(e.Message);
             }
         }
+    }
+
+    public class BuildingAddressInfo : BuildingAddress
+    {
+        public int PolyclinicRegionId { get; set; }
     }
 }

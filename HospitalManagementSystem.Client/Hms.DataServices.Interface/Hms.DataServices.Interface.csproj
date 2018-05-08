@@ -40,6 +40,7 @@
     <Compile Include="IBuildingDataService.cs" />
     <Compile Include="IDoctorDataService.cs" />
     <Compile Include="IMedicalRecordDataService.cs" />
+    <Compile Include="IMedicalSpecializationDataService.cs" />
     <Compile Include="Infrastructure\IHttpContentProcessor.cs" />
     <Compile Include="Infrastructure\IRequestCoordinator.cs" />
     <Compile Include="IMedicalCardDataService.cs" />

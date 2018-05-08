@@ -24,9 +24,9 @@
         </intr:EventTrigger>
     </intr:Interaction.Triggers>
     <Grid>
-        <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
+            <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
 
-        <TextBlock Text="The card is empty" Visibility="{Binding TotalRecords, Converter={StaticResource NegateIntToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+            <TextBlock Text="The card is empty" Visibility="{Binding TotalRecords, Converter={StaticResource NegateIntToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
 
         <customControl:PagingControl Visibility="{Binding TotalRecords, Converter={StaticResource IntToVisibilityConverter}}" PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}" Filter="{Binding Filter, Mode=TwoWay}" Page="{Binding Page, Mode=TwoWay}" PageSize="{Binding PageSize, Mode=TwoWay}">
             <customControl:PagingControl.Template>
@@ -44,8 +44,8 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.ClearTextButton="True"
-                         mah:TextBoxHelper.UseFloatingWatermark="True"
-                         mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                             mah:TextBoxHelper.UseFloatingWatermark="True"
+                             mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                             <TextBox.Style>
                                 <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
                                     <Style.Triggers>
@@ -119,7 +119,7 @@
                                 </TextBox>
                                 <TextBlock Text=" / " TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                           TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                               TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                                 <Button Name="PART_NextPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="ChevronRight" Foreground="{StaticResource AccentColorBrush2}"/>
                                 </Button>

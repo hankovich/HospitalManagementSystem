@@ -87,7 +87,7 @@
             }
         }
 
-        public PageControlContract PageContract { get; }
+        public IPageControlContract PageContract { get; }
 
         public int Page
         {

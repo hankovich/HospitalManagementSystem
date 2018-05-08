@@ -29,6 +29,13 @@
 
             this.MenuItems.Add(new MenuItem
             {
+                Name = "Doctor's appointment",
+                ViewModelName = "AppointmentViewModel",
+                Badge = null
+            });
+
+            this.MenuItems.Add(new MenuItem
+            {
                 Name = "Profile Card",
                 ViewModelName = "ProfileViewModel",
                 Badge = null

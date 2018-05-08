@@ -13,7 +13,10 @@
 
     public class DoctorRepository : IDoctorRepository
     {
-        public DoctorRepository(string connectionString, IHealthcareInstitutionRepository healthcareInstitutionRepository, IMedicalSpecializationRepository medicalSpecializationRepository)
+        public DoctorRepository(
+            string connectionString,
+            IHealthcareInstitutionRepository healthcareInstitutionRepository,
+            IMedicalSpecializationRepository medicalSpecializationRepository)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {

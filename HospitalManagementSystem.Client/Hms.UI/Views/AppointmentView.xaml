@@ -1,0 +1,347 @@
+﻿<UserControl x:Class="Hms.UI.Views.AppointmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:editors="clr-namespace:Hms.UI.Infrastructure.Controls.Editors"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:pagingControl="clr-namespace:Hms.UI.Infrastructure.Controls.PagingControl"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:CommandChainMultiConverter x:Key="CommandChainMultiConverter"/>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:BoolArrayToVisibilityMultiConverter x:Key="BoolArrayToVisibilityMultiConverter"/>
+        <converters:NegateIntToVisibilityConverter x:Key="NegateIntToVisibilityConverter"/>
+        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:ArrayToObjectMultiConverter x:Key="ArrayToObjectMultiConverter"/>
+
+        <Style x:Key="MaterialAutoCompleteTextBox" TargetType="editors:AutoCompleteTextBox" >
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="BorderThickness" Value="0 0 0 1"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <!--<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>-->
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Validation.ErrorTemplate" Value="{DynamicResource MaterialDesignValidationErrorTemplate}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type editors:AutoCompleteTextBox}">
+                        <Grid>
+                            <DockPanel>
+                                <ContentPresenter ContentSource="Icon"
+                                                  x:Name="PART_Icon"
+                                                  Visibility="{TemplateBinding IconVisibility}" />
+                                <Grid>
+                                    <TextBlock x:Name="PART_Watermark"
+                                               Text="{TemplateBinding Watermark}"
+                                               Visibility="Collapsed"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Stretch"
+                                               Focusable="False"
+                                               Foreground="Gray"
+                                               Margin="3,0" />
+                                    <TextBox x:Name="PART_Editor"
+                                             Focusable="True"
+                                             HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Center"
+                                             MaxLength="{Binding Path=MaxLength, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
+                                             CharacterCasing="{Binding Path=CharacterCasing, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
+                                             Text="{Binding Path=Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}" Style="{DynamicResource ClearableTextBox}"/>
+                                </Grid>
+                            </DockPanel>
+                            <Popup x:Name="PART_Popup"
+                                   IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
+                                   Width="{TemplateBinding ActualWidth}"
+                                   HorizontalOffset="0"
+                                   MinHeight="25"
+                                   MaxHeight="600"
+                                   AllowsTransparency="True"
+                                   PopupAnimation="Slide"
+                                   Focusable="False">
+                                <Border Background="White"
+                                        BorderThickness="1"
+                                        BorderBrush="Gray"
+                                        CornerRadius="0 0 5 5"
+                                        Padding="2">
+                                    <Grid>
+                                        <ListBox x:Name="PART_Selector"
+                                                 ItemTemplate="{TemplateBinding ItemTemplate}"
+                                                 ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                 Focusable="False"
+                                                 BorderThickness="0"
+                                                 MaxHeight="{Binding Path=MaxPopupHeight, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                >
+                                        </ListBox>
+                                        <Border Visibility="{Binding Path=IsLoading, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}">
+                                            <ContentPresenter ContentSource="LoadingContent"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </Popup>
+
+                        </Grid>
+                        <!--</Border>-->
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text"
+                                 Value=""
+                                 SourceName="PART_Editor">
+                                <Setter Property="Visibility"
+                                    Value="Visible"
+                                    TargetName="PART_Watermark" />
+                            </Trigger>
+                            <Trigger Property="IconPlacement"
+                                 Value="Left">
+                                <Setter Property="DockPanel.Dock"
+                                    Value="Left"
+                                    TargetName="PART_Icon" />
+                            </Trigger>
+                            <Trigger Property="IconPlacement"
+                                 Value="Right">
+                                <Setter Property="DockPanel.Dock"
+                                    Value="Right"
+                                    TargetName="PART_Icon" />
+                            </Trigger>
+                            <Trigger Property="Validation.HasError" Value="True">
+                                <Setter Property="BorderBrush"
+                                    Value="Red"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ClearableTextBox" BasedOn="{StaticResource MetroTextBox}" TargetType="{x:Type TextBox}">
+            <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
+            <Style.Triggers>
+                <Trigger Property="mah:TextBoxHelper.HasText" Value="False">
+                    <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="False" />
+                </Trigger>
+                <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
+                    <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="True" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=City}" Content="City" Margin="10 10 0 5" FontSize="15"/>
+            <editors:AutoCompleteTextBox x:Name="City"
+                                         Grid.Row="1" Grid.Column="0" 
+                                         HorizontalAlignment="Stretch"
+                                         MaxLength="50"                         
+                                         HorizontalContentAlignment="Stretch"
+                                         Style="{StaticResource MaterialAutoCompleteTextBox}"
+                                         Provider="{Binding GeoSuggestionProvider}"
+                                         Margin="10 0 0 10">
+                <editors:AutoCompleteTextBox.SelectedItem>
+                    <Binding Path="Address.City" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </editors:AutoCompleteTextBox.SelectedItem>
+                <editors:AutoCompleteTextBox.LoadingContent>
+                    <TextBlock Text="Loading..." Margin="5" />
+                </editors:AutoCompleteTextBox.LoadingContent>
+            </editors:AutoCompleteTextBox>
+
+            <Label Grid.Row="0" Grid.Column="2" Target="{Binding ElementName=Street}" Content="Street" Margin="0 10 0 5" FontSize="15"/>
+            <editors:AutoCompleteTextBox x:Name="Street"
+                                         Grid.Row="1" Grid.Column="2" 
+                                         HorizontalAlignment="Stretch"
+                                         MaxLength="50"                         
+                                         HorizontalContentAlignment="Stretch"
+                                         Style="{StaticResource MaterialAutoCompleteTextBox}"
+                                         Provider="{Binding GeoSuggestionProvider}"
+                                         Margin="0 0 0 10">
+                <editors:AutoCompleteTextBox.SelectedItem>
+                    <Binding Path="Address.Street" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </editors:AutoCompleteTextBox.SelectedItem>
+                <editors:AutoCompleteTextBox.LoadingContent>
+                    <TextBlock Text="Loading..." Margin="5" />
+                </editors:AutoCompleteTextBox.LoadingContent>
+                <editors:AutoCompleteTextBox.ProviderParameter>
+                    <MultiBinding Converter="{StaticResource ArrayToObjectMultiConverter}">
+                        <Binding>
+                            <Binding.Source>
+                                <system:String>Street</system:String>
+                            </Binding.Source>
+                        </Binding>
+                        <Binding Path="Address.City" Mode="TwoWay"/>
+                    </MultiBinding>
+                </editors:AutoCompleteTextBox.ProviderParameter>
+            </editors:AutoCompleteTextBox>
+
+            <Label Grid.Row="0" Grid.Column="4" Target="{Binding ElementName=Building}" Content="Building" Margin="0 10 0 5" FontSize="15"/>
+            <editors:AutoCompleteTextBox x:Name="Building"
+                                         Grid.Row="1" Grid.Column="4"
+                                         HorizontalAlignment="Stretch"
+                                         MaxLength="50"                   
+                                         HorizontalContentAlignment="Stretch"
+                                         Style="{StaticResource MaterialAutoCompleteTextBox}"
+                                         Provider="{Binding GeoSuggestionProvider}"
+                                         Margin="0 0 10 10">
+                <editors:AutoCompleteTextBox.SelectedItem>
+                    <Binding Path="Address.Building" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                </editors:AutoCompleteTextBox.SelectedItem>
+                <editors:AutoCompleteTextBox.LoadingContent>
+                    <TextBlock Text="Loading..." Margin="5" />
+                </editors:AutoCompleteTextBox.LoadingContent>
+                <editors:AutoCompleteTextBox.ProviderParameter>
+                    <MultiBinding Converter="{StaticResource ArrayToObjectMultiConverter}">
+                        <Binding>
+                            <Binding.Source>
+                                <system:String>Building</system:String>
+                            </Binding.Source>
+                        </Binding>
+                        <Binding Path="Address.Street" Mode="TwoWay"/>
+                    </MultiBinding>
+                </editors:AutoCompleteTextBox.ProviderParameter>
+            </editors:AutoCompleteTextBox>
+        </Grid>
+        
+        <Grid Grid.Row="1" Margin="10">
+            <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
+
+            <TextBlock Text="The card is empty" Visibility="{Binding TotalRecords, Converter={StaticResource NegateIntToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+
+            <pagingControl:PagingControl Visibility="{Binding TotalRecords, Converter={StaticResource IntToVisibilityConverter}}" PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}" Filter="{Binding Filter, Mode=TwoWay}" Page="{Binding Page, Mode=TwoWay}" PageSize="{Binding PageSize, Mode=TwoWay}">
+                <pagingControl:PagingControl.Template>
+                    <ControlTemplate TargetType="{x:Type pagingControl:PagingControl}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.ClearTextButton="True"
+                         mah:TextBoxHelper.UseFloatingWatermark="True"
+                         mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <TextBox.Style>
+                                    <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
+                                        <Style.Triggers>
+                                            <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
+                                                <Setter Property="mah:TextBoxHelper.ButtonContent" Value="r" />
+                                                <Setter Property="mah:TextBoxHelper.ButtonContentTemplate" Value="{x:Null}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                            <ComboBox Grid.Row="0" Grid.Column="1" Name="PART_PageSizesCombobox" Margin="5" VerticalAlignment="Bottom"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="No records found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                                <TextBlock.Visibility>
+                                    <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
+                                        <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
+                                        <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}" Converter="{StaticResource InverseBooleanConverter}"/>
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
+                            </TextBlock>
+
+                            <mah:ProgressRing Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                                <mah:ProgressRing.Visibility>
+                                    <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
+                                        <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
+                                        <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}"/>
+                                    </MultiBinding>
+                                </mah:ProgressRing.Visibility>
+                            </mah:ProgressRing>
+
+                            <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer">
+                                <ItemsControl Name="Records" ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0" Command="{Binding DataContext.OpenRecordCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Id}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                        <ColumnDefinition></ColumnDefinition>
+                                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Grid.Column="0" Text="{Binding AddedAtUtc, StringFormat=hh:mm dd MMMM yyyy}" Margin="5"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Content}" Margin="5"/>
+                                                    <TextBlock Grid.Column="2" Text="{Binding Author.Specialization.Name}" Margin="5"/>
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                    <Button Name="PART_FirstPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="PageFirst" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                    <Button Name="PART_PreviousPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="ChevronLeft" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                    <TextBox Name="PART_PageTextBox" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="20" Margin="5">
+                                        <Validation.ErrorTemplate>
+                                            <ControlTemplate>
+                                                <DockPanel>
+                                                    <Border BorderBrush="Red" BorderThickness="1" Margin="-1">
+                                                        <AdornedElementPlaceholder x:Name="controlWithError"/>
+                                                    </Border>
+                                                </DockPanel>
+                                            </ControlTemplate>
+                                        </Validation.ErrorTemplate>
+                                    </TextBox>
+                                    <TextBlock Text=" / " TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                           TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                    <Button Name="PART_NextPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="ChevronRight" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                    <Button Name="PART_LastPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="PageLast" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </pagingControl:PagingControl.Template>
+            </pagingControl:PagingControl>
+        </Grid>
+    </Grid>
+</UserControl>
+

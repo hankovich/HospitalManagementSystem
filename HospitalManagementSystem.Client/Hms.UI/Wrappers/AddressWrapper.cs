@@ -19,6 +19,7 @@
             {
                 return this.GetValue<GeoObject>();
             }
+
             set
             {
                 this.SetValue(value);
@@ -31,6 +32,7 @@
             {
                 return this.GetValue<GeoObject>();
             }
+
             set
             {
                 this.SetValue(value);
@@ -43,6 +45,7 @@
             {
                 return this.GetValue<GeoObject>();
             }
+
             set
             {
                 this.SetValue(value);
