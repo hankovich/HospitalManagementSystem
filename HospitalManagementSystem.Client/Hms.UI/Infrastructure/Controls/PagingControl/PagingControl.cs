@@ -212,7 +212,7 @@
             PageContractProperty = DependencyProperty.Register(
                 "PageContract",
                 typeof(IPageControlContract),
-                typeof(PagingControl), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnPageContractChanged)));
+                typeof(PagingControl), new FrameworkPropertyMetadata(OnPageContractChanged));
             FilterProperty = DependencyProperty.Register(
                 "Filter",
                 typeof(object),
@@ -370,7 +370,6 @@
             this.BtnNextPage.Click -= this.BtnNextPageClick;
             this.BtnLastPage.Click -= this.BtnLastPageClick;
 
-            this.TxtPage.InputBindings.Clear();
             this.TxtPage.LostKeyboardFocus -= this.TxtPageLostFocus;
 
             this.CmbPageSizes.SelectionChanged -= this.CmbPageSizesSelectionChanged;
@@ -436,7 +435,7 @@
             this.IsLoading = true;
 
             var totalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
-            var newPageSize = (int)this.CmbPageSizes.SelectedItem;
+            var newPageSize = (int)(this.CmbPageSizes.SelectedItem ?? 1);
 
             this.PageSize = newPageSize;
 
@@ -502,13 +501,17 @@
 
             this.Page = newPage;
 
-            ICollection<object> fetchData =
-                await this.PageContract.GetRecordsAsync(startingIndex, newPageSize, this.Filter);
-            this.ItemsSource.Clear();
-
-            foreach (object row in fetchData)
+            var pageControlContract = this.PageContract;
+            if (pageControlContract != null)
             {
-                this.ItemsSource.Add(row);
+                ICollection<object> fetchData =
+                    await pageControlContract.GetRecordsAsync(startingIndex, newPageSize, this.Filter);
+                this.ItemsSource.Clear();
+
+                foreach (object row in fetchData)
+                {
+                    this.ItemsSource.Add(row);
+                }
             }
 
             this.RaisePageChanged(oldPage, this.Page);

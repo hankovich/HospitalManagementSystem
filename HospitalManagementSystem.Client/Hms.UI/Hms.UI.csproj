@@ -102,13 +102,16 @@
     <Compile Include="Infrastructure\Controls\PagingControl\PagingControl.cs" />
     <Compile Include="Infrastructure\Controls\UpdatableContentControl\UpdatableContentControl.cs" />
     <Compile Include="Infrastructure\Converters\ArrayToObjectMultiConverter.cs" />
-    <Compile Include="Infrastructure\Converters\BoolArrayToVisibilityMultiConverter.cs" />
+    <Compile Include="Infrastructure\Converters\ArrayToVisibilityMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\CommandChainMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateIntToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\NotNullToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\ZeroIntToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\ZeroToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Events\NavigationEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenDoctorEvent.cs" />

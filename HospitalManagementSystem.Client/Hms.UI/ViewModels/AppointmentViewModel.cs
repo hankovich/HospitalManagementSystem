@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -51,6 +50,7 @@
 
         private async Task OnLoaded()
         {
+            await Task.Delay(1000);
             var profile = await this.ProfileDataService.GetCurrentProfileAsync();
             int buildingId = profile.BuildingId.Value;
             var buildingAddress = await this.BuildingDataService.GetBuildingAsync(buildingId);
@@ -65,18 +65,36 @@
                     Building = GetBuilding(buildingAddress, point)
                 });
 
+            PageContract = new PageControlContract(buildingAddress.PolyclinicRegion.PolyclinicId);
+            this.TotalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
+
             this.Address.PropertyChanged += async (sender, args) =>
             {
+                if (args.PropertyName == nameof(this.Address.City))
+                {
+                    this.Address.Street = null;
+                    return;
+                }
+
+                if (args.PropertyName == nameof(this.Address.Street))
+                {
+                    this.Address.Building = null;
+                    return;
+                }
+
                 if (args.PropertyName == nameof(this.Address.Building))
                 {
                     if (this.Address.Building == null)
                     {
+                        this.TotalRecords = null;
+                        this.Filter = null;
                         return;
                     }
 
                     BuildingAddress ba = await this.BuildingDataService.GetBuildingAsync(this.Address.Building.Point);
 
                     PageContract = new PageControlContract(ba.PolyclinicRegion.PolyclinicId);
+                    this.TotalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
                 }
             };
         }
@@ -178,16 +196,32 @@
 
             public async Task<int> GetTotalCountAsync(object filter)
             {
+                if (filter != null)
+                {
+                    return 0;
+                }
+
                 //BuildingAddress buildingAddress = await this.BuildingDataService.GetBuildingAsync(this.Address.Building.Point);
 
-                return 0; //(await this.MedicalSpecializationDataService.GetMedicalCardAsync(0, 20, filter as string ?? string.Empty)).TotalRecords;
+                return 2; //(await this.MedicalSpecializationDataService.GetMedicalCardAsync(0, 20, filter as string ?? string.Empty)).TotalRecords;
             }
 
-            public async Task<ICollection<object>> GetRecordsAsync(int startingIndex, int numberOfRecords, object filter)
+            public async Task<ICollection<object>> GetRecordsAsync(
+                int startingIndex,
+                int numberOfRecords,
+                object filter)
             {
+                if (filter != null)
+                {
+                    return new List<object>();
+                }
                 //MedicalCard medicalCard = await this.MedicalCardService.GetMedicalCardAsync(startingIndex / numberOfRecords, numberOfRecords, filter as string ?? string.Empty);
 
-                return new List<object>(); //medicalCard.Records.Cast<object>().ToList();
+                return new List<object>()
+                {
+                    new MedicalSpecialization { Name = "koala" },
+                    new MedicalSpecialization { Name = "zakon" }
+                }; //medicalCard.Records.Cast<object>().ToList();
             }
         }
 

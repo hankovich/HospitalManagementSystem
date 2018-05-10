@@ -1,6 +1,8 @@
 ﻿namespace Hms.UI
 {
+    using System;
     using System.Windows;
+    using System.Windows.Threading;
 
     using Hms.Resolver;
     using Hms.UI.Infrastructure;
@@ -23,6 +25,10 @@
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) => { };
+
+            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) => { };
+
             base.OnStartup(e);
 
             Kernel = new StandardKernel();

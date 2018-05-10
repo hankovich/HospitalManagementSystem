@@ -13,11 +13,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <converters:CommandChainMultiConverter x:Key="CommandChainMultiConverter"/>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-        <converters:BoolArrayToVisibilityMultiConverter x:Key="BoolArrayToVisibilityMultiConverter"/>
-        <converters:NegateIntToVisibilityConverter x:Key="NegateIntToVisibilityConverter"/>
-        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+        <converters:ArrayToVisibilityMultiConverter x:Key="ArrayToVisibilityMultiConverter"/>
+        <converters:ZeroIntToVisibilityConverter x:Key="ZeroIntToVisibilityConverter"/>
+        <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:ArrayToObjectMultiConverter x:Key="ArrayToObjectMultiConverter"/>
 
@@ -235,9 +234,16 @@
         <Grid Grid.Row="1" Margin="10">
             <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
 
-            <TextBlock Text="The card is empty" Visibility="{Binding TotalRecords, Converter={StaticResource NegateIntToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+            <TextBlock Text="The card is empty" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                <TextBlock.Visibility>
+                    <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
+                        <Binding Path="TotalRecords" Converter="{StaticResource NotNullToVisibilityConverter}"/>
+                        <Binding Path="LoadedCommand.Execution"/>
+                    </MultiBinding>
+                </TextBlock.Visibility>
+            </TextBlock>
 
-            <pagingControl:PagingControl Visibility="{Binding TotalRecords, Converter={StaticResource IntToVisibilityConverter}}" PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}" Filter="{Binding Filter, Mode=TwoWay}" Page="{Binding Page, Mode=TwoWay}" PageSize="{Binding PageSize, Mode=TwoWay}">
+            <pagingControl:PagingControl Visibility="{Binding TotalRecords, Converter={StaticResource ZeroIntToVisibilityConverter}}" PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}" Filter="{Binding Filter, Mode=TwoWay}" Page="{Binding Page, Mode=TwoWay}" PageSize="{Binding PageSize, Mode=TwoWay}">
                 <pagingControl:PagingControl.Template>
                     <ControlTemplate TargetType="{x:Type pagingControl:PagingControl}">
                         <Grid>
@@ -270,7 +276,7 @@
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="No records found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
                                 <TextBlock.Visibility>
-                                    <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
+                                    <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
                                         <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
                                         <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}" Converter="{StaticResource InverseBooleanConverter}"/>
                                     </MultiBinding>
@@ -279,7 +285,7 @@
 
                             <mah:ProgressRing Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
                                 <mah:ProgressRing.Visibility>
-                                    <MultiBinding Converter="{StaticResource BoolArrayToVisibilityMultiConverter}">
+                                    <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
                                         <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
                                         <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}"/>
                                     </MultiBinding>
@@ -299,7 +305,7 @@
                                                     </Grid.ColumnDefinitions>
 
                                                     <TextBlock Grid.Column="0" Text="{Binding AddedAtUtc, StringFormat=hh:mm dd MMMM yyyy}" Margin="5"/>
-                                                    <TextBlock Grid.Column="1" Text="{Binding Content}" Margin="5"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5"/>
                                                     <TextBlock Grid.Column="2" Text="{Binding Author.Specialization.Name}" Margin="5"/>
                                                 </Grid>
                                             </Button>

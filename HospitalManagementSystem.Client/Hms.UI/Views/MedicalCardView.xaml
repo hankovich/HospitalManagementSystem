@@ -14,7 +14,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-        <conv:BoolArrayToVisibilityMultiConverter x:Key="BoolArrayToVisibilityMultiConverter"/>
+        <conv:ArrayToVisibilityMultiConverter x:Key="BoolArrayToVisibilityMultiConverter"/>
         <conv:NegateIntToVisibilityConverter x:Key="NegateIntToVisibilityConverter"/>
         <conv:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
     </UserControl.Resources>
