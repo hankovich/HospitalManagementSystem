@@ -44,6 +44,7 @@
     <Compile Include="Infrastructure\IHttpContentProcessor.cs" />
     <Compile Include="Infrastructure\IRequestCoordinator.cs" />
     <Compile Include="IMedicalCardDataService.cs" />
+    <Compile Include="IPolyclinicDataService.cs" />
     <Compile Include="IPolyclinicRegionDataService.cs" />
     <Compile Include="IProfileDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

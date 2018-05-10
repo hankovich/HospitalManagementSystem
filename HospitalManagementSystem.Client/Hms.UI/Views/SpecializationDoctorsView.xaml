@@ -45,9 +45,10 @@
             </Button>
 
             <TextBlock Grid.Column="1" FontSize="25" Margin="10,0,10,10" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                <Run Text="{Binding PolyclinicId}"/>
+                <Run Text="{Binding Polyclinic.Name}"/>
+                <Run Text=" ("/>
                 <Run Text="{Binding Specialization.Name}"/>
-                <Run Text="{Binding Profile.LastName}"/>
+                <Run Text=")"/>
             </TextBlock>
         </Grid>
     </Grid>

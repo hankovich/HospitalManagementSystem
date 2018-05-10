@@ -40,7 +40,7 @@
                     await connection.OpenAsync();
 
                     var command = @"
-                    SELECT [HeathcareInstitutionId] AS [Id], [Name], [Phone], [Address] AS [AddressId], PR.[Id]
+                    SELECT [HeathcareInstitutionId] AS [Id], [Name], [Phone], [Address] AS [Id], PR.[Id]
                     FROM [Polyclinic] P
                     JOIN [PolyclinicRegion] PR
                     ON P.[Id] = PR.[PolyclinicId]
@@ -80,7 +80,7 @@
                             return polyclinicTemplate;
                         }).FirstOrDefault();
 
-                    return polyclinics.First();
+                    return polyclinic;
                 }
             }
             catch (Exception e)

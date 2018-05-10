@@ -18,16 +18,20 @@
 
         private MedicalSpecialization specialization;
 
+        private Polyclinic polyclinic;
+
         public SpecializationDoctorsViewModel(
             int polyclinicId,
             int specializationId,
             object parentViewModel,
             IMedicalSpecializationDataService specializationDataService,
+            IPolyclinicDataService polyclinicDataService,
             IEventAggregator eventAggregator)
         {
             this.PolyclinicId = polyclinicId;
             this.SpecializationId = specializationId;
             this.SpecializationDataService = specializationDataService;
+            this.PolyclinicDataService = polyclinicDataService;
             this.EventAggregator = eventAggregator;
 
             this.LoadedCommand = AsyncCommand.Create(this.OnLoaded);
@@ -41,6 +45,22 @@
         {
             this.Specialization =
                 await this.SpecializationDataService.GetMedicalSpecializationAsync(this.SpecializationId);
+
+            this.Polyclinic = await this.PolyclinicDataService.GetPolyclinicAsync(this.PolyclinicId);
+        }
+
+        public Polyclinic Polyclinic
+        {
+            get
+            {
+                return this.polyclinic;
+            }
+
+            set
+            {
+                this.polyclinic = value;
+                this.OnPropertyChanged();
+            }
         }
 
         public MedicalSpecialization Specialization
@@ -88,6 +108,8 @@
         }
 
         public IMedicalSpecializationDataService SpecializationDataService { get; }
+
+        public IPolyclinicDataService PolyclinicDataService { get; set; }
 
         public IEventAggregator EventAggregator { get; }
     }

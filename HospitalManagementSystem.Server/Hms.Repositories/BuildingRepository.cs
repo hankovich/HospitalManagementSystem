@@ -53,7 +53,13 @@
                     WHERE BA.[Id] = @id";
 
                     var address = await connection.QueryFirstOrDefaultAsync<BuildingAddressInfo>(command, new { id });
-                    address.PolyclinicRegion = await this.RegionRepository.GetRegionAsync(address.PolyclinicRegionId);
+
+                    if (address.PolyclinicRegionId != default(int))
+                    {
+                        address.PolyclinicRegion =
+                            await this.RegionRepository.GetRegionAsync(address.PolyclinicRegionId);
+                    }
+
                     return address;
                 }
             }

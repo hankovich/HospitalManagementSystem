@@ -25,6 +25,7 @@
             this.Bind<IAttachmentDataService>().To<AttachmentDataService>();
             this.Bind<IDoctorDataService>().To<DoctorDataService>();
             this.Bind<IMedicalSpecializationDataService>().To<MedicalSpecializationDataService>();
+            this.Bind<IPolyclinicDataService>().To<PolyclinicDataService>();
         }
     }
 }
