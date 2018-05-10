@@ -99,7 +99,8 @@
         {
             var polyclinicId = new ConstructorArgument("polyclinicId", args.PolyclinicId);
             var specializationId = new ConstructorArgument("specializationId", args.SpecializationId);
-            this.SelectedViewModel = App.Kernel.Get<SpecializationDoctorsViewModel>(polyclinicId, specializationId);
+            var parentViewModel = new ConstructorArgument("parentViewModel", args.ParentViewModel);
+            this.SelectedViewModel = App.Kernel.Get<SpecializationDoctorsViewModel>(polyclinicId, specializationId, parentViewModel);
         }
     }
 }

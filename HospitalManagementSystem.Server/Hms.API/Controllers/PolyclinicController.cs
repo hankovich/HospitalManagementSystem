@@ -10,15 +10,15 @@
     using Hms.Common.Interface.Domain;
     using Hms.Services.Interface;
 
-    [RoutePrefix("api/region")]
-    public class PolyclinicRegionController : ApiController
+    [RoutePrefix("api/polyclinic")]
+    public class PolyclinicController : ApiController
     {
-        public PolyclinicRegionController(IPolyclinicRegionService polyclinicRegionService)
+        public PolyclinicController(IPolyclinicService polyclinicService)
         {
-            this.PolyclinicRegionService = polyclinicRegionService;
+            this.PolyclinicService = polyclinicService;
         }
 
-        public IPolyclinicRegionService PolyclinicRegionService { get; }
+        public IPolyclinicService PolyclinicService { get; }
 
         [Encrypted]
         [HttpGet, Route("{id}")]
@@ -26,9 +26,9 @@
         {
             try
             {
-                PolyclinicRegion region = await this.PolyclinicRegionService.GetRegionAsync(id);
+                Polyclinic polyclinic = await this.PolyclinicService.GetPolyclinicAsync(id);
 
-                return this.Ok(region);
+                return this.Ok(polyclinic);
             }
             catch (Exception e)
             {
@@ -38,16 +38,16 @@
 
         [Encrypted]
         [HttpPost, Route]
-        public async Task<IHttpActionResult> Post([FromBody] PolyclinicRegion polyclinicRegion)
+        public async Task<IHttpActionResult> Post([FromBody] Polyclinic polyclinic)
         {
             try
             {
-                if (polyclinicRegion == null)
+                if (polyclinic == null)
                 {
-                    throw new ArgumentNullException($"{nameof(polyclinicRegion)} must be not null");    
+                    throw new ArgumentNullException($"{nameof(polyclinic)} must be not null");
                 }
 
-                int id = await this.PolyclinicRegionService.InsertOrUpdateRegionAsync(polyclinicRegion);
+                int id = await this.PolyclinicService.InsertOrUpdatePolyclinicAsync(polyclinic);
 
                 return this.Ok(id);
             }

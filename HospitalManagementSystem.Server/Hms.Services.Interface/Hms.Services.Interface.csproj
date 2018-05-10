@@ -48,6 +48,7 @@
     <Compile Include="IMedicalSpecializationService.cs" />
     <Compile Include="IPolyclinicRegionProvider.cs" />
     <Compile Include="IPolyclinicRegionService.cs" />
+    <Compile Include="IPolyclinicService.cs" />
     <Compile Include="IProfileService.cs" />
     <Compile Include="IUserService.cs" />
     <Compile Include="Models\AuthorizationResult.cs" />

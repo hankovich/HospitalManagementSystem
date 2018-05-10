@@ -48,6 +48,7 @@
     <Compile Include="IMedicalCardRepository.cs" />
     <Compile Include="IMedicalSpecializationRepository.cs" />
     <Compile Include="IPolyclinicRegionRepository.cs" />
+    <Compile Include="IPolyclinicRepository.cs" />
     <Compile Include="IProfileRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IUserRoleRepository.cs" />

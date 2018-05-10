@@ -55,6 +55,7 @@
     <Compile Include="DoctorService.cs" />
     <Compile Include="DummyPolyclinicRegionProvider.cs" />
     <Compile Include="GadgetKeysService.cs" />
+    <Compile Include="PolyclinicService.cs" />
     <Compile Include="MedicalSpecializationService.cs" />
     <Compile Include="MedicalCardService.cs" />
     <Compile Include="PolyclinicRegionService.cs" />

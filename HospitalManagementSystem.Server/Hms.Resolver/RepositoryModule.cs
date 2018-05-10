@@ -25,6 +25,7 @@
             this.Bind<IDoctorRepository>().ToConstructor(_ => new DoctorRepository(connectionString, KernelInstance.Get<IHealthcareInstitutionRepository>(), KernelInstance.Get<IMedicalSpecializationRepository>()));
 
             this.Bind<IPolyclinicRegionRepository>().ToConstructor(_ => new PolyclinicRegionRepository(connectionString, KernelInstance.Get<IDoctorRepository>()));
+            this.Bind<IPolyclinicRepository>().ToConstructor(_ => new PolyclinicRepository(connectionString, KernelInstance.Get<IPolyclinicRegionRepository>()));
             this.Bind<IBuildingRepository>().ToConstructor(_ => new BuildingRepository(connectionString, KernelInstance.Get<IPolyclinicRegionRepository>()));
         }
     }

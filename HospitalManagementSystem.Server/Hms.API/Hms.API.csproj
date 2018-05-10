@@ -124,6 +124,7 @@
     <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\MedicalCardController.cs" />
     <Compile Include="Controllers\MedicalSpecializationController.cs" />
+    <Compile Include="Controllers\PolyclinicController.cs" />
     <Compile Include="Controllers\PolyclinicRegionController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Infrastructure\ExpirationPolicy.cs" />

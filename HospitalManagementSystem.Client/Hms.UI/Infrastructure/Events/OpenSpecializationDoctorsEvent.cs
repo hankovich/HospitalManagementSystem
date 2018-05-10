@@ -11,5 +11,7 @@
         public int SpecializationId { get; set; }
 
         public int PolyclinicId { get; set; }
+
+        public object ParentViewModel { get; set; }
     }
 }

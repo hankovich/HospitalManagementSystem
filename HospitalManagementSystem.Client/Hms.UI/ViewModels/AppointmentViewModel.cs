@@ -55,7 +55,7 @@
                 {
                     var args = (List<int>)parameter;
                     this.EventAggregator.GetEvent<OpenSpecializationDoctorsEvent>().Publish(
-                        new OpenSpecializationDoctorsArgs { PolyclinicId = args[1], SpecializationId = args[0] });
+                        new OpenSpecializationDoctorsArgs { PolyclinicId = args[1], SpecializationId = args[0], ParentViewModel = this });
                 });
         }
 

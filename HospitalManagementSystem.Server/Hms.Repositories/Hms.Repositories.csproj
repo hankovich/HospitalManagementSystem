@@ -56,6 +56,7 @@
     <Compile Include="MedicalCardRepository.cs" />
     <Compile Include="MedicalSpecializationRepository.cs" />
     <Compile Include="PolyclinicRegionRepository.cs" />
+    <Compile Include="PolyclinicRepository.cs" />
     <Compile Include="ProfileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserRepository.cs" />
