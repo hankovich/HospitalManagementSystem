@@ -45,6 +45,7 @@
     <Compile Include="IDoctorService.cs" />
     <Compile Include="IGadgetKeysService.cs" />
     <Compile Include="IMedicalCardService.cs" />
+    <Compile Include="IMedicalSpecializationService.cs" />
     <Compile Include="IPolyclinicRegionProvider.cs" />
     <Compile Include="IPolyclinicRegionService.cs" />
     <Compile Include="IProfileService.cs" />

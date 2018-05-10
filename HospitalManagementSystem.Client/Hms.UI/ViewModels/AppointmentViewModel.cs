@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -28,6 +29,8 @@
 
         private object filter;
 
+        private IPageControlContract pageContract;
+
         public AppointmentViewModel(
             IMedicalSpecializationDataService medicalSpecializationDataService,
             IBuildingDataService buildingDataService,
@@ -41,7 +44,7 @@
             this.ProfileDataService = profileDataService;
             this.EventAggregator = eventAggregator;
 
-            this.PageContract = new PageControlContract(default(int));
+            this.PageContract = new PageControlContract(default(int), this.MedicalSpecializationDataService);
 
             this.PageSizes = new ObservableCollection<int> { 2, 10, 20, 50, 100, 200 };
 
@@ -65,7 +68,7 @@
                     Building = GetBuilding(buildingAddress, point)
                 });
 
-            PageContract = new PageControlContract(buildingAddress.PolyclinicRegion.PolyclinicId);
+            this.PageContract = new PageControlContract(buildingAddress.PolyclinicRegion.PolyclinicId, this.MedicalSpecializationDataService);
             this.TotalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
 
             this.Address.PropertyChanged += async (sender, args) =>
@@ -93,7 +96,7 @@
 
                     BuildingAddress ba = await this.BuildingDataService.GetBuildingAsync(this.Address.Building.Point);
 
-                    PageContract = new PageControlContract(ba.PolyclinicRegion.PolyclinicId);
+                    this.PageContract = new PageControlContract(ba.PolyclinicRegion.PolyclinicId, this.MedicalSpecializationDataService);
                     this.TotalRecords = await this.PageContract.GetTotalCountAsync(this.Filter);
                 }
             };
@@ -141,7 +144,19 @@
             }
         }
 
-        public IPageControlContract PageContract { get; set; }
+        public IPageControlContract PageContract
+        {
+            get
+            {
+                return this.pageContract;
+            }
+
+            set
+            {
+                this.pageContract = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public int Page
         {
@@ -187,23 +202,26 @@
 
         public class PageControlContract : IPageControlContract
         {
-            public PageControlContract(int polyclinicId)
+            public PageControlContract(int polyclinicId, IMedicalSpecializationDataService specializationDataService)
             {
                 this.PolyclinicId = polyclinicId;
+                this.SpecializationDataService = specializationDataService;
             }
 
             public int PolyclinicId { get; }
 
+            public IMedicalSpecializationDataService SpecializationDataService { get; }
+
             public async Task<int> GetTotalCountAsync(object filter)
             {
-                if (filter != null)
+                if (this.PolyclinicId == default(int))
                 {
                     return 0;
                 }
 
-                //BuildingAddress buildingAddress = await this.BuildingDataService.GetBuildingAsync(this.Address.Building.Point);
-
-                return 2; //(await this.MedicalSpecializationDataService.GetMedicalCardAsync(0, 20, filter as string ?? string.Empty)).TotalRecords;
+                return await this.SpecializationDataService.GetMedicalSpecializationCountAsync(
+                           this.PolyclinicId,
+                           filter as string ?? string.Empty);
             }
 
             public async Task<ICollection<object>> GetRecordsAsync(
@@ -211,17 +229,19 @@
                 int numberOfRecords,
                 object filter)
             {
-                if (filter != null)
+                if (this.PolyclinicId == default(int))
                 {
                     return new List<object>();
                 }
-                //MedicalCard medicalCard = await this.MedicalCardService.GetMedicalCardAsync(startingIndex / numberOfRecords, numberOfRecords, filter as string ?? string.Empty);
 
-                return new List<object>()
-                {
-                    new MedicalSpecialization { Name = "koala" },
-                    new MedicalSpecialization { Name = "zakon" }
-                }; //medicalCard.Records.Cast<object>().ToList();
+                IEnumerable<MedicalSpecialization> specializations =
+                    await this.SpecializationDataService.GetMedicalSpecializationsAsync(
+                        this.PolyclinicId,
+                        startingIndex / numberOfRecords,
+                        numberOfRecords,
+                        filter as string ?? string.Empty);
+
+                return specializations.Cast<object>().ToList();
             }
         }
 
