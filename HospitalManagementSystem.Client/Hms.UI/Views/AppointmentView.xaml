@@ -234,7 +234,7 @@
         <Grid Grid.Row="1" Margin="10">
             <mah:ProgressRing IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
 
-            <TextBlock Text="The card is empty" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+            <TextBlock Text="Enter correct address" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
                 <TextBlock.Visibility>
                     <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
                         <Binding Path="TotalRecords" Converter="{StaticResource NotNullToVisibilityConverter}"/>
@@ -274,7 +274,7 @@
                             </TextBox>
                             <ComboBox Grid.Row="0" Grid.Column="1" Name="PART_PageSizesCombobox" Margin="5" VerticalAlignment="Bottom"/>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="No records found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="No specializations found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
                                 <TextBlock.Visibility>
                                     <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
                                         <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
@@ -296,18 +296,14 @@
                                 <ItemsControl Name="Records" ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0" Command="{Binding DataContext.OpenRecordCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Id}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                        <ColumnDefinition></ColumnDefinition>
-                                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <TextBlock Grid.Column="0" Text="{Binding AddedAtUtc, StringFormat=hh:mm dd MMMM yyyy}" Margin="5"/>
-                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5"/>
-                                                    <TextBlock Grid.Column="2" Text="{Binding Author.Specialization.Name}" Margin="5"/>
-                                                </Grid>
+                                            <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0" Command="{Binding DataContext.OpenSpecializationCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource ArrayToObjectMultiConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Path="DataContext.PageContract.PolyclinicId" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                                <TextBlock Text="{Binding Name}" Margin="5"/>
                                             </Button>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

@@ -49,6 +49,10 @@
         <DataTemplate DataType="{x:Type vm:AppointmentViewModel}">
             <v:AppointmentView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:SpecializationDoctorsViewModel}">
+            <v:SpecializationDoctorsView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <ContentControl Content="{Binding SelectedViewModel}"/>

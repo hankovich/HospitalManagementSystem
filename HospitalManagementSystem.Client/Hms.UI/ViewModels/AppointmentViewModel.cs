@@ -13,6 +13,7 @@
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Controls.Editors;
     using Hms.UI.Infrastructure.Controls.PagingControl;
+    using Hms.UI.Infrastructure.Events;
     using Hms.UI.Wrappers;
 
     using Prism.Events;
@@ -49,6 +50,13 @@
             this.PageSizes = new ObservableCollection<int> { 2, 10, 20, 50, 100, 200 };
 
             this.LoadedCommand = AsyncCommand.Create(this.OnLoaded);
+            this.OpenSpecializationCommand = new RelayCommand(
+                parameter =>
+                {
+                    var args = (List<int>)parameter;
+                    this.EventAggregator.GetEvent<OpenSpecializationDoctorsEvent>().Publish(
+                        new OpenSpecializationDoctorsArgs { PolyclinicId = args[1], SpecializationId = args[0] });
+                });
         }
 
         private async Task OnLoaded()
@@ -117,6 +125,8 @@
         }
         
         public ICommand LoadedCommand { get; }
+
+        public ICommand OpenSpecializationCommand { get; }
 
         public IBuildingDataService BuildingDataService { get; }
 

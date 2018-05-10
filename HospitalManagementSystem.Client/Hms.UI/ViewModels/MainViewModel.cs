@@ -30,6 +30,7 @@
             eventAggregator.GetEvent<OpenRecordEvent>().Subscribe(this.OnOpenRecord);
             eventAggregator.GetEvent<NavigationEvent>().Subscribe(this.OnNavigation);
             eventAggregator.GetEvent<OpenDoctorEvent>().Subscribe(this.OnOpenDoctor);
+            eventAggregator.GetEvent<OpenSpecializationDoctorsEvent>().Subscribe(this.OnOpenSpecializationDoctors);
 
             DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             timer.Tick += (sender, args) => this.OnPropertyChanged(nameof(this.Time));
@@ -92,6 +93,13 @@
             var recordId = new ConstructorArgument("doctorId", args.DoctorId);
             var parentViewModel = new ConstructorArgument("parentViewModel", args.ParentViewModel);
             this.SelectedViewModel = App.Kernel.Get<DoctorViewModel>(recordId, parentViewModel);
+        }
+
+        private void OnOpenSpecializationDoctors(OpenSpecializationDoctorsArgs args)
+        {
+            var polyclinicId = new ConstructorArgument("polyclinicId", args.PolyclinicId);
+            var specializationId = new ConstructorArgument("specializationId", args.SpecializationId);
+            this.SelectedViewModel = App.Kernel.Get<SpecializationDoctorsViewModel>(polyclinicId, specializationId);
         }
     }
 }

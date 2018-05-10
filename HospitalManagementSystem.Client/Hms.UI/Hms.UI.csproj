@@ -119,6 +119,7 @@
     <Compile Include="Infrastructure\Events\OpenMenuItemEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenRecordEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenRecordEventArgs.cs" />
+    <Compile Include="Infrastructure\Events\OpenSpecializationDoctorsEvent.cs" />
     <Compile Include="Infrastructure\FileDialogCordinator.cs" />
     <Compile Include="Infrastructure\IFileDialogCoordinator.cs" />
     <Compile Include="Infrastructure\Providers\CitiesSuggestionProvider.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="ViewModels\MedicalCardRecordViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\SpecializationDoctorsViewModel.cs" />
     <Compile Include="Views\AppointmentView.xaml.cs">
       <DependentUpon>AppointmentView.xaml</DependentUpon>
     </Compile>
@@ -143,6 +145,9 @@
     </Compile>
     <Compile Include="Views\MedicalRecordView.xaml.cs">
       <DependentUpon>MedicalRecordView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SpecializationDoctorsView.xaml.cs">
+      <DependentUpon>SpecializationDoctorsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wrappers\AddressWrapper.cs" />
     <Compile Include="Wrappers\AttachmentInfoWrapper.cs" />
@@ -233,6 +238,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SpecializationDoctorsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
