@@ -52,6 +52,7 @@
     <Compile Include="IProfileRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IUserRoleRepository.cs" />
+    <Compile Include="IUserSessionRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

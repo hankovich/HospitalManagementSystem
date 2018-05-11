@@ -17,26 +17,12 @@
 
     public class AuthenticationService : IAuthenticationService
     {
-        public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysService gadgetKeysService, IUserService userService)
+        public AuthenticationService(ISymmetricCryptoProvider cryptoService, IGadgetKeysService gadgetKeysService, IUserService userService, IUserSessionService userSessionService)
         {
-            if (cryptoService == null)
-            {
-                throw new ArgumentNullException(nameof(cryptoService));
-            }
-
-            if (gadgetKeysService == null)
-            {
-                throw new ArgumentNullException(nameof(gadgetKeysService));
-            }
-
-            if (userService == null)
-            {
-                throw new ArgumentNullException(nameof(userService));
-            }
-
             this.SymmetricCryptoService = cryptoService;
             this.GadgetKeysService = gadgetKeysService;
             this.UserService = userService;
+            this.UserSessionService = userSessionService;
         }
 
         public ISymmetricCryptoProvider SymmetricCryptoService { get; }
@@ -44,6 +30,8 @@
         public IGadgetKeysService GadgetKeysService { get; }
 
         public IUserService UserService { get; }
+
+        public IUserSessionService UserSessionService { get; }
 
         [Inject]
         public RoundKeyExpirationSettings KeyExpirationSettings { get; set; }
@@ -81,6 +69,7 @@
 
                 if (await this.UserService.CheckCredentialsAsync(login, password))
                 {
+                    await this.UserSessionService.AddEntryAsync(login, model.Indentifier);
                     principal = new PrincipalModel { Login = login };
                 }
 

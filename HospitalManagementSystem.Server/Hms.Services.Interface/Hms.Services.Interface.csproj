@@ -51,6 +51,7 @@
     <Compile Include="IPolyclinicService.cs" />
     <Compile Include="IProfileService.cs" />
     <Compile Include="IUserService.cs" />
+    <Compile Include="IUserSessionService.cs" />
     <Compile Include="Models\AuthorizationResult.cs" />
     <Compile Include="Models\AuthenticationResult.cs" />
     <Compile Include="IAuthenticationService.cs" />

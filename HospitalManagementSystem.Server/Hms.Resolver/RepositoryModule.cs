@@ -22,8 +22,9 @@
             this.Bind<IHealthcareInstitutionRepository>().ToConstructor(_ => new HealthcareInstitutionRepository(connectionString));
             this.Bind<IMedicalSpecializationRepository>().ToConstructor(_ => new MedicalSpecializationRepository(connectionString));
             this.Bind<IAttachmentRepository>().ToConstructor(_ => new AttachmentRepository(connectionString));
+            this.Bind<IUserSessionRepository>().ToConstructor(_ => new UserSessionRepository(connectionString));
+            
             this.Bind<IDoctorRepository>().ToConstructor(_ => new DoctorRepository(connectionString, KernelInstance.Get<IHealthcareInstitutionRepository>(), KernelInstance.Get<IMedicalSpecializationRepository>()));
-
             this.Bind<IPolyclinicRegionRepository>().ToConstructor(_ => new PolyclinicRegionRepository(connectionString, KernelInstance.Get<IDoctorRepository>()));
             this.Bind<IPolyclinicRepository>().ToConstructor(_ => new PolyclinicRepository(connectionString, KernelInstance.Get<IPolyclinicRegionRepository>(), this.KernelInstance.Get<IBuildingRepository>()));
             this.Bind<IBuildingRepository>().ToConstructor(_ => new BuildingRepository(connectionString, KernelInstance.Get<IPolyclinicRegionRepository>()));
