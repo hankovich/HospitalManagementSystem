@@ -15,7 +15,7 @@
             this.Client = client;
         }
 
-        public IRequestCoordinator Client { get; set; }
+        public IRequestCoordinator Client { get; }
 
         public async Task<PolyclinicRegion> GetPolyclinicRegionAsync(int polyclinicRegionId)
         {

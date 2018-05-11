@@ -94,11 +94,4 @@
             throw new System.NotImplementedException();
         }
     }
-
-    public class PolyclinicInfo : Polyclinic
-    {
-        public int AddressId { get; set; }
-
-        public IEnumerable<int> RegionIds { get; set; }
-    }
 }

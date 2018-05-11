@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Hms.UI.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ThemeName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BaseLight</Value>
+    </Setting>
+    <Setting Name="ThemeResourceAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml</Value>
+    </Setting>
+    <Setting Name="BaseColorName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="BaseColorResourceAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

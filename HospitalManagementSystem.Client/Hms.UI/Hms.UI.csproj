@@ -116,6 +116,7 @@
     <Compile Include="Infrastructure\Events\NavigationEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenDoctorEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenDoctorEventArgs.cs" />
+    <Compile Include="Infrastructure\Events\OpenDoctorTimetableEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenMenuItemEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenRecordEvent.cs" />
     <Compile Include="Infrastructure\Events\OpenRecordEventArgs.cs" />
@@ -128,23 +129,32 @@
     <Compile Include="Infrastructure\Providers\StreetsSuggestionProvider.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\AppointmentViewModel.cs" />
     <Compile Include="ViewModels\CreateProfileViewModel.cs" />
+    <Compile Include="ViewModels\DoctorTimetableViewModel.cs" />
     <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardRecordViewModel.cs" />
     <Compile Include="ViewModels\MedicalCardViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\SpecializationDoctorsViewModel.cs" />
     <Compile Include="Views\AppointmentView.xaml.cs">
       <DependentUpon>AppointmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DoctorTimetableView.xaml.cs">
+      <DependentUpon>DoctorTimetableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DoctorView.xaml.cs">
       <DependentUpon>DoctorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MedicalRecordView.xaml.cs">
       <DependentUpon>MedicalRecordView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SpecializationDoctorsView.xaml.cs">
       <DependentUpon>SpecializationDoctorsView.xaml</DependentUpon>
@@ -209,6 +219,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\DoctorTimetableView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DoctorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -238,6 +252,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

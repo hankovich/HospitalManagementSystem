@@ -7,10 +7,15 @@
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:pagingControl="clr-namespace:Hms.UI.Infrastructure.Controls.PagingControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:ArrayToVisibilityMultiConverter x:Key="ArrayToVisibilityMultiConverter"/>
+        <converters:ZeroIntToVisibilityConverter x:Key="ZeroIntToVisibilityConverter"/>
+        <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        <converters:ArrayToObjectMultiConverter x:Key="ArrayToObjectMultiConverter"/>
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -44,12 +49,116 @@
                 </Button.Template>
             </Button>
 
-            <TextBlock Grid.Column="1" FontSize="25" Margin="10,0,10,10" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <TextBlock Grid.Column="1" FontSize="20" Margin="10,0,10,10" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                 <Run Text="{Binding Polyclinic.Name}"/>
                 <Run Text=" ("/>
                 <Run Text="{Binding Specialization.Name}"/>
                 <Run Text=")"/>
             </TextBlock>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <pagingControl:PagingControl PageContract="{Binding PageContract}" PageSizes="{Binding PageSizes}" Filter="{Binding Filter, Mode=TwoWay}" Page="{Binding Page, Mode=TwoWay}" PageSize="{Binding PageSize, Mode=TwoWay}">
+                <pagingControl:PagingControl.Template>
+                    <ControlTemplate TargetType="{x:Type pagingControl:PagingControl}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.ClearTextButton="True"
+                         mah:TextBoxHelper.UseFloatingWatermark="True"
+                         mah:TextBoxHelper.Watermark="Search..." Margin="5" Text="{Binding Filter, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <TextBox.Style>
+                                    <Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
+                                        <Style.Triggers>
+                                            <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
+                                                <Setter Property="mah:TextBoxHelper.ButtonContent" Value="r" />
+                                                <Setter Property="mah:TextBoxHelper.ButtonContentTemplate" Value="{x:Null}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                            <ComboBox Grid.Row="0" Grid.Column="1" Name="PART_PageSizesCombobox" Margin="5" VerticalAlignment="Bottom"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="No doctors found for your request" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                                <TextBlock.Visibility>
+                                    <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
+                                        <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
+                                        <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}" Converter="{StaticResource InverseBooleanConverter}"/>
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
+                            </TextBlock>
+
+                            <mah:ProgressRing Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">
+                                <mah:ProgressRing.Visibility>
+                                    <MultiBinding Converter="{StaticResource ArrayToVisibilityMultiConverter}">
+                                        <Binding Path="Content.(ItemsControl.HasItems)" ElementName="ScrollViewer" Converter="{StaticResource InverseBooleanConverter}"/>
+                                        <Binding Path="IsLoading" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}"/>
+                                        <Binding Path="LoadedCommand.Execution.IsCompleted" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type pagingControl:PagingControl}}"/>
+                                    </MultiBinding>
+                                </mah:ProgressRing.Visibility>
+                            </mah:ProgressRing>
+
+                            <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer">
+                                <ItemsControl Name="Records" ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0" Command="{Binding DataContext.OpenDoctorCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Path=Doctor.Id}" VerticalAlignment="Center">
+                                                <TextBlock Margin="5" FontSize="15" FontWeight="Normal">
+                                                    <Run Text="{Binding Profile.FirstName}"/>
+                                                    <Run Text="{Binding Profile.MiddleName}" />
+                                                    <Run Text="{Binding Profile.LastName}" />
+                                                    <Run Text=", cab." />
+                                                    <Run Text="{Binding Doctor.CabinetNumber}" />
+                                                </TextBlock>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                    <Button Name="PART_FirstPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="PageFirst" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                    <Button Name="PART_PreviousPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="ChevronLeft" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                    <TextBox Name="PART_PageTextBox" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" MinWidth="20" Margin="5">
+                                        <Validation.ErrorTemplate>
+                                            <ControlTemplate>
+                                                <DockPanel>
+                                                    <Border BorderBrush="Red" BorderThickness="1" Margin="-1">
+                                                        <AdornedElementPlaceholder x:Name="controlWithError"/>
+                                                    </Border>
+                                                </DockPanel>
+                                            </ControlTemplate>
+                                        </Validation.ErrorTemplate>
+                                    </TextBox>
+                                    <TextBlock Text=" / " TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TotalPages, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                           TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                    <Button Name="PART_NextPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="ChevronRight" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                    <Button Name="PART_LastPageButton" BorderThickness="0" Background="{StaticResource WhiteBrush}" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="PageLast" Foreground="{StaticResource AccentColorBrush2}"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </pagingControl:PagingControl.Template>
+            </pagingControl:PagingControl>
         </Grid>
     </Grid>
 </UserControl>

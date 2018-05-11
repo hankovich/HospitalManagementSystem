@@ -1,7 +1,7 @@
 ﻿namespace Hms.UI.ViewModels
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
@@ -145,7 +145,7 @@
                 return (await this.MedicalCardService.GetMedicalCardAsync(0, 20, filter as string ?? string.Empty)).TotalRecords;
             }
 
-            public async Task<ICollection<object>> GetRecordsAsync(int startingIndex, int numberOfRecords, object filter)
+            public async Task<IEnumerable> GetRecordsAsync(int startingIndex, int numberOfRecords, object filter)
             {
                 MedicalCard medicalCard = await this.MedicalCardService.GetMedicalCardAsync(startingIndex / numberOfRecords, numberOfRecords, filter as string ?? string.Empty);
                 

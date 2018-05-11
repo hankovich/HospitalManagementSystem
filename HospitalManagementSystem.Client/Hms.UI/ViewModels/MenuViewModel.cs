@@ -36,8 +36,8 @@
 
             this.MenuItems.Add(new MenuItem
             {
-                Name = "Profile Card",
-                ViewModelName = "ProfileViewModel",
+                Name = "Settings",
+                ViewModelName = "SettingsViewModel",
                 Badge = null
             });
 

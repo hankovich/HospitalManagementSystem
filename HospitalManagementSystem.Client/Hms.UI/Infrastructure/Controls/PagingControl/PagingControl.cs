@@ -1,6 +1,7 @@
 ﻿namespace Hms.UI.Infrastructure.Controls.PagingControl
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Threading.Tasks;
@@ -504,7 +505,7 @@
             var pageControlContract = this.PageContract;
             if (pageControlContract != null)
             {
-                ICollection<object> fetchData =
+                IEnumerable fetchData =
                     await pageControlContract.GetRecordsAsync(startingIndex, newPageSize, this.Filter);
                 this.ItemsSource.Clear();
 

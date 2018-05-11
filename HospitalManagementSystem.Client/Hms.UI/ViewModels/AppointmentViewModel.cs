@@ -1,9 +1,9 @@
 ﻿namespace Hms.UI.ViewModels
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -49,7 +49,7 @@
 
             this.PageSizes = new ObservableCollection<int> { 2, 10, 20, 50, 100, 200 };
 
-            this.LoadedCommand = AsyncCommand.Create(this.OnLoaded);
+            this.LoadedCommand = AsyncCommand.Create(this.OnLoadedAsync);
             this.OpenSpecializationCommand = new RelayCommand(
                 parameter =>
                 {
@@ -59,9 +59,8 @@
                 });
         }
 
-        private async Task OnLoaded()
+        private async Task OnLoadedAsync()
         {
-            await Task.Delay(1000);
             var profile = await this.ProfileDataService.GetCurrentProfileAsync();
             int buildingId = profile.BuildingId.Value;
             var buildingAddress = await this.BuildingDataService.GetBuildingAsync(buildingId);
@@ -234,7 +233,7 @@
                            filter as string ?? string.Empty);
             }
 
-            public async Task<ICollection<object>> GetRecordsAsync(
+            public async Task<IEnumerable> GetRecordsAsync(
                 int startingIndex,
                 int numberOfRecords,
                 object filter)
@@ -251,7 +250,7 @@
                         numberOfRecords,
                         filter as string ?? string.Empty);
 
-                return specializations.Cast<object>().ToList();
+                return specializations;
             }
         }
 

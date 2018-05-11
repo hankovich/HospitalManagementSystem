@@ -132,5 +132,98 @@
                 throw new ArgumentException(e.Message);
             }
         }
+
+        public async Task<IEnumerable<Doctor>> GetDoctorsAsync(int polyclinicId, int specializationId, int pageIndex, int pageSize, string filter)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"
+				    SELECT 
+					UD.[Id], UD.[Login], NULL AS PasswordHash, D.[Info], D.[CabinetNumber], HI.[Id], HI.[Name], MS.[Id], MS.[Name], MS.[Description] 
+								
+					FROM [Doctor] D 
+					LEFT JOIN 
+					[User] UD 
+					ON 
+					UD.[Id] = D.[UserId]
+					LEFT JOIN [HealthcareInstitution] HI
+					ON D.[HealthcareInstitutionId] = HI.[Id]
+					LEFT JOIN [MedicalSpecialization] MS 
+					ON D.[MedicalSpecializationId] = MS.[Id]
+					LEFT JOIN [Profile] P
+					ON
+					P.[UserId] = UD.[Id]
+                    WHERE HI.[Id] = @polyclinicId AND D.[MedicalSpecializationId] = @specializationId AND 
+                    ((P.[FirstName] + ' ' + P.[MiddleName] + ' ' + P.[LastName] LIKE '%' + @filter + '%') OR (P.[FirstName] + P.[MiddleName] + P.[LastName] IS NULL AND @filter = ''))
+                
+                    ORDER BY UD.[Id]
+                    OFFSET @offset ROWS
+                    FETCH NEXT @pageSize ROWS ONLY";
+
+                    IEnumerable<Doctor> doctors =
+                        await
+                            connection.QueryAsync<Doctor, HealthcareInstitution, MedicalSpecialization, Doctor>(
+                                command,
+                                (doctor, institution, specialization) =>
+                                {
+                                    doctor.Institution = institution;
+                                    doctor.Specialization = specialization;
+
+                                    return doctor;
+                                },
+                                new { polyclinicId, specializationId, offset = pageSize * pageIndex, pageSize, filter });
+
+                    return doctors;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
+
+        public async Task<int> GetDoctorsCountAsync(int polyclinicId, int specializationId, string filter)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"
+				    SELECT 
+					COUNT(1)
+								
+					FROM [Doctor] D 
+					LEFT JOIN 
+					[User] UD 
+					ON 
+					UD.[Id] = D.[UserId]
+					LEFT JOIN [HealthcareInstitution] HI
+					ON D.[HealthcareInstitutionId] = HI.[Id]
+					LEFT JOIN [MedicalSpecialization] MS 
+					ON D.[MedicalSpecializationId] = MS.[Id]
+					LEFT JOIN [Profile] P
+					ON
+					P.[UserId] = UD.[Id]
+                    WHERE HI.[Id] = @polyclinicId AND D.[MedicalSpecializationId] = @specializationId AND 
+                    ((P.[FirstName] + ' ' + P.[MiddleName] + ' ' + P.[LastName] LIKE '%' + @filter + '%') OR (P.[FirstName] + P.[MiddleName] + P.[LastName] IS NULL AND @filter = ''))";
+
+                    int doctorsCount = await connection.QueryFirstAsync<int>(
+                                           command,
+                                           new { polyclinicId, specializationId, filter });
+
+                    return doctorsCount;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
     }
 }
