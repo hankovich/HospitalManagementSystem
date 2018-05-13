@@ -40,6 +40,7 @@ namespace Hms.Resolver
             this.Bind<IMedicalSpecializationService>().To<MedicalSpecializationService>();
             this.Bind<IPolyclinicService>().To<PolyclinicService>();
             this.Bind<IUserSessionService>().To<UserSessionService>();
+            this.Bind<IAppointmentService>().To<AppointmentService>();
 
             this.Bind<IPolyclinicRegionProvider>().To<DummyPolyclinicRegionProvider>();
             

@@ -39,6 +39,7 @@
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\AttachmentInfo.cs" />
     <Compile Include="Domain\BuildingAddress.cs" />
+    <Compile Include="Domain\CalendarItem.cs" />
     <Compile Include="Domain\Doctor.cs" />
     <Compile Include="Domain\HealthcareInstitution.cs" />
     <Compile Include="Domain\Hospital.cs" />

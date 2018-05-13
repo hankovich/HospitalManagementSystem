@@ -3,20 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hms.UI.Views"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:converters="clr-namespace:Hms.UI.Infrastructure.Converters"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:ArrayToVisibilityMultiConverter x:Key="ArrayToVisibilityMultiConverter"/>
         <converters:ZeroIntToVisibilityConverter x:Key="ZeroIntToVisibilityConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:ArrayToObjectMultiConverter x:Key="ArrayToObjectMultiConverter"/>
+        <converters:EmptyCollectionToVisibilityConverter x:Key="EmptyCollectionToVisibilityConverter" />
+        <converters:EqualsToVisibilityMultiConverter x:Key="EqualsToVisibilityMultiConverter" />
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -26,11 +29,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-
-        <mah:ProgressRing Grid.RowSpan="3" IsActive="{Binding LoadedCommand.Execution.IsCompleted, Converter={StaticResource InverseBooleanConverter}}" />
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -65,6 +66,153 @@
                     <Run Text="{Binding Profile.LastName}"/>
                 </Hyperlink>
             </TextBlock>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Select appointment date:" FontSize="20" Grid.Column="0" Margin="10"/>
+            <DatePicker Name="DatePicker" Grid.Column="1" VerticalAlignment="Center" Margin="10" FirstDayOfWeek="Monday" SelectedDate="{Binding SelectedDate, Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedDateChanged" SourceName="DatePicker">
+                        <i:InvokeCommandAction Command="{Binding SelectedDateChangedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </DatePicker>
+        </Grid>
+
+        <Grid Grid.Row="2" Visibility="{Binding ElementName=DatePicker, Path=SelectedDate, Converter={StaticResource NotNullToVisibilityConverter}}">
+            <TextBlock Text="Select appointment date" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+        
+        <Grid Grid.Row="2" Visibility="{Binding ElementName=DatePicker, Path=SelectedDate, Converter={StaticResource NullToVisibilityConverter}}">
+            <ScrollViewer Margin="10">
+                <ItemsControl ItemsSource="{Binding Appointments}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid x:Name="PART_Root" SnapsToDevicePixels="True" ShowGridLines="True" Height="30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock FontSize="16" FontWeight="Bold" Width="20" TextAlignment="Right" Margin="0,0,3,0">
+                                        <TextBlock.Text>
+                                            <Binding Path="StartDate" StringFormat="{}{0:HH}" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Width="20" Margin="0,2,0,0">
+                                        <TextBlock.Text>
+                                            <Binding Path="StartDate" StringFormat="{}{0:mm}" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                                <Rectangle Grid.Column="0" Grid.ColumnSpan="2" Fill="{StaticResource GrayBrush4}" Height="1" VerticalAlignment="Top"/>
+
+                                <Border Grid.Column="1" CornerRadius="3" Margin="5" BorderThickness="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Border.Visibility>
+                                        <MultiBinding Converter="{StaticResource EqualsToVisibilityMultiConverter}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="UnsetValue">
+                                            <Binding Path="Owner.Id" UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding Path="DataContext.UserId" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+                                        </MultiBinding>
+                                    </Border.Visibility>
+                                    
+                                    <Border.Style>
+                                        <Style>
+                                            <Setter Property="Border.Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="Border.IsMouseOver" Value="True">
+                                                    <Setter Property="Border.Background" Value="SpringGreen" />
+                                                    <Setter Property="Border.BorderBrush" Value="SpringGreen" />
+                                                    <Setter Property="Border.ToolTip">
+                                                        <Setter.Value>
+                                                            <StackPanel>
+                                                                <TextBlock>
+                                                                    <Run Text="Time"/>
+                                                                    <Run Text="{Binding StartDate, StringFormat=HH:mm}"/>
+                                                                    <Run Text="is free!"/>
+                                                                </TextBlock>
+                                                                <TextBlock Text="You can book it"/>
+                                                            </StackPanel>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Border.Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.ScheduleAppointmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding StartDate}"/>
+                                    </Border.InputBindings>
+                                    
+                                    <Grid />
+                                </Border>
+
+                                <Border Grid.Column="1">
+                                    <Border.Visibility>
+                                        <MultiBinding Converter="{StaticResource EqualsToVisibilityMultiConverter}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="Equals">
+                                            <Binding Path="Owner.Id" UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding Path="DataContext.UserId" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+                                        </MultiBinding>
+                                    </Border.Visibility>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0" CornerRadius="3" Margin="5" BorderThickness="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        BorderBrush="{StaticResource AccentColorBrush2}" Background="{StaticResource AccentColorBrush2}">
+                                            <Border.ToolTip>
+                                                <TextBlock Text="It's your time"/>
+                                            </Border.ToolTip>
+                                            <Grid/>
+                                        </Border>
+
+                                        <Button Grid.Column="1" Command="{Binding DataContext.CancelAppointmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding Id}"
+                                                Cursor="Hand" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="Transparent">
+                                                        <Grid>
+                                                            <iconPacks:PackIconMaterial Kind="DeleteCircle" Foreground="Red" Height="25"/>
+                                                            <ContentPresenter/>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                                
+                                <Border Grid.Column="1" CornerRadius="3" Margin="5" BorderThickness="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        BorderBrush="Red" Background="Red">
+                                    <Border.Visibility>
+                                        <MultiBinding Converter="{StaticResource EqualsToVisibilityMultiConverter}" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding Path="Owner.Id" UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding Path="DataContext.UserId" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+                                        </MultiBinding>
+                                    </Border.Visibility>
+                                    <Border.ToolTip>
+                                        <TextBlock>
+                                            <Run Text="Time"/>
+                                            <Run Text="{Binding StartDate, StringFormat=HH:mm}"/>
+                                            <Run Text="is taken"/>
+                                        </TextBlock>
+                                    </Border.ToolTip>
+                                    
+                                    <Grid/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

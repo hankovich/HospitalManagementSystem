@@ -59,7 +59,7 @@ namespace Hms.UI.Wrappers
                     modelCollection.Add(model);
                 }
             };
-        } 
+        }
 
         private void ValidatePropertyInternal(string propertyName)
         {

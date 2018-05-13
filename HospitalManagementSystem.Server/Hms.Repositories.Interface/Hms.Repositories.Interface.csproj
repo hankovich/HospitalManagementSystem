@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAppointmentRepository.cs" />
     <Compile Include="IAttachmentRepository.cs" />
     <Compile Include="IBuildingRepository.cs" />
     <Compile Include="IDoctorRepository.cs" />

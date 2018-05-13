@@ -105,6 +105,8 @@
     <Compile Include="Infrastructure\Converters\ArrayToVisibilityMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\ByteBitmapSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\CommandChainMultiConverter.cs" />
+    <Compile Include="Infrastructure\Converters\EmptyCollectionToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\EqualsToVisibilityMultiConverter.cs" />
     <Compile Include="Infrastructure\Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Infrastructure\Converters\NegateBooleanToVisibilityConverter.cs" />
@@ -123,6 +125,8 @@
     <Compile Include="Infrastructure\Events\OpenSpecializationDoctorsEvent.cs" />
     <Compile Include="Infrastructure\FileDialogCordinator.cs" />
     <Compile Include="Infrastructure\IFileDialogCoordinator.cs" />
+    <Compile Include="Infrastructure\ItemObservableCollection.cs" />
+    <Compile Include="Infrastructure\PropertyChangedListener.cs" />
     <Compile Include="Infrastructure\Providers\CitiesSuggestionProvider.cs" />
     <Compile Include="Infrastructure\Providers\BuildingsSuggestionProvider.cs" />
     <Compile Include="Infrastructure\Providers\GeoSuggestionProvider.cs" />
@@ -161,6 +165,7 @@
     </Compile>
     <Compile Include="Wrappers\AddressWrapper.cs" />
     <Compile Include="Wrappers\AttachmentInfoWrapper.cs" />
+    <Compile Include="Wrappers\CalendarItemWrapper.cs" />
     <Compile Include="Wrappers\MedicalCardRecordWrapper.cs" />
     <Compile Include="Wrappers\MedicalCardWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
@@ -191,6 +196,7 @@
       <DependentUpon>RegisterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wrappers\ProfileWrapper.cs" />
+    <Compile Include="Wrappers\UserWrapper.cs" />
     <Page Include="Infrastructure\Controls\Editors\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

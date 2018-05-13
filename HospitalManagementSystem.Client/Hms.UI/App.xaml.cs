@@ -30,7 +30,7 @@
 
             AppDomain.CurrentDomain.UnhandledException += (sender, args) => { };
 
-            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) => { };
+            Dispatcher.CurrentDispatcher.UnhandledException += (sender, args) => { args.Handled = true; };
 
             Kernel = new StandardKernel();
 

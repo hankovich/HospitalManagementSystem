@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountService.cs" />
+    <Compile Include="AppointmentDataService.cs" />
     <Compile Include="AttachmentDataService.cs" />
     <Compile Include="BuildingDataService.cs" />
     <Compile Include="DoctorDataService.cs" />
