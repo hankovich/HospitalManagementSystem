@@ -26,7 +26,7 @@
 
         public IMedicalCardService MedicalCardService { get; }
 
-        [Encrypted, Authorize(Roles = Role.Patient)]
+        [Encrypted, Authorize(Roles = Role.Patient | Role.Doctor)]
         [HttpGet, Route("{pageIndex}/{pageSize}/{filter?}")]
         public async Task<IHttpActionResult> Get(int pageIndex, int pageSize, string filter = "")
         {

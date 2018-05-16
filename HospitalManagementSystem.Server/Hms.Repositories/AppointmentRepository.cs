@@ -80,7 +80,7 @@
                     await connection.OpenAsync();
 
                     var command = @"
-                    INSERT INTO [CalendarItem]([UserId], [StartDateUtc], [EndDateUtc], [Info]) OUTPUT INSERTED.ID VALUES(@userId, @StartDate, @EndDate, @Info)";
+                    INSERT INTO [CalendarItem]([UserId], [StartDateUtc], [EndDateUtc], [Info]) OUTPUT INSERTED.ID VALUES(@userId, @StartDate, @EndDate, @Info)"; // TODO: user wins / database wins
 
                     if (calendarItem.Info == null)
                     {

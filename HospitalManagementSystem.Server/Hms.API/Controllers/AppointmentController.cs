@@ -18,11 +18,11 @@
             this.UserService = userService;
         }
 
-        public IAppointmentService AppointmentService { get; set; }
+        public IAppointmentService AppointmentService { get; }
 
-        public IUserService UserService { get; set; }
+        public IUserService UserService { get; }
 
-        [HttpGet, Route("{doctorId}/{date}")]
+        [HttpGet, Route("{doctorId}/{*date:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
         [Encrypted, Attributes.Authorize(Roles = Role.Patient)]
         public async Task<IHttpActionResult> Get(int doctorId, DateTime date)
         {

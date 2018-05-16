@@ -2,11 +2,14 @@
 {
     using System;
     using System.Reflection;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Threading;
 
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Events;
+
+    using Microsoft.AspNet.SignalR.Client;
 
     using Ninject;
     using Ninject.Parameters;
@@ -33,14 +36,27 @@
             eventAggregator.GetEvent<OpenDoctorTimetableEvent>().Subscribe(this.OnOpenDoctorTimetable);
             eventAggregator.GetEvent<OpenSpecializationDoctorsEvent>().Subscribe(this.OnOpenSpecializationDoctors);
 
+            this.ConnectToNotificationsCommand = AsyncCommand.Create(this.ConnectAsync);
+            
             DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             timer.Tick += (sender, args) => this.OnPropertyChanged(nameof(this.Time));
             timer.Start();
         }
 
+        private async Task ConnectAsync()
+        {
+            var connection = new HubConnection("http://localhost:52017/signalr");
+            IHubProxy hubProxy = connection.CreateHubProxy("NotificationHub");
+
+            // ServicePointManager.DefaultConnectionLimit = 10;
+            await connection.Start();
+        }
+
         public string Time => DateTime.Now.ToString("HH:mm:ss");
 
         public ICommand CardCommand { get; }
+
+        public ICommand ConnectToNotificationsCommand { get; }
 
         public object SelectedViewModel
         {

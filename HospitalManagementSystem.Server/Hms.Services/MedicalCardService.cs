@@ -19,7 +19,7 @@
             this.MedicalCardRepository = medicalCardRepository;
         }
 
-        public IMedicalCardRepository MedicalCardRepository { get; set; }
+        public IMedicalCardRepository MedicalCardRepository { get; }
 
         public async Task<MedicalCard> GetMedicalCardPagesAsync(string login, int pageIndex, int pageSize = 20, string filter = "")
         {

@@ -16,11 +16,11 @@
             this.RequestCoordinator = requestCoordinator;
         }
 
-        public IRequestCoordinator RequestCoordinator { get; set; }
+        public IRequestCoordinator RequestCoordinator { get; }
 
         public async Task<IEnumerable<CalendarItem>> GetAppointmentsAsync(int doctorId, DateTime date)
         {
-            var response = await this.RequestCoordinator.SendAsync<IEnumerable<CalendarItem>>(HttpMethod.Get, $"api/appointment/{doctorId}/{date}");
+            var response = await this.RequestCoordinator.SendAsync<IEnumerable<CalendarItem>>(HttpMethod.Get, $"api/appointment/{doctorId}/{date:yyyy/MM/dd}");
 
             return response.Content;
         }

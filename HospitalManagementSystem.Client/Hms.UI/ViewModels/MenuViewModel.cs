@@ -36,19 +36,47 @@
 
             this.MenuItems.Add(new MenuItem
             {
+                Name = "My appointments",
+                ViewModelName = "SettingsViewModel",
+                Badge = 3
+            });
+
+            this.MenuItems.Add(new MenuItem
+            {
+                Name = "My tests",
+                ViewModelName = "SettingsViewModel",
+                Badge = 1
+            });
+
+            this.MenuItems.Add(new MenuItem
+            {
+                Name = "Seack leave info",
+                ViewModelName = "SettingsViewModel",
+                Badge = null
+            });
+
+            this.MenuItems.Add(new MenuItem
+            {
                 Name = "Settings",
                 ViewModelName = "SettingsViewModel",
                 Badge = null
             });
 
-            for (int i = 0; i < 20; i++)
+            this.MenuItems.Add(new MenuItem
             {
-                this.MenuItems.Add(new MenuItem
-                {
-                    Name = $"Koala_{rnd.Next() % 19 + 1}",
-                    Badge = rnd.NextDouble() > 0.5 ? (int?)null : rnd.Next() % 20
-                });    
-            }
+                Name = "Notifications",
+                ViewModelName = "SettingsViewModel",
+                Badge = 33
+            });
+
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    this.MenuItems.Add(new MenuItem
+            //    {
+            //        Name = $"Koala_{rnd.Next() % 19 + 1}",
+            //        Badge = rnd.NextDouble() > 0.5 ? (int?)null : rnd.Next() % 20
+            //    });    
+            //}
 
             this.OpenMenuItem =
                 new RelayCommand<string>(vm => this.EventAggregator.GetEvent<OpenMenuItemEvent>().Publish(vm));

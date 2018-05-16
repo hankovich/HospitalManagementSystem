@@ -23,6 +23,8 @@ namespace Hms.API
             WebApiConfig.Register(httpConfiguration);
 
             appBuilder.UseNinjectMiddleware(CreateKernel).UseNinjectWebApi(httpConfiguration);
+
+            appBuilder.MapSignalR();
         }
 
         private static IKernel CreateKernel()
