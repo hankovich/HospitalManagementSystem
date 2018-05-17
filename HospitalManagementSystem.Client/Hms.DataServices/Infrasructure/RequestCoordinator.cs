@@ -17,6 +17,8 @@
 
     public class RequestCoordinator : IRequestCoordinator
     {
+        IClientStateModel IRequestCoordinator.ClientState => this.ClientState;
+
         public ISymmetricCryptoProvider SymmetricCryptoProvider { get; }
 
         public IAsymmetricCryptoProvider AsymmetricCryptoProvider { get; }
@@ -41,7 +43,7 @@
 
         private bool IsInitialized { get; set; }
 
-        private ClientStateModel ClientState { get; }
+        public ClientStateModel ClientState { get; }
 
         private HttpClient HttpClient { get; } = new HttpClient();
 

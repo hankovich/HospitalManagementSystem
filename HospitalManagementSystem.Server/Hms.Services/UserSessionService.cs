@@ -1,5 +1,6 @@
 ﻿namespace Hms.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Hms.Repositories.Interface;
@@ -22,6 +23,11 @@
         public Task AddEntryAsync(int userId, int gadgetId)
         {
             return this.UserSessionRepository.AddEntryAsync(userId, gadgetId);
+        }
+
+        public Task<IEnumerable<string>> GetEntriesAsync(int userId)
+        {
+            return this.UserSessionRepository.GetEntriesAsync(userId);
         }
     }
 }

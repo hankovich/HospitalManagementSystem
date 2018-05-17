@@ -9,6 +9,10 @@ namespace Hms.API
     using System;
     using System.Web.Http;
 
+    using Hms.API.Infrastructure;
+
+    using Microsoft.AspNet.SignalR;
+
     using Ninject;
     using Ninject.Web.Common.OwinHost;
     using Ninject.Web.WebApi.OwinHost;
@@ -24,7 +28,10 @@ namespace Hms.API
 
             appBuilder.UseNinjectMiddleware(CreateKernel).UseNinjectWebApi(httpConfiguration);
 
-            appBuilder.MapSignalR();
+            appBuilder.MapSignalR(new HubConfiguration
+            {
+                Resolver = new NinjectSignalRDependencyResolver(CreateKernel())
+            });
         }
 
         private static IKernel CreateKernel()

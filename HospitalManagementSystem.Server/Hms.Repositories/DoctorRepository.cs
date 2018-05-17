@@ -225,5 +225,24 @@
                 throw new ArgumentException(e.Message);
             }
         }
+
+        public async Task<IEnumerable<int>> GetDoctorIdsAsync(IEnumerable<int> participants)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"SELECT [UserId] FROM [Doctor] WHERE [UserId] IN @participants";
+
+                    return await connection.QueryAsync<int>(command, new { participants });
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
     }
 }

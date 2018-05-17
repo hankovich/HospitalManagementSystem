@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.API", "Hms.API\Hms.API.csproj", "{ED2556E9-0CD8-4456-8A43-F5365A9BD7F9}"
 EndProject
@@ -20,6 +20,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Repositories.Interface", "Hms.Repositories.Interface\Hms.Repositories.Interface.csproj", "{A1D5A6AF-C8F9-4E6F-9B3D-E417F818EA0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Common.Interface", "Hms.Common.Interface\Hms.Common.Interface.csproj", "{503E23B4-34CD-422D-A192-501948E84838}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Hubs", "Hms.Hubs\Hms.Hubs.csproj", "{CC9910F0-2E2E-4477-8227-7D37E0374008}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hms.Hubs.Interface", "Hms.Hubs.Interface\Hms.Hubs.Interface.csproj", "{4FD03B55-C2E4-4FC3-B85E-064EB7E907AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +69,14 @@ Global
 		{503E23B4-34CD-422D-A192-501948E84838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{503E23B4-34CD-422D-A192-501948E84838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{503E23B4-34CD-422D-A192-501948E84838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC9910F0-2E2E-4477-8227-7D37E0374008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC9910F0-2E2E-4477-8227-7D37E0374008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC9910F0-2E2E-4477-8227-7D37E0374008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC9910F0-2E2E-4477-8227-7D37E0374008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FD03B55-C2E4-4FC3-B85E-064EB7E907AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FD03B55-C2E4-4FC3-B85E-064EB7E907AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FD03B55-C2E4-4FC3-B85E-064EB7E907AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FD03B55-C2E4-4FC3-B85E-064EB7E907AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

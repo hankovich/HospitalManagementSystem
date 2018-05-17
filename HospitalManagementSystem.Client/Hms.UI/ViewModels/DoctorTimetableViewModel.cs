@@ -25,12 +25,13 @@
 
         private DateTime selectedDate;
 
-        public DoctorTimetableViewModel(int doctorId, object parentViewModel, IAppointmentDataService appointmentDataService, IProfileDataService profileDataService, IEventAggregator eventAggregator, IRequestCoordinator requestCoordinator)
-        {
+        public DoctorTimetableViewModel(int doctorId, object parentViewModel, IAppointmentDataService appointmentDataService, IProfileDataService profileDataService, INotificationService notificationService, IEventAggregator eventAggregator, IRequestCoordinator requestCoordinator)
+        { 
             this.DoctorId = doctorId;
             this.ParentViewModel = parentViewModel;
             this.AppointmentDataService = appointmentDataService;
             this.ProfileDataService = profileDataService;
+            this.NotificationService = notificationService;
             this.EventAggregator = eventAggregator;
             
             this.Appointments = new TrulyObservableCollection<CalendarItemWrapper>();
@@ -38,7 +39,7 @@
             this.UserId = requestCoordinator.UserId.Value;
 
             this.LoadedCommand = AsyncCommand.Create(this.OnLoadedAsync);
-            this.SelectedDateChangedCommand = AsyncCommand.Create(this.OnSelectedDateChangedAsync);
+            this.SelectedDateChangedCommand = AsyncCommand.Create<DateTime>(this.OnSelectedDateChangedAsync);
             this.ScheduleAppointmentCommand = AsyncCommand.Create<DateTime>(this.OnScheduleAsync);
             this.CancelAppointmentCommand = AsyncCommand.Create<int>(this.OnCancelAsync);
 
@@ -54,7 +55,15 @@
                 () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
         }
 
-        private async Task OnSelectedDateChangedAsync()
+        private async Task OnSelectedDateChangedAsync(DateTime oldDate)
+        {
+            await this.NotificationService.UnsubscribeAsync(this.DoctorId, oldDate);
+            await this.NotificationService.SubscribeAsync(this.DoctorId, this.SelectedDate, async () => await this.UpdateAppointments());
+
+            await this.UpdateAppointments();
+        }
+
+        private async Task UpdateAppointments()
         {
             this.Appointments.Clear();
 
@@ -193,6 +202,8 @@
         public IAppointmentDataService AppointmentDataService { get; set; }
 
         public IProfileDataService ProfileDataService { get; }
+
+        public INotificationService NotificationService { get; }
 
         public IEventAggregator EventAggregator { get; }
 

@@ -14,5 +14,7 @@
         Task<IEnumerable<Doctor>> GetDoctorsAsync(int polyclinicId, int specializationId, int pageIndex, int pageSize, string filter);
 
         Task<int> GetDoctorsCountAsync(int polyclinicId, int specializationId, string filter);
+
+        Task<IEnumerable<int>> GetDoctorIdsAsync(IEnumerable<int> participants);
     }
 }

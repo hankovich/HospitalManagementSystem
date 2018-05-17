@@ -42,9 +42,11 @@
     <Compile Include="IDoctorDataService.cs" />
     <Compile Include="IMedicalRecordDataService.cs" />
     <Compile Include="IMedicalSpecializationDataService.cs" />
+    <Compile Include="Infrastructure\IClientStateModel.cs" />
     <Compile Include="Infrastructure\IHttpContentProcessor.cs" />
     <Compile Include="Infrastructure\IRequestCoordinator.cs" />
     <Compile Include="IMedicalCardDataService.cs" />
+    <Compile Include="INotificationService.cs" />
     <Compile Include="IPolyclinicDataService.cs" />
     <Compile Include="IPolyclinicRegionDataService.cs" />
     <Compile Include="IProfileDataService.cs" />

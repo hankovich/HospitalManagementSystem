@@ -132,6 +132,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\NinjectSignalRDependencyResolver.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="App_Start\StartUp.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -145,7 +146,6 @@
     <Compile Include="Controllers\PolyclinicController.cs" />
     <Compile Include="Controllers\PolyclinicRegionController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
-    <Compile Include="Hubs\NotificationHub.cs" />
     <Compile Include="Infrastructure\ExpirationPolicy.cs" />
     <Compile Include="Infrastructure\HttpActionResult.cs" />
     <Compile Include="Controllers\AccountController.cs" />

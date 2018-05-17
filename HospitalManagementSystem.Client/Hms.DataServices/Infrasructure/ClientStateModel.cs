@@ -1,8 +1,9 @@
 ﻿namespace Hms.DataServices.Infrasructure
 {
     using Hms.Common.Interface.Models;
+    using Hms.DataServices.Interface.Infrastructure;
 
-    public class ClientStateModel
+    public class ClientStateModel : IClientStateModel
     {
         public LoginModel AuthInfo { get; set; } = new LoginModel();
 

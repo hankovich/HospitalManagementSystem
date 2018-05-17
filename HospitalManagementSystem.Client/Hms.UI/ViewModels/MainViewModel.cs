@@ -2,14 +2,11 @@
 {
     using System;
     using System.Reflection;
-    using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Threading;
-
+    using Hms.DataServices.Interface;
     using Hms.UI.Infrastructure.Commands;
     using Hms.UI.Infrastructure.Events;
-
-    using Microsoft.AspNet.SignalR.Client;
 
     using Ninject;
     using Ninject.Parameters;
@@ -18,12 +15,11 @@
 
     public class MainViewModel : ViewModelBase
     {
-        public IEventAggregator EventAggregator { get; }
-
         private object selectedViewModel;
 
-        public MainViewModel(IEventAggregator eventAggregator)
+        public MainViewModel(INotificationService notificationService, IEventAggregator eventAggregator)
         {
+            this.NotificationService = notificationService;
             this.EventAggregator = eventAggregator;
             this.CardCommand = new RelayCommand(this.OpenCard);
 
@@ -36,21 +32,16 @@
             eventAggregator.GetEvent<OpenDoctorTimetableEvent>().Subscribe(this.OnOpenDoctorTimetable);
             eventAggregator.GetEvent<OpenSpecializationDoctorsEvent>().Subscribe(this.OnOpenSpecializationDoctors);
 
-            this.ConnectToNotificationsCommand = AsyncCommand.Create(this.ConnectAsync);
+            this.ConnectToNotificationsCommand = AsyncCommand.Create(this.NotificationService.ConnectAsync);
             
             DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             timer.Tick += (sender, args) => this.OnPropertyChanged(nameof(this.Time));
             timer.Start();
         }
 
-        private async Task ConnectAsync()
-        {
-            var connection = new HubConnection("http://localhost:52017/signalr");
-            IHubProxy hubProxy = connection.CreateHubProxy("NotificationHub");
+        public INotificationService NotificationService { get; }
 
-            // ServicePointManager.DefaultConnectionLimit = 10;
-            await connection.Start();
-        }
+        public IEventAggregator EventAggregator { get; }
 
         public string Time => DateTime.Now.ToString("HH:mm:ss");
 

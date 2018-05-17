@@ -1,6 +1,7 @@
 ﻿namespace Hms.Repositories
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.SqlClient;
     using System.Threading.Tasks;
 
@@ -88,6 +89,26 @@
                     COMMIT TRAN";
 
                     await connection.ExecuteAsync(command, new { userId, gadgetId });
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetEntriesAsync(int userId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"
+                    SELECT [GadgetId] FROM [UserGadgetSession] WHERE [UserId] = @userId";
+
+                    return await connection.QueryAsync<string>(command, new { userId });
                 }
             }
             catch (Exception e)

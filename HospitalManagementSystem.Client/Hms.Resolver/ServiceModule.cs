@@ -16,6 +16,8 @@
 
             this.Bind<IAccountService>().To<AccountService>();
 
+            this.Bind<INotificationService>().To<NotificationService>().InSingletonScope();
+
             this.Bind<IRequestCoordinator>().To<RequestCoordinator>().InSingletonScope();
             this.Bind<IMedicalCardDataService>().To<MedicalCardDataService>();
             this.Bind<IMedicalRecordDataService>().To<MedicalRecordDataService>();

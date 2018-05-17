@@ -78,7 +78,7 @@
             <DatePicker Name="DatePicker" Grid.Column="1" VerticalAlignment="Center" Margin="10" FirstDayOfWeek="Monday" SelectedDate="{Binding SelectedDate, Mode=TwoWay}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedDateChanged" SourceName="DatePicker">
-                        <i:InvokeCommandAction Command="{Binding SelectedDateChangedCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding SelectedDateChangedCommand}" CommandParameter="{Binding ElementName=DatePicker, Path=SelectedDate}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </DatePicker>
