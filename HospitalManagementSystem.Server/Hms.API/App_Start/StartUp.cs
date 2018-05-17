@@ -9,7 +9,7 @@ namespace Hms.API
     using System;
     using System.Web.Http;
 
-    using Hms.API.Infrastructure;
+    using Hms.Resolver;
 
     using Microsoft.AspNet.SignalR;
 
@@ -26,11 +26,13 @@ namespace Hms.API
             HttpConfiguration httpConfiguration = new HttpConfiguration();
             WebApiConfig.Register(httpConfiguration);
 
-            appBuilder.UseNinjectMiddleware(CreateKernel).UseNinjectWebApi(httpConfiguration);
+            var kernel = CreateKernel();
+
+            appBuilder.UseNinjectMiddleware(() => kernel).UseNinjectWebApi(httpConfiguration);
 
             appBuilder.MapSignalR(new HubConfiguration
             {
-                Resolver = new NinjectSignalRDependencyResolver(CreateKernel())
+                Resolver = new NinjectSignalRDependencyResolver(kernel)
             });
         }
 

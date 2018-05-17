@@ -10,6 +10,7 @@
     using Hms.Services.Interface;
 
     using Microsoft.AspNet.SignalR;
+    using Microsoft.AspNet.SignalR.Hubs;
 
     public class NotificationHub : Hub, INotificationHub
     {
@@ -19,10 +20,13 @@
         private static readonly ConcurrentDictionary<int, ICollection<ObserverInfo>> TimetableObservers =
             new ConcurrentDictionary<int, ICollection<ObserverInfo>>();
 
-        public NotificationHub(IUserSessionService userSessionService)
+        public NotificationHub(IHubConnectionContext<dynamic> clients, IUserSessionService userSessionService)
         {
+            this.InjectedClients = clients;
             this.UserSessionService = userSessionService;
         }
+
+        public IHubConnectionContext<dynamic> InjectedClients { get; }
 
         public IUserSessionService UserSessionService { get; }
 
@@ -62,7 +66,7 @@
             }
         }
 
-        public async Task NotifyTimetableChangedAsync(int doctorId, DateTime date)
+        public void NotifyTimetableChanged(int doctorId, DateTime date)
         {
             ICollection<ObserverInfo> observers;
 
@@ -72,7 +76,8 @@
 
                 try
                 {
-                    Clients.Clients(sessions.ToList()).TimetableChanged(doctorId, date);
+                    var clients = this.InjectedClients.Clients(sessions.ToList());
+                    clients.TimetableChanged(doctorId, date);
                 }
                 catch (Exception e)
                 {

@@ -41,7 +41,7 @@
 
             foreach (var doctorId in doctorParticipants)
             {
-                await this.NotificationHub.NotifyTimetableChangedAsync(doctorId, calendarItem.StartDate.Date);
+                this.NotificationHub.NotifyTimetableChanged(doctorId, calendarItem.StartDate.Date);
             }
             
             return appointmentId;

@@ -22,9 +22,9 @@
 
         public IUserService UserService { get; }
 
-        [HttpGet, Route("{doctorId}/{*date:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
+        [HttpGet, Route("{doctorId}")]
         [Encrypted, Attributes.Authorize(Roles = Role.Patient)]
-        public async Task<IHttpActionResult> Get(int doctorId, DateTime date)
+        public async Task<IHttpActionResult> Get(int doctorId, [FromUri]DateTime date)
         {
             try
             {

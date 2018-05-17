@@ -33,6 +33,8 @@
             await this.connection.Start();
 
             await this.hubProxy.Invoke("ConnectDoctor", this.RequestCoordinator.ClientState.Identifier);
+
+            this.hubProxy.On("TimetableChanged", async (int doctorId, DateTime date) => await TimetableChanged(doctorId, date));
         }
 
         public async Task SubscribeAsync(int doctorId, DateTime date, Func<Task> callback)

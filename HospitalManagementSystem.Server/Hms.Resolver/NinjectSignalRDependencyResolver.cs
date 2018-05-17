@@ -1,4 +1,4 @@
-﻿namespace Hms.API.Infrastructure
+﻿namespace Hms.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -19,7 +19,14 @@
 
         public override object GetService(Type serviceType)
         {
-            return this.kernel.TryGet(serviceType) ?? base.GetService(serviceType);
+            var service = base.GetService(serviceType);
+
+            if (service != null)
+            {
+                return service;
+            }
+
+            return this.kernel.TryGet(serviceType);
         }
 
         public override IEnumerable<object> GetServices(Type serviceType)
