@@ -21,7 +21,7 @@
         public async Task<IEnumerable<CalendarItem>> GetAppointmentsAsync(int doctorId, DateTime date)
         {
             var dateString = $"{date.Year}/{date.Month}/{date.Day}"; //date.ToString("yyyy/MM/dd");
-            var response = await this.RequestCoordinator.SendAsync<IEnumerable<CalendarItem>>(HttpMethod.Get, $"api/appointment/{doctorId}?date={date}");
+            var response = await this.RequestCoordinator.SendAsync<IEnumerable<CalendarItem>>(HttpMethod.Get, $"api/appointment/{doctorId}?date={dateString}");
 
             return response.Content;
         }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
 
     using Hms.DataServices.Interface;
@@ -30,25 +31,30 @@
             this.connection = new HubConnection($"{this.RequestCoordinator.Host}signalr");
             this.hubProxy = this.connection.CreateHubProxy("NotificationHub");
 
+            this.connection.TraceLevel = TraceLevels.All;
+            this.connection.TraceWriter = Console.Out;
+
+            ServicePointManager.DefaultConnectionLimit = 10;
+
             await this.connection.Start();
 
             await this.hubProxy.Invoke("ConnectDoctor", this.RequestCoordinator.ClientState.Identifier);
 
-            this.hubProxy.On("TimetableChanged", async (int doctorId, DateTime date) => await TimetableChanged(doctorId, date));
+            this.hubProxy.On("TimetableChanged", async (int doctorId, DateTime date) => await this.TimetableChanged(doctorId, date));
         }
 
         public async Task SubscribeAsync(int doctorId, DateTime date, Func<Task> callback)
         {
             await this.hubProxy.Invoke("ConnectToTimetable", doctorId, date);
 
-            this.observerInfos.Add(new ObserverInfo(doctorId.ToString(), date), callback);
+            this.observerInfos.Add(new ObserverInfo(doctorId.ToString(), date.Date), callback);
         }
 
         public async Task UnsubscribeAsync(int doctorId, DateTime date)
         {
             await this.hubProxy.Invoke("DisconnectFromTimetable", doctorId, date);
 
-            this.observerInfos.Remove(new ObserverInfo(doctorId.ToString(), date));
+            this.observerInfos.Remove(new ObserverInfo(doctorId.ToString(), date.Date));
         }
 
         public async Task TimetableChanged(int doctorId, DateTime date)
@@ -60,37 +66,6 @@
             {
                 await callback();
             }
-        }
-    }
-
-    public struct ObserverInfo : IEquatable<ObserverInfo>
-    {
-        public string ObserverIdentifier { get; }
-
-        public DateTime Date { get; }
-
-        public ObserverInfo(string observerIdentifier, DateTime date)
-        {
-            this.ObserverIdentifier = observerIdentifier;
-            this.Date = date;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((this.ObserverIdentifier != null ? this.ObserverIdentifier.GetHashCode() : 0) * 397) ^ this.Date.GetHashCode();
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public bool Equals(ObserverInfo other)
-        {
-            return string.Equals(this.ObserverIdentifier, other.ObserverIdentifier) && this.Date.Equals(other.Date);
         }
     }
 }

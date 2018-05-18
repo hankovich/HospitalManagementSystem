@@ -67,6 +67,7 @@
     <Compile Include="MedicalRecordDataService.cs" />
     <Compile Include="MedicalSpecializationDataService.cs" />
     <Compile Include="NotificationService.cs" />
+    <Compile Include="ObserverInfo.cs" />
     <Compile Include="PolyclinicDataService.cs" />
     <Compile Include="PolyclinicRegionDataService.cs" />
     <Compile Include="ProfileDataService.cs" />

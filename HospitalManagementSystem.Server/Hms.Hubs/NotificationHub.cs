@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Hms.Hubs.Interface;
@@ -12,7 +13,7 @@
     using Microsoft.AspNet.SignalR;
     using Microsoft.AspNet.SignalR.Hubs;
 
-    public class NotificationHub : Hub, INotificationHub
+    public class NotificationHub : Hub, INotificationService
     {
         private static readonly ConcurrentDictionary<string, string> ConnectionToGadgetMappings =
             new ConcurrentDictionary<string, string>();
@@ -20,22 +21,44 @@
         private static readonly ConcurrentDictionary<int, ICollection<ObserverInfo>> TimetableObservers =
             new ConcurrentDictionary<int, ICollection<ObserverInfo>>();
 
-        public NotificationHub(IHubConnectionContext<dynamic> clients, IUserSessionService userSessionService)
+        private static IHubCallerConnectionContext<dynamic> ConnectionContext;
+
+        private static readonly SemaphoreSlim DisconnectedSemaphore = new SemaphoreSlim(1, 1);
+
+        public NotificationHub(IUserSessionService userSessionService)
         {
-            this.InjectedClients = clients;
             this.UserSessionService = userSessionService;
         }
 
-        public IHubConnectionContext<dynamic> InjectedClients { get; }
-
         public IUserSessionService UserSessionService { get; }
 
-        public override Task OnDisconnected(bool stopCalled)
+        public override async Task OnDisconnected(bool stopCalled)
         {
             string result = string.Empty;
             ConnectionToGadgetMappings.TryRemove(this.Context.ConnectionId, out result);
 
-            return base.OnDisconnected(stopCalled);
+            await DisconnectedSemaphore.WaitAsync();
+
+            try
+            {
+                var disconectedUserSubscribtions = TimetableObservers
+                    .Where(kvp => kvp.Value.Count(oi => oi.ObserverIdentifier == this.Context.ConnectionId) > 0)
+                    .Select(kvp => new { DoctorId = kvp.Key, Elements = kvp.Value });
+
+                foreach (var subscribtion in disconectedUserSubscribtions)
+                {
+                    foreach (var connectionInfo in subscribtion.Elements)
+                    {
+                        TimetableObservers[subscribtion.DoctorId].Remove(connectionInfo);
+                    }
+                }
+            }
+            finally
+            {
+                DisconnectedSemaphore.Release();
+            }
+
+            await base.OnDisconnected(stopCalled);
         }
 
         public void ConnectDoctor(string identifier)
@@ -45,7 +68,7 @@
 
         public void ConnectToTimetable(int doctorId, DateTime date)
         {
-            var observerInfo = new ObserverInfo(Context.ConnectionId, date);
+            var observerInfo = new ObserverInfo(this.Context.ConnectionId, date);
 
             TimetableObservers.AddOrUpdate(
                 doctorId,
@@ -55,6 +78,8 @@
                     pairs.Add(observerInfo);
                     return pairs;
                 });
+
+            ConnectionContext = this.Clients;
         }
 
         public void DisconnectFromTimetable(int doctorId, DateTime date)
@@ -64,26 +89,20 @@
             {
                 TimetableObservers[doctorId].Remove(observerInfo);
             }
+
+            ConnectionContext = this.Clients;
         }
 
-        public void NotifyTimetableChanged(int doctorId, DateTime date)
+        public async Task NotifyTimetableChangedAsync(int doctorId, DateTime date)
         {
             ICollection<ObserverInfo> observers;
-
+            
             if (TimetableObservers.TryGetValue(doctorId, out observers))
             {
-                var sessions = observers.Where(info => info.Date.Date == date.Date).Select(observer => observer.ObserverIdentifier);
+                var sessions = observers.Where(info => info.Date.Date == date.Date)
+                    .Select(observer => observer.ObserverIdentifier).ToList();
 
-                try
-                {
-                    var clients = this.InjectedClients.Clients(sessions.ToList());
-                    clients.TimetableChanged(doctorId, date);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                await ConnectionContext.Clients(sessions).TimetableChanged(doctorId, date);
             }
         }
     }

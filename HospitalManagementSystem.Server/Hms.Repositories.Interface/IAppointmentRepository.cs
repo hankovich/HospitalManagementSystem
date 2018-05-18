@@ -8,6 +8,8 @@
 
     public interface IAppointmentRepository
     {
+        Task<CalendarItem> GetAppointmentAsync(int appointmentId);
+
         Task<IEnumerable<CalendarItem>> GetAppointmentsAsync(int doctorId, DateTime date, int userId);
 
         Task<int> ScheduleAppointmentAsync(int userId, CalendarItem calendarItem);

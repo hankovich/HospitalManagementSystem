@@ -12,7 +12,7 @@
 
     public class AppointmentService : IAppointmentService
     {
-        public AppointmentService(IAppointmentRepository appointmentRepository, IDoctorRepository doctorRepository, INotificationHub notificationHub)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IDoctorRepository doctorRepository, INotificationService notificationHub)
         {
             this.AppointmentRepository = appointmentRepository;
             this.DoctorRepository = doctorRepository;
@@ -23,7 +23,7 @@
 
         public IDoctorRepository DoctorRepository { get; }
 
-        public INotificationHub NotificationHub { get; }
+        public INotificationService NotificationHub { get; }
 
         public Task<IEnumerable<CalendarItem>> GetAppointmentsAsync(int doctorId, DateTime date, int userId)
         {
@@ -34,22 +34,32 @@
         {
             int appointmentId = await this.AppointmentRepository.ScheduleAppointmentAsync(userId, calendarItem);
 
+            calendarItem.Owner = new User { Id = userId };
+            await this.NotifyDoctorsChangedAsync(calendarItem);
+
+            return appointmentId;
+        }
+
+        public async Task CancelAppointmentAsync(int userId, int appointmentId)
+        {
+            var calendarItem = await this.AppointmentRepository.GetAppointmentAsync(appointmentId);
+
+            await this.AppointmentRepository.CancelAppointmentAsync(userId, appointmentId);
+
+            await this.NotifyDoctorsChangedAsync(calendarItem);
+        }
+
+        private async Task NotifyDoctorsChangedAsync(CalendarItem calendarItem)
+        {
             List<int> participants = calendarItem.AssociatedUsers.Select(u => u.Id).ToList();
-            participants.Add(userId);
+            participants.Add(calendarItem.Owner.Id);
 
             var doctorParticipants = await this.DoctorRepository.GetDoctorIdsAsync(participants);
 
             foreach (var doctorId in doctorParticipants)
             {
-                this.NotificationHub.NotifyTimetableChanged(doctorId, calendarItem.StartDate.Date);
+                await this.NotificationHub.NotifyTimetableChangedAsync(doctorId, calendarItem.StartDate.Date);
             }
-            
-            return appointmentId;
-        }
-
-        public Task CancelAppointmentAsync(int userId, int appointmentId)
-        {
-            return this.AppointmentRepository.CancelAppointmentAsync(userId, appointmentId);
         }
     }
 }

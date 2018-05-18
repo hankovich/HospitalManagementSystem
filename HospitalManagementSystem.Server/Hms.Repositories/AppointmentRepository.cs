@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlClient;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Dapper;
@@ -23,6 +24,51 @@
         }
 
         public string ConnectionString { get; }
+
+        public async Task<CalendarItem> GetAppointmentAsync(int appointmentId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(this.ConnectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command = @"
+                    SELECT DISTINCT CI.[Id], [StartDateUtc] AS [StartDate], [EndDateUtc] AS [EndDate], CI.[UserId] AS [Id], CIAU.[UserId] AS [Id]
+                    FROM [CalendarItem] CI
+                    LEFT JOIN [CalendarItemAssociatedUser] CIAU
+                    ON CI.[Id] = CIAU.[CalendarItemId]
+                    WHERE CI.[Id] = @appointmentId";
+
+                    var items = await connection.QueryAsync<CalendarItem, int, int, CalendarItem>(
+                                    command,
+                                    (appointment, ownerId, associatedUserId) =>
+                                    {
+                                        appointment.Owner = new User { Id = ownerId };
+                                        appointment.AssociatedUsers =
+                                            new List<User> { new User { Id = associatedUserId } };
+                                        return appointment;
+                                    },
+                                    new { appointmentId });
+
+                    var calendarItem = items.GroupBy(o => o.Id).Select(
+                        group =>
+                        {
+                            var itemTemplate = group.First();
+                            itemTemplate.AssociatedUsers = new List<User>(
+                                group.Select(gr => gr.AssociatedUsers.FirstOrDefault()).Where(user => user != null));
+
+                            return itemTemplate;
+                        }).FirstOrDefault();
+
+                    return calendarItem;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
 
         public async Task<IEnumerable<CalendarItem>> GetAppointmentsAsync(int doctorId, DateTime date, int userId)
         {

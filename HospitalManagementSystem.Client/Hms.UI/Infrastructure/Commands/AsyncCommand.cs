@@ -180,6 +180,11 @@
 
             try
             {
+                if (parameter == null && typeof(TInput).IsValueType)
+                {
+                    return;
+                }
+
                 this.Execution =
                     new NotifyTaskCompletion<TResult>(this.command((TInput)parameter, this.cancelCommand.Token));
                 this.RaiseCanExecuteChanged();

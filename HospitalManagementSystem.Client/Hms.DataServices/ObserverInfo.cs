@@ -1,4 +1,4 @@
-﻿namespace Hms.Hubs
+﻿namespace Hms.DataServices
 {
     using System;
 
@@ -11,14 +11,14 @@
         public ObserverInfo(string observerIdentifier, DateTime date)
         {
             this.ObserverIdentifier = observerIdentifier;
-            this.Date = date.Date;
+            this.Date = date;
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((this.ObserverIdentifier != null ? this.ObserverIdentifier.GetHashCode() : 0) * 397) ^ this.Date.GetHashCode();
+                return ((this.ObserverIdentifier != null ? this.ObserverIdentifier.GetHashCode() : 0) * 397) ^ this.Date.Date.GetHashCode();
             }
         }
 
@@ -29,7 +29,7 @@
 
         public bool Equals(ObserverInfo other)
         {
-            return string.Equals(this.ObserverIdentifier, other.ObserverIdentifier) && this.Date.Equals(other.Date);
+            return string.Equals(this.ObserverIdentifier, other.ObserverIdentifier) && this.Date.Date.Equals(other.Date.Date);
         }
     }
 }

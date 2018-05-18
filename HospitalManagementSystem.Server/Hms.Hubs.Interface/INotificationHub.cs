@@ -1,9 +1,10 @@
 ﻿namespace Hms.Hubs.Interface
 {
     using System;
+    using System.Threading.Tasks;
 
-    public interface INotificationHub
+    public interface INotificationService
     {
-        void NotifyTimetableChanged(int doctorId, DateTime date);
+        Task NotifyTimetableChangedAsync(int doctorId, DateTime date);
     }
 }

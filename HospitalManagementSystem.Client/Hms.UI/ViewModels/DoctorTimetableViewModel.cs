@@ -5,6 +5,8 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Data;
     using System.Windows.Input;
 
     using Hms.Common.Interface.Domain;
@@ -24,6 +26,8 @@
         private int userId;
 
         private DateTime selectedDate;
+
+        private static object lockObject = new object();
 
         public DoctorTimetableViewModel(int doctorId, object parentViewModel, IAppointmentDataService appointmentDataService, IProfileDataService profileDataService, INotificationService notificationService, IEventAggregator eventAggregator, IRequestCoordinator requestCoordinator)
         { 
@@ -51,12 +55,23 @@
                         ParentViewModel = this
                     }));
 
-            this.BackCommand = new RelayCommand(
-                () => this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel));
+            this.BackCommand = AsyncCommand.Create(async () =>
+            {
+                await this.NotificationService.UnsubscribeAsync(this.DoctorId, this.SelectedDate);
+
+                this.EventAggregator.GetEvent<NavigationEvent>().Publish(parentViewModel);
+            });
+
+            BindingOperations.EnableCollectionSynchronization(this.Appointments, lockObject);
         }
 
         private async Task OnSelectedDateChangedAsync(DateTime oldDate)
         {
+            if (oldDate == this.SelectedDate)
+            {
+                return;
+            }
+
             await this.NotificationService.UnsubscribeAsync(this.DoctorId, oldDate);
             await this.NotificationService.SubscribeAsync(this.DoctorId, this.SelectedDate, async () => await this.UpdateAppointments());
 
@@ -88,6 +103,8 @@
 
         private async Task OnScheduleAsync(DateTime startDate)
         {
+            await this.NotificationService.UnsubscribeAsync(this.DoctorId, this.SelectedDate);
+
             int appointmentId = await this.AppointmentDataService.ScheduleAppointmentAsync(this.UserId, this.DoctorId, this.SelectedDate, startDate);
 
             Dictionary<int, CalendarItemWrapper> items = new Dictionary<int, CalendarItemWrapper>();
@@ -110,10 +127,14 @@
                 this.Appointments.RemoveAt(item.Key);
                 this.Appointments.Insert(item.Key, item.Value);
             }
+
+            await this.NotificationService.SubscribeAsync(this.DoctorId, this.SelectedDate, async () => await this.UpdateAppointments());
         }
 
         private async Task OnCancelAsync(int appointmentId)
         {
+            await this.NotificationService.UnsubscribeAsync(this.DoctorId, this.SelectedDate);
+
             await this.AppointmentDataService.CancelAppointmentAsync(appointmentId);
 
             Dictionary<int, CalendarItemWrapper> items = new Dictionary<int, CalendarItemWrapper>();
@@ -131,6 +152,8 @@
                 this.Appointments.RemoveAt(item.Key);
                 this.Appointments.Insert(item.Key, item.Value);
             }
+
+            await this.NotificationService.SubscribeAsync(this.DoctorId, this.SelectedDate, async () => await this.UpdateAppointments());
         }
 
         private async Task OnLoadedAsync()
@@ -199,7 +222,7 @@
 
         public object ParentViewModel { get; }
 
-        public IAppointmentDataService AppointmentDataService { get; set; }
+        public IAppointmentDataService AppointmentDataService { get; }
 
         public IProfileDataService ProfileDataService { get; }
 
